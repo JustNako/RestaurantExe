@@ -1,0 +1,386 @@
+@model Restaurant.ViewModels.RolePermissionsViewModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Управление правами ролей";
+}
+
+@section Styles {
+    <style>
+        .permissions-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .permissions-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .role-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .role-header h2 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .role-header .role-name {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .category-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .category-title {
+            color: #495057;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .permission-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .permission-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .permission-item.selected {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .permission-label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #495057;
+            cursor: pointer;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+
+        .btn-back {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+
+        .permissions-summary {
+            background: #e3f2fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2196f3;
+        }
+
+        .summary-text {
+            color: #1976d2;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .select-all-section {
+            background: #fff3cd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .select-all-btn {
+            background: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .select-all-btn:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        @@media (max-width: 768px) {
+            .permissions-card {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .role-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+}
+
+<div class="permissions-container">
+    <div class="permissions-card">
+        <!-- Заголовок роли -->
+        <div class="role-header">
+            <h2>🔐 Управление правами доступа</h2>
+            <div class="role-name">Роль: <strong>@Model.RoleName</strong></div>
+        </div>
+
+        <!-- Сводка по правам -->
+        <div class="permissions-summary">
+            <p class="summary-text">
+                📊 Всего категорий: <strong>@Model.Permissions.GroupBy(p => p.Category).Count()</strong> | 
+                Всего прав: <strong>@Model.Permissions.Count</strong> | 
+                Выбрано: <strong id="selected-count">0</strong>
+            </p>
+        </div>
+
+        <form asp-action="Permissions" method="post">
+            <input type="hidden" asp-for="RoleId" />
+
+            <!-- Кнопки выбора всех/снятия выбора -->
+            <div class="select-all-section">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-warning">⚡ Быстрые действия:</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="select-all-btn me-2" onclick="selectAll()">
+                            ✅ Выбрать все
+                        </button>
+                        <button type="button" class="select-all-btn" onclick="deselectAll()">
+                            ❌ Снять выбор
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Категории прав -->
+            @foreach (var category in Model.Permissions.GroupBy(p => p.GetCategory()))
+            {
+                <div class="category-card">
+                    <div class="category-title">
+                        @{
+                            var icon = category.Key switch
+                            {
+                                "Пользователи" => "👥",
+                                "Роли" => "🔐",
+                                "Категории" => "📂",
+                                "Продукты" => "🍽️",
+                                "Заказы" => "🧾",
+                                "Касса" => "💵",
+                                "Отчеты" => "📈",
+                                "Смены" => "⏱️",
+                                _ => "⚙️"
+                            };
+                        }
+                        @icon @category.Key
+                    </div>
+
+                    <div class="row">
+                        @for (int i = 0; i < category.Count(); i++)
+                        {
+                            var perm = category.ElementAt(i);
+                            var index = Model.Permissions.IndexOf(perm);
+
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <div class="permission-item" onclick="togglePermission(this)">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="Permissions[index].Selected" 
+                                               onchange="updateSelectedCount()" />
+                                        <input type="hidden" asp-for="Permissions[index].Name" />
+                                        <label class="permission-label">
+                                            @{
+                                                var permIcon = perm.Name switch
+                                                {
+                                                    var p when p.Contains("Create") => "➕",
+                                                    var p when p.Contains("View") => "👀",
+                                                    var p when p.Contains("Edit") => "✏️",
+                                                    var p when p.Contains("Delete") => "🗑️",
+                                                    var p when p.Contains("Manage") => "⚙️",
+                                                    var p when p.Contains("Open") => "🔓",
+                                                    var p when p.Contains("Close") => "🔒",
+                                                    _ => "🔧"
+                                                };
+                                            }
+                                            @permIcon @perm.GetRussianName()
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Кнопки действий -->
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-custom btn-save">
+                    💾 Сохранить изменения
+                </button>
+                <a asp-action="Index" class="btn btn-custom btn-back">
+                    ⬅ Вернуться к списку ролей
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Функция для переключения состояния права
+    function togglePermission(element) {
+        const checkbox = element.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        updatePermissionItemClass(element, checkbox.checked);
+        updateSelectedCount();
+    }
+
+    // Функция для обновления класса элемента права
+    function updatePermissionItemClass(element, isChecked) {
+        if (isChecked) {
+            element.classList.add('selected');
+        } else {
+            element.classList.remove('selected');
+        }
+    }
+
+    // Функция для выбора всех прав
+    function selectAll() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            const permissionItem = checkbox.closest('.permission-item');
+            if (permissionItem) {
+                updatePermissionItemClass(permissionItem, true);
+            }
+        });
+        updateSelectedCount();
+    }
+
+    // Функция для снятия выбора со всех прав
+    function deselectAll() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            const permissionItem = checkbox.closest('.permission-item');
+            if (permissionItem) {
+                updatePermissionItemClass(permissionItem, false);
+            }
+        });
+        updateSelectedCount();
+    }
+
+    // Функция для обновления счетчика выбранных прав
+    function updateSelectedCount() {
+        const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedCountElement = document.getElementById('selected-count');
+        selectedCountElement.textContent = selectedCheckboxes.length;
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Устанавливаем начальные классы для элементов прав
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            const permissionItem = checkbox.closest('.permission-item');
+            if (permissionItem) {
+                updatePermissionItemClass(permissionItem, checkbox.checked);
+            }
+        });
+        
+        // Обновляем счетчик
+        updateSelectedCount();
+        
+        // Добавляем обработчики событий для чекбоксов
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const permissionItem = this.closest('.permission-item');
+                if (permissionItem) {
+                    updatePermissionItemClass(permissionItem, this.checked);
+                }
+            });
+        });
+    });
+</script>
+

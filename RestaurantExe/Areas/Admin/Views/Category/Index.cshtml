@@ -1,0 +1,325 @@
+﻿@model List<Restaurant.Entities.Category>
+
+@{
+    ViewData["Title"] = "Категории";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .categories-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .categories-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .categories-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .categories-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .actions-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .category-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .category-id {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .category-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            color: #212529;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+
+        .no-categories {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .no-categories-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        @@media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .categories-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+}
+
+<div class="categories-container">
+    <div class="categories-header">
+        <h1 class="categories-title">📂 Категории</h1>
+        <p class="categories-subtitle">Управление категориями продуктов</p>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" style="color: #007bff;">@Model.Count</div>
+                <div class="stat-label">📂 Всего категорий</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #28a745;">@Model.Sum(c => c.Products?.Count ?? 0)</div>
+                <div class="stat-label">🍽️ Всего продуктов</div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <permission asp-permission="@Restaurant.Authorization.Permissions.Categories.Create">
+                <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn-create">
+                    ➕ Добавить категорию
+                </a>
+            </permission>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="no-categories">
+            <div class="no-categories-icon">📂</div>
+            <h3>Категорий пока нет</h3>
+            <p>Создайте первую категорию для начала работы</p>
+            <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn-create">➕ Создать категорию</a>
+        </div>
+    }
+    else
+    {
+        <div class="categories-grid">
+            @foreach (var category in Model)
+            {
+                <div class="category-card" onclick="window.location.href='@Url.Action("Details", "Category", new { area = "Admin", id = category.Id })'">
+                    <div class="category-header">
+                        <div class="category-name">@category.Name</div>
+                        <span class="category-id">#@category.Id</span>
+                    </div>
+                    
+                    <div class="category-info">
+                        <div class="info-row">
+                            <span class="info-label">🍽️ Продуктов:</span>
+                            <span class="info-value">@(category.Products?.Count ?? 0)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="category-actions" onclick="event.stopPropagation()">
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Categories.Edit">
+                            <a asp-area="Admin" asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn-action btn-edit">
+                                ✏️ Редактировать
+                            </a>
+                        </permission>
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Categories.Delete">
+                            <form asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" method="post" class="d-inline">
+                                <button class="btn-action btn-delete" onclick="return confirm('Удалить категорию "@category.Name"?')">
+                                    🗑️ Удалить
+                                </button>
+                            </form>
+                        </permission>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    // Анимация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.category-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>

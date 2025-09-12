@@ -1,0 +1,68 @@
+@model List<Restaurant.Entities.Ingredient>
+@{
+    ViewData["Title"] = "Склад";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>📦 Склад</h2>
+    <div class="d-flex gap-2">
+        <permission asp-permission="@Restaurant.Authorization.Permissions.Inventory.Manage">
+            <a class="btn btn-outline-primary" asp-action="ManageRecipe">🧪 Рецепты</a>
+        </permission>
+        <permission asp-permission="@Restaurant.Authorization.Permissions.Inventory.Manage">
+            <a class="btn btn-success" asp-action="CreateIngredient">➕ Ингредиент</a>
+        </permission>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Нет ингредиентов</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Ед.</th>
+                <th class="text-end">Остаток</th>
+                <th class="text-end">Мин.</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var ing in Model)
+        {
+            var low = ing.CurrentQuantity <= ing.MinimumQuantity;
+            <tr class="@(low ? "table-warning" : "")">
+                <td>@ing.Name</td>
+                <td>@ing.Unit</td>
+                <td class="text-end">@ing.CurrentQuantity</td>
+                <td class="text-end">@ing.MinimumQuantity</td>
+                <td class="text-end">
+                    <permission asp-permission="@Restaurant.Authorization.Permissions.Inventory.Manage">
+                        <a class="btn btn-sm btn-primary" asp-action="AddStock" asp-route-id="@ing.Id">➕ Приход</a>
+                        <div class="btn-group">
+                            <form asp-action="DeleteIngredient" asp-route-id="@ing.Id" method="post" class="d-inline" onsubmit="return confirm('Удалить ингредиент @ing.Name? У ингредиента не должно быть движений по складу.')">
+                                <button class="btn btn-sm btn-outline-danger">🗑️ Удалить</button>
+                            </form>
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form asp-action="ForceDeleteIngredient" asp-route-id="@ing.Id" method="post" class="px-3 py-1" onsubmit="return confirm('ВНИМАНИЕ! Полностью удалить ингредиент @ing.Name вместе со всеми движениями и связями? Это необратимо.')">
+                                        <button class="dropdown-item text-danger" type="submit">Удалить вместе с движениями</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </permission>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+

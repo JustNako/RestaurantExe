@@ -1,0 +1,417 @@
+@model List<Restaurant.ViewModels.QrLinkViewModel>
+@{
+    ViewData["Title"] = "QR коды";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .qr-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .qr-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .qr-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .qr-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .actions-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .qr-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .qr-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .qr-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+
+        .qr-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .qr-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .qr-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            color: white;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            color: #212529;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+
+        .no-qr {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .no-qr-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        @@media (max-width: 768px) {
+            .qr-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .qr-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+}
+
+<div class="qr-container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+            @TempData["InfoMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="qr-header">
+        <h1 class="qr-title">📱 QR коды</h1>
+        <p class="qr-subtitle">Управление динамичными QR кодами для столов и ссылок</p>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" style="color: #007bff;">@Model.Count</div>
+                <div class="stat-label">📱 Всего QR кодов</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #28a745;">@Model.Count(q => q.IsActive)</div>
+                <div class="stat-label">🟢 Активных</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" style="color: #6f42c1;">@Model.Sum(q => q.ScanCount)</div>
+                <div class="stat-label">👁️ Всего сканирований</div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+                <a asp-area="Admin" asp-controller="Qr" asp-action="Create" class="btn-create">
+                    ➕ Создать QR код
+                </a>
+            </permission>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="no-qr">
+            <div class="no-qr-icon">📱</div>
+            <h3>QR кодов пока нет</h3>
+            <p>Создайте первый QR код для начала работы</p>
+            <a asp-area="Admin" asp-controller="Qr" asp-action="Create" class="btn-create">➕ Создать QR код</a>
+        </div>
+    }
+    else
+    {
+        <div class="qr-grid">
+            @foreach (var qr in Model)
+            {
+                <div class="qr-card">
+                    <div class="qr-header-info">
+                        <div class="qr-code">@qr.Code</div>
+                        <span class="qr-status @(qr.IsActive ? "status-active" : "status-inactive")">
+                            @(qr.IsActive ? "🟢 Активен" : "🔴 Неактивен")
+                        </span>
+                    </div>
+                    
+                    <div class="qr-info">
+                        <div class="info-row">
+                            <span class="info-label">📋 Тип:</span>
+                            <span class="info-value">
+                                @(qr.Type == Restaurant.Entities.QrLinkType.Table ? "Стол" : "Ссылка")
+                            </span>
+                        </div>
+                        
+                        @if (qr.Type == Restaurant.Entities.QrLinkType.Table && !string.IsNullOrEmpty(qr.TableNumber))
+                        {
+                            <div class="info-row">
+                                <span class="info-label">🪑 Стол:</span>
+                                <span class="info-value">№@qr.TableNumber</span>
+                            </div>
+                        }                        
+                        
+                        @if (qr.Type == Restaurant.Entities.QrLinkType.CustomUrl && !string.IsNullOrEmpty(qr.CustomUrl))
+                        {
+                            <div class="info-row">
+                                <span class="info-label">🔗 URL:</span>
+                                <span class="info-value" style="word-break: break-all;">@qr.CustomUrl</span>
+                            </div>
+                        }
+                        
+                        @if (!string.IsNullOrEmpty(qr.Description))
+                        {
+                            <div class="info-row">
+                                <span class="info-label">📝 Описание:</span>
+                                <span class="info-value">@qr.Description</span>
+                            </div>
+                        }
+                        
+                        <div class="info-row">
+                            <span class="info-label">👁️ Сканирований:</span>
+                            <span class="info-value">@qr.ScanCount</span>
+                        </div>
+                        
+                        <div class="info-row">
+                            <span class="info-label">📅 Создан:</span>
+                            <span class="info-value">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                        
+                        @if (qr.ExpiresAt.HasValue)
+                        {
+                            <div class="info-row">
+                                <span class="info-label">⏰ Истекает:</span>
+                                <span class="info-value">@qr.ExpiresAt.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="qr-actions">
+                        <a asp-action="DownloadQr" asp-route-id="@qr.Id" class="btn-action btn-download">
+                            📥 Скачать
+                        </a>
+                        
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
+                            <a asp-action="Edit" asp-route-id="@qr.Id" class="btn-action btn-edit">
+                                ✏️ Изменить
+                            </a>
+                        </permission>
+                        
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
+                            <form asp-action="Delete" asp-route-id="@qr.Id" method="post" class="d-inline">
+                                <button class="btn-action btn-delete" onclick="return confirm('Удалить QR код "@qr.Code"?')">
+                                    🗑️ Удалить
+                                </button>
+                            </form>
+                        </permission>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    // Анимация при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.qr-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>

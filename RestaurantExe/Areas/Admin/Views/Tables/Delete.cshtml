@@ -1,0 +1,22 @@
+@model Restaurant.Entities.Table
+@{
+    ViewData["Title"] = "Удалить стол";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>🗑️ Удалить стол</h2>
+
+<div class="alert alert-warning">
+    Вы уверены, что хотите удалить стол №<strong>@Model.Number</strong>?
+    Это действие необратимо.
+    <div class="mt-2 text-danger">Если со столом связаны заказы, удаление может быть недоступно.</div>
+    </div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Да, удалить</button>
+    <a asp-action="Dashboard" class="btn btn-secondary">Отмена</a>
+    @Html.AntiForgeryToken()
+    </form>
+
+

@@ -1,0 +1,233 @@
+@model Restaurant.ViewModels.QrLinkViewModel
+@{
+    ViewData["Title"] = "Создать QR код";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .create-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .create-form {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+        }
+
+        .form-check-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .type-dependent {
+            display: none;
+        }
+
+        .type-dependent.show {
+            display: block;
+        }
+
+        .help-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+}
+
+<div class="create-container">
+    <div class="create-form">
+        <h2 class="form-title">📱 Создать QR код</h2>
+
+        <form asp-action="Create" method="post">
+            <div class="form-group">
+                <label asp-for="Code" class="form-label">Код QR</label>
+                <input asp-for="Code" class="form-control" placeholder="Например: TABLE1, MENU2024" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+                <div class="help-text">Уникальный код для QR кода (буквы и цифры)</div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Type" class="form-label">Тип QR кода</label>
+                <select asp-for="Type" class="form-select" id="qrType">
+                    <option value="@Restaurant.Entities.QrLinkType.Table">Стол</option>
+                    <option value="@Restaurant.Entities.QrLinkType.CustomUrl">Произвольная ссылка</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+
+            <div class="form-group type-dependent" id="tableGroup">
+                <label asp-for="TableId" class="form-label">Выберите стол</label>
+                <select asp-for="TableId" class="form-select">
+                    <option value="">-- Выберите стол --</option>
+                    @foreach (var table in ViewBag.Tables)
+                    {
+                        <option value="@table.Id">Стол №@table.Number</option>
+                    }
+                </select>
+                <span asp-validation-for="TableId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group type-dependent" id="urlGroup">
+                <label asp-for="CustomUrl" class="form-label">URL ссылка</label>
+                <input asp-for="CustomUrl" class="form-control" placeholder="https://example.com" />
+                <span asp-validation-for="CustomUrl" class="text-danger"></span>
+                <div class="help-text">Полный URL адрес (включая http:// или https://)</div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">Описание</label>
+                <input asp-for="Description" class="form-control" placeholder="Краткое описание назначения QR кода" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ExpiresAt" class="form-label">Дата истечения</label>
+                <input asp-for="ExpiresAt" type="datetime-local" class="form-control" />
+                <span asp-validation-for="ExpiresAt" class="text-danger"></span>
+                <div class="help-text">Оставьте пустым, если QR код не должен истекать</div>
+            </div>
+
+            <div class="form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label">QR код активен</label>
+            </div>
+
+            <button type="submit" class="btn-submit">✅ Создать QR код</button>
+            <a asp-action="Index" class="btn-cancel">❌ Отмена</a>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const qrType = document.getElementById('qrType');
+        const tableGroup = document.getElementById('tableGroup');
+        const urlGroup = document.getElementById('urlGroup');
+
+        function toggleTypeDependent() {
+            const type = qrType.value;
+            
+            if (type === '@((int)Restaurant.Entities.QrLinkType.Table)') {
+                tableGroup.classList.add('show');
+                urlGroup.classList.remove('show');
+            } else if (type === '@((int)Restaurant.Entities.QrLinkType.CustomUrl)') {
+                urlGroup.classList.add('show');
+                tableGroup.classList.remove('show');
+            }
+        }
+
+        qrType.addEventListener('change', toggleTypeDependent);
+        toggleTypeDependent(); // Инициализация при загрузке
+    });
+</script>
+
+

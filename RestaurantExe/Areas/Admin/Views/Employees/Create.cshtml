@@ -1,0 +1,59 @@
+﻿@model Restaurant.ViewModels.CreateEmployeeViewModel
+@{
+    ViewData["Title"] = "Создать сотрудника";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container py-2">
+    <h2 class="mb-3">➕ Создать сотрудника</h2>
+    <div class="card shadow-sm" style="max-width: 640px;">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="mb-3">
+                    <label class="form-label">Полное имя</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Номер телефона</label>
+                    <input asp-for="PhoneNumber" class="form-control mb-2" placeholder="+7 (___) ___-__-__" required />
+                    <small class="text-muted">Логин для входа: Полное имя</small>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Пароль</label>
+                    <input asp-for="Password" class="form-control" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Роль</label>
+                    <select asp-for="Role" asp-items="@(new SelectList(Model.Roles))" class="form-select">
+                        <option value="">-- Выберите роль --</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success">Создать</button>
+                    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            function applyMask() { $('input[name^="PhoneNumber"]').inputmask("+7 (999) 999-99-99"); }
+
+            applyMask();
+
+            // placeholder for dynamic fields if needed
+        });
+    </script>
+}

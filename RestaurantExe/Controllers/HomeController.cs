@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using RestaurantExe.Models;
+using Microsoft.Extensions.Logging;
+using Restaurant.Models;
 
-namespace RestaurantExe.Controllers
+namespace Restaurant.Controllers
 {
     public class HomeController : Controller
     {

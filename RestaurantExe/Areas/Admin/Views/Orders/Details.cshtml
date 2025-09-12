@@ -1,0 +1,129 @@
+﻿@model Restaurant.Entities.Order
+@{
+    ViewData["Title"] = "Детали заказа";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var subtotal = (Model.Items?.Sum(i => i.Price * i.Quantity)) ?? 0M;
+    var discount = Model.Discount;
+    var total = Model.TotalPrice > 0 ? Model.TotalPrice : (subtotal - discount);
+
+    var statusClass = Model.Status == Restaurant.Entities.OrderStatus.New
+        ? "badge bg-warning text-dark"
+        : (Model.Status == Restaurant.Entities.OrderStatus.Completed
+            ? "badge bg-success"
+            : "badge bg-danger");
+
+    var statusText = Model.Status == Restaurant.Entities.OrderStatus.New
+        ? "Новый"
+        : (Model.Status == Restaurant.Entities.OrderStatus.Completed ? "Завершён" : "Отменён");
+
+    var paymentClass = Model.PaymentType == Restaurant.Entities.PaymentType.Cash
+        ? "badge bg-secondary"
+        : (Model.PaymentType == Restaurant.Entities.PaymentType.Card
+            ? "badge bg-primary"
+            : "badge bg-info text-dark");
+}
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+        <h2 class="mb-1">Заказ #@Model.Id</h2>
+        <div class="small text-muted">
+            Создан: @Model.CreatedAt.ToString("dd.MM.yyyy HH:mm") · Стол №@Model.Table?.Number
+        </div>
+    </div>
+    <div class="text-end">
+        <span class="@statusClass me-2">@statusText</span>
+        <!--<span class="@paymentClass">Тип оплаты: @Model.PaymentType</span>-->
+    </div>
+    
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <strong>Состав заказа</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 45%">Название</th>
+                                <th style="width: 15%">Цена</th>
+                                <th style="width: 15%">Количество</th>
+                                <th style="width: 25%" class="text-end">Сумма</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Items != null && Model.Items.Any())
+                            {
+                                foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>@item.Product?.Name</td>
+                                        <td>@item.Price.ToString("N0") ₸</td>
+                                        <td>@item.Quantity</td>
+                                        <td class="text-end">@((item.Price * item.Quantity).ToString("N0")) ₸</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">Нет позиций</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light">
+                                <th colspan="3" class="text-end">Подитог</th>
+                                <th class="text-end">@subtotal.ToString("N0") ₸</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <strong>Итого</strong>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Подитог</span>
+                    <span>@subtotal.ToString("N0") ₸</span>
+                </div>
+                @if (discount > 0)
+                {
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Скидка</span>
+                        <span>-@discount.ToString("N0") ₸</span>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex justify-content-between">
+                    <span class="fw-bold">Итого к оплате</span>
+                    <span class="fw-bold">@total.ToString("N0") ₸</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            @if (Model.Status == Restaurant.Entities.OrderStatus.New)
+            {
+                <!--<form asp-action="Complete" method="post" asp-route-id="@Model.Id">
+                    <button type="submit" class="btn btn-success w-100">Завершить заказ</button>
+                </form>-->
+                <form asp-action="Cancel" method="post" asp-route-id="@Model.Id">
+                    <button type="submit" class="btn btn-outline-danger w-100">Отменить заказ</button>
+                </form>
+            }
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Редактировать</a>
+            <button type="button" class="btn btn-outline-secondary" onclick="window.print()">Печать</button>
+            <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+        </div>
+    </div>
+</div>

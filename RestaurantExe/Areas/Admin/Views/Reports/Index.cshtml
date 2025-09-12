@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Отчёты";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div>
+                        <h3 class="mb-1">📊 Центр отчётов</h3>
+                        <div class="text-muted">Сформируйте ежедневный отчёт или Z-отчёт по смене</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <a asp-action="ZReport" class="btn btn-dark">🧾 Z-отчёт</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">🗓️ Ежедневный отчёт</h5>
+                    <form asp-action="DailyReport" method="get" class="row g-3 align-items-end">
+                        <div class="col-sm-7 col-md-6 col-lg-5">
+                            <label class="form-label">Дата</label>
+                            <input type="date" name="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control" />
+                        </div>
+                        <div class="col-sm-5 col-md-6 col-lg-7">
+                            <button type="submit" class="btn btn-primary">📄 Сформировать отчёт</button>
+                        </div>
+                    </form>
+                    <hr />
+                    <div class="text-muted">Отчёт включает выручку, количество заказов, средний чек, разбивку по типам оплаты и популярные товары за выбранную дату.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">🧾 Z-отчёт по смене</h5>
+                    <p class="text-muted">Итоги последней закрытой смены: выручка, скидки и разбивка по оплатам, а также служебные записи.</p>
+                    <a asp-action="ZReport" class="btn btn-outline-dark">Сформировать Z-отчёт</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

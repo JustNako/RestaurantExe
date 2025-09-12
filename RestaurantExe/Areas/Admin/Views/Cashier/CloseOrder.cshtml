@@ -1,0 +1,320 @@
+﻿@model Restaurant.Entities.Order
+@using Restaurant.Entities
+@{
+    ViewData["Title"] = "Закрытие заказа";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var total = Model.Items.Sum(i => i.Price * i.Quantity);
+}
+
+<h2 class="mb-4">💵 Закрытие заказа</h2>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">Стол №@Model.Table.Number</h5>
+                <div class="alert alert-info mb-3">
+                    <small>💡 При закрытии заказа стол №@Model.Table.Number будет автоматически освобожден</small>
+                </div>
+
+                <ul class="list-group mb-3">
+                    @foreach (var item in Model.Items)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>@item.Product.Name (@item.Quantity)</span>
+                            <span>@(item.Price* item.Quantity) ₸</span>
+                        </li>
+                    }
+                </ul>
+
+                <h5 class="mb-3">
+                    💰 Общая сумма:
+                    <strong id="total-amount">@total</strong> ₸
+                </h5>
+
+                <form asp-action="CloseOrder" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Скидка (₸)</label>
+                        <input type="number" id="discount" name="discount" value="@Model.Discount" step="0.01" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Тип оплаты</label>
+                        <select name="paymentType" id="paymentType" class="form-select">
+                            <option value="@PaymentType.Cash" selected="@((Model.PaymentType == PaymentType.Cash))">Наличные</option>
+                            <option value="@PaymentType.Card" selected="@((Model.PaymentType == PaymentType.Card))">Карта</option>
+                            <option value="Mixed">Смешанная оплата</option>
+                        </select>
+                    </div>
+
+                    <!-- Поля для смешанной оплаты - всегда видны -->
+                    <div class="mixed-payment-section">
+                        <div class="mixed-payment-header">
+                            <h6 class="text-primary mb-2">💰 Смешанная оплата</h6>
+                            <p class="text-muted small mb-3">Заполните суммы для каждого способа оплаты</p>
+                            <div class="alert alert-warning mb-3">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Внимание:</strong> Эти поля активны только при выборе "Смешанная оплата" в типе оплаты выше
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-money-bill-wave text-success"></i> Наличными (₸)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" name="paidCash" id="paidCash" class="form-control" 
+                                               step="0.01" placeholder="0.00" min="0" />
+                                        <span class="input-group-text bg-success text-white">₸</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label">
+                                        <i class="fas fa-credit-card text-info"></i> Картой (₸)
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" name="paidCard" id="paidCard" class="form-control" 
+                                               step="0.01" placeholder="0.00" min="0" />
+                                        <span class="input-group-text bg-info text-white">₸</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mixed-payment-info">
+                            <div class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Подсказка:</strong> Сумма наличными + картой должна равняться итоговой сумме заказа
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Закрыть заказ и освободить стол №@Model.Table.Number?')">
+                            ✅ Закрыть заказ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        console.log('=== СКРИПТ КАССЫ ЗАГРУЖАЕТСЯ ===');
+
+        const total = @total;
+        const discountInput = document.getElementById('discount');
+        const totalAmountElem = document.getElementById('total-amount');
+        const paymentTypeSelect = document.getElementById('paymentType');
+        const mixedPaymentSection = document.querySelector('.mixed-payment-section');
+
+        // Функция для показа/скрытия полей смешанной оплаты
+        function toggleMixedPaymentFields(show) {
+            if (show) {
+                mixedPaymentSection.style.display = 'block';
+                console.log('Поля смешанной оплаты показаны');
+            } else {
+                mixedPaymentSection.style.display = 'none';
+                console.log('Поля смешанной оплаты скрыты');
+            }
+        }
+
+        // Обработчик изменения типа оплаты
+        paymentTypeSelect.addEventListener('change', function() {
+            const isMixed = this.value === 'Mixed';
+            toggleMixedPaymentFields(isMixed);
+        });
+
+        // Обработчик скидки
+        discountInput.addEventListener('input', function () {
+            let discount = parseFloat(this.value) || 0;
+            let finalAmount = total - discount;
+            if (finalAmount < 0) finalAmount = 0;
+            totalAmountElem.textContent = finalAmount.toFixed(2);
+            console.log('Скидка обновлена:', discount, 'Итоговая сумма:', finalAmount);
+        });
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== DOM ЗАГРУЖЕН ===');
+            
+            // Скрываем поля смешанной оплаты по умолчанию
+            toggleMixedPaymentFields(false);
+            
+            // Проверяем текущий выбранный тип оплаты
+            const currentPaymentType = paymentTypeSelect.value;
+            if (currentPaymentType === 'Mixed') {
+                toggleMixedPaymentFields(true);
+            }
+            
+            console.log('Текущий тип оплаты:', currentPaymentType);
+        });
+
+        console.log('=== СКРИПТ КАССЫ ЗАВЕРШЕН ===');
+    </script>
+}
+
+<style>
+.mixed-payment-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+    border: 2px solid #e3f2fd;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.mixed-payment-section:hover {
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Стили для отключенных полей */
+.mixed-payment-section input:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.mixed-payment-section input:disabled + .input-group-text {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    cursor: not-allowed;
+}
+
+.mixed-payment-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.mixed-payment-header h6 {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.mixed-payment-header p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-group label i {
+    font-size: 1.1rem;
+}
+
+.input-group {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.input-group .form-control {
+    border: none;
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.input-group .form-control:focus {
+    box-shadow: none;
+    background: #f8f9fa;
+}
+
+.input-group .form-control:focus + .input-group-text {
+    background: #007bff !important;
+    color: white !important;
+}
+
+.input-group-text {
+    border: none;
+    font-weight: 600;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.mixed-payment-info {
+    margin-top: 20px;
+}
+
+.mixed-payment-info .alert {
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    color: #1565c0;
+    font-size: 0.9rem;
+    padding: 15px 20px;
+}
+
+.mixed-payment-info .alert i {
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+/* Анимации для полей */
+.form-control:focus {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+/* Красивые кнопки */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 12px 25px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+/* Адаптивность */
+@@media (max-width: 768px) {
+    .mixed-payment-section {
+        padding: 20px;
+        margin: 15px 0;
+    }
+    
+    .row .col-md-6 {
+        margin-bottom: 15px;
+    }
+    
+    .mixed-payment-header h6 {
+        font-size: 1rem;
+    }
+}
+</style>

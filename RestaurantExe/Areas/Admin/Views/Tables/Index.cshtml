@@ -1,0 +1,37 @@
+﻿@model List<Restaurant.Entities.Table>
+@{
+    ViewData["Title"] = "Tables";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">🪑 Столы</h2>
+
+<a asp-action="Create" class="btn btn-success mb-4">➕ Добавить стол</a>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    @foreach (var table in Model)
+    {
+        <div class="col">
+            <div class="card text-center shadow-sm @(!table.IsOccupied ? "border-success" : "border-danger")">
+                <div class="card-body">
+                    <h5 class="card-title">Стол №@table.Number</h5>
+                    <p class="card-text">
+                        @if (table.IsOccupied)
+                        {
+                            <span class="badge bg-danger">Занят</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Свободен</span>
+                        }
+                    </p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a asp-action="Edit" asp-route-id="@table.Id" class="btn btn-sm btn-outline-primary">✏️ Изменить</a>
+                        <a asp-action="Delete" asp-route-id="@table.Id" class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Вы уверены?')">🗑️</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

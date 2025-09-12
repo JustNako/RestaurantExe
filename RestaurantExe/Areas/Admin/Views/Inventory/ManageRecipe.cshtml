@@ -1,0 +1,96 @@
+@model List<Restaurant.Entities.RecipeItem>
+@{
+    ViewData["Title"] = "Рецепт блюда";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var products = (List<Restaurant.Entities.Product>)ViewBag.Products;
+    var selectedProductId = (int?)ViewBag.SelectedProductId;
+    var ingredients = (List<Restaurant.Entities.Ingredient>)ViewBag.AllIngredients;
+}
+
+<h2>🧪 Рецепт</h2>
+
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <select name="productId" class="form-select" onchange="this.form.submit()">
+            @foreach (var p in products)
+            {
+                <option value="@p.Id" @@(selectedProductId == p.Id ? "selected" : "")>@p.Name</option>
+            }
+        </select>
+        <button class="btn btn-outline-primary" type="submit">Выбрать</button>
+    </div>
+    <small class="text-muted">Выберите блюдо для редактирования рецепта</small>
+ </form>
+
+@if (selectedProductId != null)
+{
+    <form method="post">
+        <input type="hidden" name="productId" value="@selectedProductId" />
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Ингредиент</th>
+                    <th style="width:220px">Количество на 1 блюдо</th>
+                    <th>Ед.</th>
+                    <th style="width:40px"></th>
+                </tr>
+            </thead>
+            <tbody id="rows">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <select name="ingredientIds" class="form-select">
+                                @foreach (var ing in ingredients)
+                                {
+                                    <option value="@ing.Id" @@(Model[i].IngredientId == ing.Id ? "selected" : "")>@ing.Name</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input name="quantities" class="form-control" type="number" step="0.01" value="@Model[i].QuantityPerUnit" />
+                        </td>
+                        <td>@Model[i].Ingredient?.Unit</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" type="button" onclick="this.closest('tr').remove()">✖</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" type="button" onclick="addRow()">Добавить строку</button>
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+        </div>
+    </form>
+}
+
+<script>
+    function addRow() {
+        const tbody = document.getElementById('rows');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>
+                <select name=\"ingredientIds\" class=\"form-select\">
+                    ${ingredientsOptions()}
+                </select>
+            </td>
+            <td>
+                <input name=\"quantities\" class=\"form-control\" type=\"number\" step=\"0.01\" value=\"0\" />
+            </td>
+            <td></td>
+            <td><button class=\"btn btn-sm btn-outline-danger\" type=\"button\" onclick=\"this.closest('tr').remove()\">✖</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+    function ingredientsOptions() {
+        const list = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ingredients.Select(i => new { i.Id, i.Name })));
+        return list.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+    }
+ </script>
+
+
+
+
+
+

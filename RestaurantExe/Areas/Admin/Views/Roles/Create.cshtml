@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Создание роли";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>➕ Создание новой роли</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Название роли</label>
+        <input type="text" name="name" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Создать</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+</form>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="text-danger mt-3">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}

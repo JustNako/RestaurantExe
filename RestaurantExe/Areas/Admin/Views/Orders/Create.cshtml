@@ -1,0 +1,244 @@
+﻿@model CreateOrderViewModel
+@{
+    ViewData["Title"] = "Создать заказ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="create-order">
+    <h2 class="mb-4">📝 Новый заказ</h2>
+
+    @section Styles {
+        <style>
+            .toolbar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .categories-bar {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 12px;
+            }
+
+                .categories-bar .pill {
+                    border: 1px solid #e9ecef;
+                    padding: 6px 12px;
+                    border-radius: 999px;
+                    background: #fff;
+                    cursor: pointer;
+                    user-select: none;
+                }
+
+                    .categories-bar .pill.active {
+                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        color: #fff;
+                        border-color: transparent;
+                    }
+
+            .search-input {
+                border: 2px solid #e9ecef;
+                border-radius: 10px;
+                padding: 10px 12px;
+            }
+
+            .product-card .card-body {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .qty-control {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .qty-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f1f3f5;
+                cursor: pointer;
+            }
+
+            .qty-input {
+                width: 70px;
+            }
+
+            .sticky-footer {
+                position: sticky;
+                bottom: 0;
+                background: #fff;
+                border-top: 1px solid #e9ecef;
+                padding: 12px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+                z-index: 5;
+            }
+
+            .summary {
+                font-weight: 600;
+            }
+        </style>
+    }
+
+    @if (ViewBag.Errors != null && ViewBag.Errors.Count > 0)
+    {
+        <div class="alert alert-danger">
+            <ul>
+                @foreach (var err in ViewBag.Errors)
+                {
+                    <li>@err</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="toolbar">
+            <div>
+                <label class="form-label">🪑 Выберите стол</label>
+                <select asp-for="TableId" class="form-select" required>
+                    <option value="">-- Выберите свободный стол --</option>
+                    @foreach (var table in Model.Tables)
+                    {
+                        <option value="@table.Id">Стол №@table.Number - Свободен</option>
+                    }
+                </select>
+                @if (!Model.Tables.Any())
+                {
+                    <div class="alert alert-warning mt-2">
+                        ⚠️ Все столы заняты. Дождитесь освобождения стола или завершите существующие заказы.
+                    </div>
+                }
+            </div>
+            <div>
+                <label class="form-label">🔎 Поиск по продуктам</label>
+                <input type="text" id="search" class="form-control search-input" placeholder="Начните вводить название..." />
+            </div>
+        </div>
+
+        <div class="categories-bar">
+            <span class="pill active" data-category-id="all">Все</span>
+            @foreach (var cat in Model.Categories)
+            {
+                <span class="pill" data-category-id="@cat.Id">@cat.Name</span>
+            }
+        </div>
+
+        <div id="product-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            @foreach (var cat in Model.Categories)
+            {
+                foreach (var product in cat.Products)
+                {
+                    <div class="col product-card" data-category-id="@cat.Id" data-name="@product.Name.ToLower()" data-price="@product.Price">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="card-title mb-0">@product.Name</h6>
+                                    <span class="badge bg-primary">@product.Price.ToString("0.00") ₸</span>
+                                </div>
+                                <input type="hidden" name="ProductsWithQuantity.Index" value="@product.Id" />
+                                <input type="hidden" name="ProductsWithQuantity[@product.Id].ProductId" value="@product.Id" />
+                                <div class="qty-control mt-2">
+                                    <button type="button" class="qty-btn btn-minus" aria-label="Decrease">−</button>
+                                    <input type="number" class="form-control form-control-sm qty-input" name="ProductsWithQuantity[@product.Id].Quantity" value="0" min="0" />
+                                    <button type="button" class="qty-btn btn-plus" aria-label="Increase">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="sticky-footer mt-3">
+            <div class="summary">
+                Выбрано: <span id="selCount">0</span> • Итого: <span id="selTotal">0.00</span> ₸
+            </div>
+            <button id="submitBtn" type="submit" class="btn btn-success" disabled>✅ Сохранить заказ</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const search = document.getElementById('search');
+            const pills = document.querySelectorAll('.categories-bar .pill');
+            const cards = Array.from(document.querySelectorAll('#product-list .product-card'));
+            const selCount = document.getElementById('selCount');
+            const selTotal = document.getElementById('selTotal');
+            const submitBtn = document.getElementById('submitBtn');
+
+            function applyFilters() {
+                const active = document.querySelector('.categories-bar .pill.active');
+                const catId = active ? active.dataset.categoryId : 'all';
+                const q = (search?.value || '').trim().toLowerCase();
+                cards.forEach(card => {
+                    const matchesCat = catId === 'all' || card.dataset.categoryId === catId;
+                    const matchesSearch = !q || card.dataset.name.includes(q);
+                    card.style.display = (matchesCat && matchesSearch) ? '' : 'none';
+                });
+            }
+
+            pills.forEach(p => p.addEventListener('click', () => {
+                pills.forEach(x => x.classList.remove('active'));
+                p.classList.add('active');
+                applyFilters();
+            }));
+            if (search) search.addEventListener('input', applyFilters);
+
+            function recalc() {
+                let count = 0;
+                let total = 0;
+                document.querySelectorAll('.qty-input').forEach(input => {
+                    const qty = parseInt(input.value || '0', 10) || 0;
+                    if (qty > 0) {
+                        count += qty;
+                        const price = parseFloat(input.closest('.product-card').dataset.price);
+                        total += qty * price;
+                    }
+                });
+                selCount.textContent = count.toString();
+                selTotal.textContent = total.toFixed(2);
+                submitBtn.disabled = count === 0;
+            }
+
+            document.querySelectorAll('.btn-minus').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.parentElement.querySelector('.qty-input');
+                    const val = Math.max(0, (parseInt(input.value || '0', 10) || 0) - 1);
+                    input.value = val;
+                    input.dispatchEvent(new Event('input'));
+                });
+            });
+            document.querySelectorAll('.btn-plus').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const input = btn.parentElement.querySelector('.qty-input');
+                    const val = (parseInt(input.value || '0', 10) || 0) + 1;
+                    input.value = val;
+                    input.dispatchEvent(new Event('input'));
+                });
+            });
+            document.querySelectorAll('.qty-input').forEach(input => {
+                input.addEventListener('input', recalc);
+            });
+
+            // init
+            applyFilters();
+            recalc();
+        })();
+    </script>
+}

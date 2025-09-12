@@ -1,0 +1,173 @@
+@model List<Restaurant.Entities.Order>
+@{
+    ViewData["Title"] = "Ежедневный отчёт";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var total = Model?.Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m;
+    var avg = (Model != null && Model.Count > 0) ? total / Model.Count : 0m;
+}
+
+<div class="container-fluid py-2">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h2 class="mb-0">📅 Ежедневный отчёт</h2>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" onclick="window.print()">🖨️ Печать</button>
+            <a asp-action="Index" class="btn btn-secondary">⬅ Назад</a>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="fw-semibold">Заказы</div>
+                            <div class="fs-5">@Model?.Count()</div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="fw-semibold">Выручка</div>
+                            <div class="fs-5">@($"{total:N2} ₸")</div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="fw-semibold">Средний чек</div>
+                            <div class="fs-5">@($"{avg:N2} ₸")</div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="fw-semibold">Скидки</div>
+                            <div class="fs-5 text-danger">@($"{(Model?.Sum(o => o.Discount) ?? 0m):N2} ₸")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Разбивка по типам оплаты</h6>
+                    @{
+                        var cash = (Model?.Sum(o => o.PaidCash) ?? 0m)
+                                   + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Cash && o.PaidCash == 0m)
+                                             .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
+                        var card = (Model?.Sum(o => o.PaidCard) ?? 0m)
+                                   + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Card && o.PaidCard == 0m)
+                                             .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
+                        var online = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Online)
+                            .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m;
+
+                        var mixedCash = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
+                            .Sum(o => o.PaidCash) ?? 0m;
+                        var mixedCard = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
+                            .Sum(o => o.PaidCard) ?? 0m;
+                        var mixedTotal = mixedCash + mixedCard;
+                    }
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between"><span>Наличные <small class="text-muted">(в т.ч. смеш.: @($"{mixedCash:N2} ₸"))</small></span><strong>@($"{cash:N2} ₸")</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Картой <small class="text-muted">(в т.ч. смеш.: @($"{mixedCard:N2} ₸"))</small></span><strong>@($"{card:N2} ₸")</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Смешанные оплаты</span><strong>@($"{mixedTotal:N2} ₸")</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Онлайн</span><strong>@($"{online:N2} ₸")</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-3">Топ-товары</h6>
+                    @{
+                        var top = (Model ?? new List<Restaurant.Entities.Order>())
+                            .SelectMany(o => o.Items)
+                            .GroupBy(i => i.ProductId)
+                            .Select(g => new { ProductId = g.Key, Qty = g.Sum(x => x.Quantity), Revenue = g.Sum(x => x.Quantity * x.Price), Name = g.First().Product?.Name })
+                            .OrderByDescending(x => x.Revenue)
+                            .Take(10)
+                            .ToList();
+                    }
+                    @if (top.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Товар</th>
+                                        <th class="text-end">Кол-во</th>
+                                        <th class="text-end">Выручка</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var x in top)
+                                    {
+                                        <tr>
+                                            <td>@x.Name</td>
+                                            <td class="text-end">@x.Qty</td>
+                                            <td class="text-end">@($"{x.Revenue:N2} ₸")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted">Нет данных по товарам за выбранную дату.</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Список заказов</h6>
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Дата</th>
+                                        <th>Стол</th>
+                                        <th class="text-end">Сумма</th>
+                                        <th>Оплата</th>
+                                        <th class="text-end">Скидка</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var o in Model.OrderByDescending(x => x.CreatedAt))
+                                    {
+                                        var sum = o.Items.Sum(i => i.Price * i.Quantity);
+                                        var finalAmount = sum - o.Discount;
+                                        string paymentInfo = o.PaymentType switch
+                                        {
+                                            Restaurant.Entities.PaymentType.Online => $"Онлайн ({finalAmount:N2} ₸)",
+                                            Restaurant.Entities.PaymentType.Cash => $"Наличные ({(o.PaidCash > 0 ? o.PaidCash : finalAmount):N2} ₸)",
+                                            Restaurant.Entities.PaymentType.Card => $"Картой ({(o.PaidCard > 0 ? o.PaidCard : finalAmount):N2} ₸)",
+                                            Restaurant.Entities.PaymentType.Mixed => $"Наличные {o.PaidCash:N2} ₸ + Картой {o.PaidCard:N2} ₸",
+                                            _ => o.PaymentType.ToString()
+                                        };
+                                        <tr>
+                                            <td>@o.Id</td>
+                                            <td>@o.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td>@o.Table?.Number</td>
+                                            <td class="text-end">@($"{(sum - o.Discount):N2} ₸")</td>
+                                            <td>@paymentInfo</td>
+                                            <td class="text-end">@($"{o.Discount:N2} ₸")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-muted">Заказы за выбранную дату не найдены.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
