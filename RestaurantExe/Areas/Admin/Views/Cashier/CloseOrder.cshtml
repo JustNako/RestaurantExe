@@ -45,54 +45,99 @@
                         <label class="form-label">Тип оплаты</label>
                         <select name="paymentType" id="paymentType" class="form-select">
                             <option value="@PaymentType.Cash" selected="@((Model.PaymentType == PaymentType.Cash))">Наличные</option>
-                            <option value="@PaymentType.Card" selected="@((Model.PaymentType == PaymentType.Card))">Карта</option>
-                            <option value="Mixed">Смешанная оплата</option>
+                            <option value="@PaymentType.Card" selected="@((Model.PaymentType == PaymentType.Card))">Картой</option>
+                            <option value="@PaymentType.Mixed" selected="@((Model.PaymentType == PaymentType.Mixed))">Смешанная оплата</option>
                         </select>
                     </div>
 
-                    <!-- Поля для смешанной оплаты - всегда видны -->
-                    <div class="mixed-payment-section">
-                        <div class="mixed-payment-header">
-                            <h6 class="text-primary mb-2">💰 Смешанная оплата</h6>
-                            <p class="text-muted small mb-3">Заполните суммы для каждого способа оплаты</p>
-                            <div class="alert alert-warning mb-3">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <strong>Внимание:</strong> Эти поля активны только при выборе "Смешанная оплата" в типе оплаты выше
+                    <div id="paymentInputs">
+                        <div class="payment-section" data-payment="Cash">
+                            <div class="payment-section-header">
+                                <h6 class="text-success mb-2"><i class="fas fa-money-bill-wave me-1"></i> Наличные</h6>
+                                <p class="text-muted small mb-3">Введите сумму, полученную наличными</p>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-success text-white">₸</span>
+                                <input type="number"
+                                       name="paidCash"
+                                       id="paidCashCash"
+                                       class="form-control"
+                                       value="@Model.PaidCash"
+                                       step="0.01"
+                                       placeholder="0.00"
+                                       min="0" />
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <i class="fas fa-money-bill-wave text-success"></i> Наличными (₸)
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="number" name="paidCash" id="paidCash" class="form-control" 
-                                               step="0.01" placeholder="0.00" min="0" />
-                                        <span class="input-group-text bg-success text-white">₸</span>
+
+                        <div class="payment-section d-none" data-payment="Card">
+                            <div class="payment-section-header">
+                                <h6 class="text-primary mb-2"><i class="fas fa-credit-card me-1"></i> Картой</h6>
+                                <p class="text-muted small mb-3">Введите сумму, оплачиваемую картой</p>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">₸</span>
+                                <input type="number"
+                                       name="paidCard"
+                                       id="paidCardCard"
+                                       class="form-control"
+                                       value="@Model.PaidCard"
+                                       step="0.01"
+                                       placeholder="0.00"
+                                       min="0" />
+                            </div>
+                        </div>
+
+                        <div class="payment-section mixed-payment-section d-none" data-payment="Mixed">
+                            <div class="mixed-payment-header">
+                                <h6 class="text-primary mb-2">💰 Смешанная оплата</h6>
+                                <p class="text-muted small mb-3">Заполните суммы для каждого способа оплаты</p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-money-bill-wave text-success"></i> Наличными (₸)
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number"
+                                                   name="paidCash"
+                                                   id="paidCashMixed"
+                                                   class="form-control"
+                                                   value="@Model.PaidCash"
+                                                   step="0.01"
+                                                   placeholder="0.00"
+                                                   min="0" />
+                                            <span class="input-group-text bg-success text-white">₸</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-credit-card text-info"></i> Картой (₸)
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number"
+                                                   name="paidCard"
+                                                   id="paidCardMixed"
+                                                   class="form-control"
+                                                   value="@Model.PaidCard"
+                                                   step="0.01"
+                                                   placeholder="0.00"
+                                                   min="0" />
+                                            <span class="input-group-text bg-info text-white">₸</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">
-                                        <i class="fas fa-credit-card text-info"></i> Картой (₸)
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="number" name="paidCard" id="paidCard" class="form-control" 
-                                               step="0.01" placeholder="0.00" min="0" />
-                                        <span class="input-group-text bg-info text-white">₸</span>
-                                    </div>
+
+                            <div class="mixed-payment-info">
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Подсказка:</strong> Сумма наличными + картой должна равняться итоговой сумме заказа
                                 </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mixed-payment-info">
-                            <div class="alert alert-info mb-0">
-                                <i class="fas fa-info-circle"></i>
-                                <strong>Подсказка:</strong> Сумма наличными + картой должна равняться итоговой сумме заказа
                             </div>
                         </div>
                     </div>
@@ -111,62 +156,40 @@
 
 @section Scripts {
     <script>
-        console.log('=== СКРИПТ КАССЫ ЗАГРУЖАЕТСЯ ===');
+                const paymentTypeSelect = document.getElementById('paymentType');
+        const paymentSections = document.querySelectorAll('.payment-section');
 
-        const total = @total;
-        const discountInput = document.getElementById('discount');
-        const totalAmountElem = document.getElementById('total-amount');
-        const paymentTypeSelect = document.getElementById('paymentType');
-        const mixedPaymentSection = document.querySelector('.mixed-payment-section');
+        function updatePaymentSections() {
+            const selected = paymentTypeSelect.value; // "Cash", "Card", "Online", "Mixed"
 
-        // Функция для показа/скрытия полей смешанной оплаты
-        function toggleMixedPaymentFields(show) {
-            if (show) {
-                mixedPaymentSection.style.display = 'block';
-                console.log('Поля смешанной оплаты показаны');
-            } else {
-                mixedPaymentSection.style.display = 'none';
-                console.log('Поля смешанной оплаты скрыты');
-            }
+            paymentSections.forEach(section => {
+                const mode = section.dataset.payment;
+
+                if (selected === "Mixed") {
+                    if (mode === "Mixed") {
+                        section.classList.remove('d-none');
+                        section.querySelectorAll('input').forEach(i => i.disabled = false);
+                    } else {
+                        section.classList.add('d-none');
+                        section.querySelectorAll('input').forEach(i => i.disabled = true);
+                    }
+                } else {
+                    const active = mode === selected;
+                    section.classList.toggle('d-none', !active);
+                    section.querySelectorAll('input').forEach(i => i.disabled = !active);
+                }
+            });
         }
 
-        // Обработчик изменения типа оплаты
-        paymentTypeSelect.addEventListener('change', function() {
-            const isMixed = this.value === 'Mixed';
-            toggleMixedPaymentFields(isMixed);
-        });
+        updatePaymentSections();
+        paymentTypeSelect.addEventListener('change', updatePaymentSections);
 
-        // Обработчик скидки
-        discountInput.addEventListener('input', function () {
-            let discount = parseFloat(this.value) || 0;
-            let finalAmount = total - discount;
-            if (finalAmount < 0) finalAmount = 0;
-            totalAmountElem.textContent = finalAmount.toFixed(2);
-            console.log('Скидка обновлена:', discount, 'Итоговая сумма:', finalAmount);
-        });
-
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== DOM ЗАГРУЖЕН ===');
-            
-            // Скрываем поля смешанной оплаты по умолчанию
-            toggleMixedPaymentFields(false);
-            
-            // Проверяем текущий выбранный тип оплаты
-            const currentPaymentType = paymentTypeSelect.value;
-            if (currentPaymentType === 'Mixed') {
-                toggleMixedPaymentFields(true);
-            }
-            
-            console.log('Текущий тип оплаты:', currentPaymentType);
-        });
-
-        console.log('=== СКРИПТ КАССЫ ЗАВЕРШЕН ===');
     </script>
 }
 
+
 <style>
-.mixed-payment-section {
+.payment-section {
     background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
     border: 2px solid #e3f2fd;
     border-radius: 15px;
@@ -176,20 +199,20 @@
     transition: all 0.3s ease;
 }
 
-.mixed-payment-section:hover {
+.payment-section:hover {
     box-shadow: 0 6px 20px rgba(0, 123, 255, 0.15);
     transform: translateY(-2px);
 }
 
 /* Стили для отключенных полей */
-.mixed-payment-section input:disabled {
+.payment-section input:disabled {
     background-color: #f8f9fa;
     color: #6c757d;
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-.mixed-payment-section input:disabled + .input-group-text {
+.payment-section input:disabled + .input-group-text {
     background-color: #e9ecef !important;
     color: #6c757d !important;
     cursor: not-allowed;
@@ -304,7 +327,7 @@
 
 /* Адаптивность */
 @@media (max-width: 768px) {
-    .mixed-payment-section {
+    .payment-section {
         padding: 20px;
         margin: 15px 0;
     }

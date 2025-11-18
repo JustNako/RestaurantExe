@@ -48,56 +48,67 @@
             <!--<li class="nav-item">
                 <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">📊 Dashboard</a>
             </li>-->
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Users.Manage">
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Users.Manage))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Employees" asp-action="Index">👨‍🍳 Пользователи</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Roles.Manage))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Roles" asp-action="Index">🔐 Роли</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Categories.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Categories.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">📂 Категории</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Orders.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Tables" asp-action="Dashboard">🪑 Столы</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Cash.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Cash.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Cashier" asp-action="Index">💵 Касса</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Orders.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Orders" asp-action="Index">🧾 Заказы</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Orders.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Qr" asp-action="Index">📱 QR коды</a>
                 </li>
-            </permission>
-            <!--<permission asp-permission="@Restaurant.Authorization.Permissions.Inventory.View">
+            }
+            <!--@if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Inventory.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Inventory" asp-action="Index">📦 Склад</a>
                 </li>
-            </permission>-->
-            <permission asp-permissions="@(new[] { Restaurant.Authorization.Permissions.Shifts.Open, Restaurant.Authorization.Permissions.Shifts.Close })">
+            }-->
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Shifts.Open) || 
+                 User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Shifts.Close))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Shift" asp-action="Index">⏱️ Смены</a>
                 </li>
-            </permission>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Reports.View">
+            }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Reports.View))
+            {
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Reports" asp-action="Index">📈 Отчет</a>
                 </li>
-            </permission>
+            }
             <li class="nav-item mt-3">
                 <form asp-area="Admin" asp-controller="Account" asp-action="Logout" method="post">
                     @Html.AntiForgeryToken()

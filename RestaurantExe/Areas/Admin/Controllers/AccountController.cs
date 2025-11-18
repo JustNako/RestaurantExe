@@ -69,7 +69,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
             }
 
-            ModelState.AddModelError("", "Неверный логин или пароль");
+            ModelState.AddModelError("", "Неправильный логин или пароль");
             return View();
         }
 

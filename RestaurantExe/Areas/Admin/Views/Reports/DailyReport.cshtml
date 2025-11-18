@@ -62,11 +62,24 @@
                         var mixedTotal = mixedCash + mixedCard;
                     }
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between"><span>Наличные <small class="text-muted">(в т.ч. смеш.: @($"{mixedCash:N2} ₸"))</small></span><strong>@($"{cash:N2} ₸")</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Картой <small class="text-muted">(в т.ч. смеш.: @($"{mixedCard:N2} ₸"))</small></span><strong>@($"{card:N2} ₸")</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Смешанные оплаты</span><strong>@($"{mixedTotal:N2} ₸")</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Онлайн</span><strong>@($"{online:N2} ₸")</strong></li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Наличные <small class="text-muted">(в т.ч. смеш.: @($"{mixedCash:N2} ₸"))</small></span>
+                            <strong>@($"{cash:N2} ₸")</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Картой <small class="text-muted">(в т.ч. смеш.: @($"{mixedCard:N2} ₸"))</small></span>
+                            <strong>@($"{card:N2} ₸")</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Онлайн</span>
+                            <strong>@($"{online:N2} ₸")</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Смешанные оплаты</span>
+                            <strong>@($"{mixedTotal:N2} ₸")</strong>
+                        </li>
                     </ul>
+
                 </div>
             </div>
         </div>
@@ -77,12 +90,12 @@
                     <h6 class="text-muted mb-3">Топ-товары</h6>
                     @{
                         var top = (Model ?? new List<Restaurant.Entities.Order>())
-                            .SelectMany(o => o.Items)
-                            .GroupBy(i => i.ProductId)
-                            .Select(g => new { ProductId = g.Key, Qty = g.Sum(x => x.Quantity), Revenue = g.Sum(x => x.Quantity * x.Price), Name = g.First().Product?.Name })
-                            .OrderByDescending(x => x.Revenue)
-                            .Take(10)
-                            .ToList();
+                        .SelectMany(o => o.Items)
+                        .GroupBy(i => i.ProductId)
+                        .Select(g => new { ProductId = g.Key, Qty = g.Sum(x => x.Quantity), Revenue = g.Sum(x => x.Quantity * x.Price), Name = g.First().Product?.Name })
+                        .OrderByDescending(x => x.Revenue)
+                        .Take(10)
+                        .ToList();
                     }
                     @if (top.Any())
                     {
@@ -170,4 +183,4 @@
     </div>
 </div>
 
-
+ 

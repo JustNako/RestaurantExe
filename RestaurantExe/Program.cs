@@ -112,7 +112,7 @@ using (var scope = app.Services.CreateScope())
         superAdmin = new ApplicationUser
         {
             UserName = protectedUserName,
-            FullName = "Super Admin",
+            FullName = "SuperAdmin",
             PhoneNumber = "0000000000"
         };
 
@@ -154,7 +154,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Redirect}/{action=ToAdmin}/{id?}");
+    pattern: "{area=Admin}/{controller=Account}/{action=Login}/{id?}");
 
 
 
