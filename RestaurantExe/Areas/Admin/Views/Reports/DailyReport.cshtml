@@ -2,9 +2,107 @@
 @{
     ViewData["Title"] = "Ежедневный отчёт";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     var total = Model?.Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m;
     var avg = (Model != null && Model.Count > 0) ? total / Model.Count : 0m;
+    var targetDate = ViewBag.Date ?? DateTime.Today;
+
+    var cash = (Model?.Sum(o => o.PaidCash) ?? 0m)
+               + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Cash && o.PaidCash == 0m)
+                         .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
+
+    var card = (Model?.Sum(o => o.PaidCard) ?? 0m)
+               + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Card && o.PaidCard == 0m)
+                         .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
+
+    var online = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Online)
+        .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m;
+
+    var mixedCash = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
+        .Sum(o => o.PaidCash) ?? 0m;
+
+    var mixedCard = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
+        .Sum(o => o.PaidCard) ?? 0m;
+
+    var mixedTotal = mixedCash + mixedCard;
+    var totalDiscounts = Model?.Sum(o => o.Discount) ?? 0m;
+
+    var top = (Model ?? new List<Restaurant.Entities.Order>())
+        .SelectMany(o => o.Items)
+        .GroupBy(i => i.ProductId)
+        .Select(g => new
+        {
+            ProductId = g.Key,
+            Qty = g.Sum(x => x.Quantity),
+            Revenue = g.Sum(x => x.Quantity * x.Price),
+            Name = g.First().Product?.Name
+        })
+        .OrderByDescending(x => x.Revenue)
+        .Take(10)
+        .ToList();
 }
+
+<style>
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+
+        .print-area, .print-area * {
+            visibility: visible;
+        }
+
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 58mm;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+            line-height: 1.2;
+        }
+
+        .no-print {
+            display: none !important;
+        }
+    }
+
+    .receipt {
+        width: 58mm;
+        max-width: 58mm;
+        margin: 0 auto;
+        font-family: 'Courier New', monospace;
+        font-size: 10pt;
+        line-height: 1.2;
+        padding: 5mm;
+    }
+
+    .receipt-header {
+        text-align: center;
+        margin-bottom: 5mm;
+        border-bottom: 1px dashed #000;
+        padding-bottom: 3mm;
+    }
+
+    .receipt-line {
+        border-top: 1px dashed #000;
+        margin: 2mm 0;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 1mm 0;
+    }
+
+    .receipt-center {
+        text-align: center;
+    }
+
+    .receipt-right {
+        text-align: right;
+    }
+</style>
 
 <div class="container-fluid py-2">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -14,6 +112,107 @@
             <a asp-action="Index" class="btn btn-secondary">⬅ Назад</a>
         </div>
     </div>
+
+    <!-- Печатная версия -->
+    <div class="print-area receipt">
+        <div class="receipt-header">
+            <div style="font-weight: bold; font-size: 12pt;">РЕСТОРАН</div>
+            <div style="font-size: 9pt;">ЕЖЕДНЕВНЫЙ ОТЧЕТ</div>
+            <div style="font-size: 8pt;">@targetDate.ToString("dd.MM.yyyy")</div>
+            <div style="font-size: 8pt;">@DateTime.Now.ToString("HH:mm:ss")</div>
+        </div>
+
+        <div class="receipt-line"></div>
+
+        <div class="receipt-row">
+            <span>Заказов:</span>
+            <span style="font-weight: bold;">@Model?.Count()</span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Выручка:</span>
+            <span style="font-weight: bold;">@($"{total:N2}") ₸</span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Средний чек:</span>
+            <span style="font-weight: bold;">@($"{avg:N2}") ₸</span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Скидки:</span>
+            <span style="font-weight: bold;">@($"{totalDiscounts:N2}") ₸</span>
+        </div>
+
+        <div class="receipt-line"></div>
+
+        <div style="font-weight: bold; margin-top: 3mm; margin-bottom: 2mm;">ОПЛАТА:</div>
+
+        <div class="receipt-row">
+            <span>Наличные:</span>
+            <span>@($"{cash:N2}") ₸</span>
+        </div>
+        @if (mixedCash > 0)
+        {
+            <div class="receipt-row" style="padding-left: 5mm; font-size: 9pt;">
+                <span>в т.ч. смешанные:</span>
+                <span>@($"{mixedCash:N2}") ₸</span>
+            </div>
+        }
+
+        <div class="receipt-row">
+            <span>Картой:</span>
+            <span>@($"{card:N2}") ₸</span>
+        </div>
+        @if (mixedCard > 0)
+        {
+            <div class="receipt-row" style="padding-left: 5mm; font-size: 9pt;">
+                <span>в т.ч. смешанные:</span>
+                <span>@($"{mixedCard:N2}") ₸</span>
+            </div>
+        }
+
+        @if (online > 0)
+        {
+            <div class="receipt-row">
+                <span>Онлайн:</span>
+                <span>@($"{online:N2}") ₸</span>
+            </div>
+        }
+
+        <div class="receipt-line"></div>
+
+        <div style="font-weight: bold; margin-top: 3mm; margin-bottom: 2mm;">ТОП ТОВАРЫ:</div>
+
+        @if (top.Any())
+        {
+            @foreach (var item in top)
+            {
+                <div style="margin: 1mm 0;">
+                    <div style="font-size: 9pt;">@(item.Name?.Length > 20 ? item.Name.Substring(0, 20) + "..." : item.Name)</div>
+                    <div class="receipt-row" style="font-size: 9pt;">
+                        <span>@item.Qty шт. x @($"{item.Revenue / item.Qty:N2}")</span>
+                        <span>@($"{item.Revenue:N2}") ₸</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div style="font-size: 9pt; color: #999;">Нет данных по товарам</div>
+        }
+
+        <div class="receipt-line"></div>
+
+        <div class="receipt-center" style="margin-top: 5mm; font-size: 8pt;">
+            <div>================================</div>
+            <div style="margin-top: 2mm;">Отчет сформирован</div>
+            <div>@DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")</div>
+            <div style="margin-top: 3mm;">================================</div>
+        </div>
+    </div>
+
+    <div class="no-print"></div>
 
     <div class="row g-3">
         <div class="col-12">
@@ -34,7 +233,7 @@
                         </div>
                         <div class="col-6 col-md-3 mb-3">
                             <div class="fw-semibold">Скидки</div>
-                            <div class="fs-5 text-danger">@($"{(Model?.Sum(o => o.Discount) ?? 0m):N2} ₸")</div>
+                            <div class="fs-5 text-danger">@($"{totalDiscounts:N2} ₸")</div>
                         </div>
                     </div>
                 </div>
@@ -45,22 +244,6 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-3">Разбивка по типам оплаты</h6>
-                    @{
-                        var cash = (Model?.Sum(o => o.PaidCash) ?? 0m)
-                                   + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Cash && o.PaidCash == 0m)
-                                             .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
-                        var card = (Model?.Sum(o => o.PaidCard) ?? 0m)
-                                   + (Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Card && o.PaidCard == 0m)
-                                             .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m);
-                        var online = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Online)
-                            .Sum(o => o.Items.Sum(i => i.Price * i.Quantity) - o.Discount) ?? 0m;
-
-                        var mixedCash = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
-                            .Sum(o => o.PaidCash) ?? 0m;
-                        var mixedCard = Model?.Where(o => o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
-                            .Sum(o => o.PaidCard) ?? 0m;
-                        var mixedTotal = mixedCash + mixedCard;
-                    }
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Наличные <small class="text-muted">(в т.ч. смеш.: @($"{mixedCash:N2} ₸"))</small></span>
@@ -79,7 +262,6 @@
                             <strong>@($"{mixedTotal:N2} ₸")</strong>
                         </li>
                     </ul>
-
                 </div>
             </div>
         </div>
@@ -88,15 +270,6 @@
             <div class="card shadow-sm h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-3">Топ-товары</h6>
-                    @{
-                        var top = (Model ?? new List<Restaurant.Entities.Order>())
-                        .SelectMany(o => o.Items)
-                        .GroupBy(i => i.ProductId)
-                        .Select(g => new { ProductId = g.Key, Qty = g.Sum(x => x.Quantity), Revenue = g.Sum(x => x.Quantity * x.Price), Name = g.First().Product?.Name })
-                        .OrderByDescending(x => x.Revenue)
-                        .Take(10)
-                        .ToList();
-                    }
                     @if (top.Any())
                     {
                         <div class="table-responsive">
@@ -182,5 +355,3 @@
         </div>
     </div>
 </div>
-
- 

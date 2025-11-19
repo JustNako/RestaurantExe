@@ -163,7 +163,22 @@ namespace Restaurant.Areas.Admin.Controllers
                 TempData["WarningMessage"] = "Низкий остаток: " + string.Join(", ", lowAfterDeduct);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("PrintReceipt", new { id = order.Id });
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Permissions.Cash.View)]
+        public async Task<IActionResult> PrintReceipt(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Table)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+
+            return View(order);
         }
 
     }

@@ -1,21 +1,193 @@
 ﻿@{
     ViewData["Title"] = "Вход";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = null;
 }
 
-<h2>Вход в админку</h2>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Restaurant Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<form asp-area="Admin" asp-controller="Account" asp-action="Login" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
-    <div class="mb-3">
-        <label>Имя пользователя</label>
-        <input type="text" name="username" class="form-control" />
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            font-weight: 700;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            padding: 14px 18px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+            border: 2px solid rgba(220, 53, 69, 0.3);
+            border-radius: 12px;
+            color: #dc3545;
+            padding: 12px 16px;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            z-index: 1;
+        }
+
+        .input-icon .form-control {
+            padding-left: 45px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2><i class="bi bi-shield-lock-fill"></i> Вход в систему</h2>
+                <p>Введите ваши учетные данные</p>
+            </div>
+
+            <form asp-area="Admin" asp-controller="Account" asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                <div class="form-group">
+                    <label for="username"><i class="bi bi-person"></i> Имя пользователя</label>
+                    <div class="input-icon">
+                        <i class="bi bi-person-fill"></i>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Введите имя пользователя" required autofocus />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password"><i class="bi bi-lock"></i> Пароль</label>
+                    <div class="input-icon">
+                        <i class="bi bi-lock-fill"></i>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Введите пароль" required />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Войти
+                </button>
+            </form>
+        </div>
     </div>
-    <div class="mb-3">
-        <label>Пароль</label>
-        <input type="password" name="password" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Войти</button>
-</form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

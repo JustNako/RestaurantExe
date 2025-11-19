@@ -1,0 +1,227 @@
+@model Restaurant.Entities.Order
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Чек #" + Model.Id;
+}
+
+<style>
+    .receipt-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .receipt-preview {
+        font-family: 'Courier New', monospace;
+        font-size: 10pt;
+        line-height: 1.2;
+        padding: 20px;
+        width: 100%;
+        max-width: 58mm;
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+    }
+
+    .receipt-header {
+        text-align: center;
+        margin-bottom: 5mm;
+        border-bottom: 1px dashed #000;
+        padding-bottom: 3mm;
+    }
+
+    .receipt-line {
+        border-top: 1px dashed #000;
+        margin: 2mm 0;
+    }
+
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 1mm 0;
+    }
+
+    .receipt-center {
+        text-align: center;
+    }
+
+    .receipt-item {
+        margin: 2mm 0;
+    }
+
+    .receipt-item-name {
+        font-size: 9pt;
+        margin-bottom: 1mm;
+    }
+
+    .receipt-item-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 9pt;
+        padding-left: 3mm;
+    }
+
+    .print-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .btn-print {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-print:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-print-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .btn-print-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+    }
+
+    @@media print {
+        .print-actions {
+            display: none !important;
+        }
+        .receipt-preview {
+            border: none;
+            box-shadow: none;
+            max-width: 58mm;
+            margin: 0;
+            padding: 5mm;
+        }
+        body {
+            background: white;
+        }
+    }
+</style>
+
+<div class="receipt-container">
+    <h2 class="mb-4">🧾 Чек #@Model.Id</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="max-width: 600px; width: 100%;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if (TempData["WarningMessage"] != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="max-width: 600px; width: 100%;">
+            @TempData["WarningMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    <div class="receipt-preview" id="receiptContent">
+    <div class="receipt-header">
+        <div style="font-weight: bold; font-size: 12pt;">РЕСТОРАН</div>
+        <div style="font-size: 9pt;">ЧЕК</div>
+        <div style="font-size: 8pt;">#@Model.Id</div>
+        <div style="font-size: 8pt;">@DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")</div>
+    </div>
+
+    <div class="receipt-line"></div>
+
+    <div style="margin-bottom: 2mm;">
+        <div style="font-size: 9pt;">Стол: №@Model.Table?.Number</div>
+    </div>
+
+    <div class="receipt-line"></div>
+
+    <div style="font-weight: bold; margin-bottom: 2mm;">ТОВАРЫ:</div>
+
+    @foreach (var item in Model.Items)
+    {
+        <div class="receipt-item">
+            <div class="receipt-item-name">@(item.Product?.Name?.Length > 25 ? item.Product.Name.Substring(0, 25) + "..." : item.Product?.Name)</div>
+            <div class="receipt-item-details">
+                <span>@item.Quantity x @($"{item.Price:N2}")</span>
+                <span>@($"{item.Price * item.Quantity:N2}") ₸</span>
+            </div>
+        </div>
+    }
+
+    <div class="receipt-line"></div>
+
+    @{
+        var subtotal = Model.Items.Sum(i => i.Price * i.Quantity);
+        var finalAmount = subtotal - Model.Discount;
+    }
+
+    <div class="receipt-row">
+        <span>Подытог:</span>
+        <span>@($"{subtotal:N2}") ₸</span>
+    </div>
+
+    @if (Model.Discount > 0)
+    {
+        <div class="receipt-row">
+            <span>Скидка:</span>
+            <span>-@($"{Model.Discount:N2}") ₸</span>
+        </div>
+    }
+
+    <div class="receipt-line"></div>
+
+    <div class="receipt-row" style="font-weight: bold; font-size: 11pt; margin-top: 2mm;">
+        <span>ИТОГО:</span>
+        <span>@($"{finalAmount:N2}") ₸</span>
+    </div>
+
+    <div class="receipt-line"></div>
+
+    <div style="margin-top: 3mm;">
+        <div style="font-size: 9pt; margin-bottom: 1mm;">Оплата:</div>
+        @{
+            string paymentInfo = Model.PaymentType switch
+            {
+                Restaurant.Entities.PaymentType.Cash => $"Наличные: {finalAmount:N2} ₸",
+                Restaurant.Entities.PaymentType.Card => $"Картой: {finalAmount:N2} ₸",
+                Restaurant.Entities.PaymentType.Mixed => $"Наличные: {Model.PaidCash:N2} ₸\nКартой: {Model.PaidCard:N2} ₸",
+                Restaurant.Entities.PaymentType.Online => $"Онлайн: {finalAmount:N2} ₸",
+                _ => Model.PaymentType.ToString()
+            };
+        }
+        <div style="font-size: 9pt; white-space: pre-line;">@paymentInfo</div>
+    </div>
+
+    <div class="receipt-line"></div>
+
+        <div class="receipt-center" style="margin-top: 5mm; font-size: 8pt;">
+            <div>================================</div>
+            <div style="margin-top: 2mm;">Спасибо за посещение!</div>
+            <div style="margin-top: 3mm;">================================</div>
+        </div>
+    </div>
+
+    <div class="print-actions">
+        <button class="btn-print btn-print-primary" onclick="window.print()">
+            🖨️ Печать чека
+        </button>
+        <a asp-action="Index" class="btn-print btn-print-secondary" style="text-decoration: none; display: inline-block;">
+            ✅ Закрыть
+        </a>
+    </div>
+</div>
+

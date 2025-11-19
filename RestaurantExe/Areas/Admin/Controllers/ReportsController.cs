@@ -29,6 +29,7 @@ namespace Restaurant.Areas.Admin.Controllers
         public async Task<IActionResult> DailyReport(DateTime? date)
         {
             var targetDate = date ?? DateTime.Today;
+            ViewBag.Date = targetDate;
 
             var orders = await _context.Orders
                 .Include(o => o.Items).ThenInclude(i => i.Product)

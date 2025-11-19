@@ -43,6 +43,12 @@ namespace Restaurant.Areas.Admin.Controllers
                 });
             }
 
+            var roleOptions = await _roleManager.Roles
+                .Select(r => r.Name!)
+                .OrderBy(r => r)
+                .ToListAsync();
+            ViewBag.RoleOptions = roleOptions;
+
             return View(employees); // ✅ Теперь всё правильно
         }
 

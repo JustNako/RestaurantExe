@@ -4,6 +4,65 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    @@media print {
+        body * {
+            visibility: hidden;
+        }
+        .print-area, .print-area * {
+            visibility: visible;
+        }
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 58mm;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+            line-height: 1.2;
+        }
+        .no-print {
+            display: none !important;
+        }
+    }
+    
+    .receipt {
+        width: 58mm;
+        max-width: 58mm;
+        margin: 0 auto;
+        font-family: 'Courier New', monospace;
+        font-size: 10pt;
+        line-height: 1.2;
+        padding: 5mm;
+    }
+    
+    .receipt-header {
+        text-align: center;
+        margin-bottom: 5mm;
+        border-bottom: 1px dashed #000;
+        padding-bottom: 3mm;
+    }
+    
+    .receipt-line {
+        border-top: 1px dashed #000;
+        margin: 2mm 0;
+    }
+    
+    .receipt-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 1mm 0;
+    }
+    
+    .receipt-center {
+        text-align: center;
+    }
+    
+    .receipt-right {
+        text-align: right;
+    }
+</style>
+
 <div class="container-fluid py-2">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 class="mb-0">🧾 Z-отчёт</h2>
@@ -12,6 +71,103 @@
             <a asp-action="Index" class="btn btn-secondary">⬅ Назад</a>
         </div>
     </div>
+
+    <!-- Печатная версия -->
+    <div class="print-area receipt">
+        <div class="receipt-header">
+            <div style="font-weight: bold; font-size: 12pt;">РЕСТОРАН</div>
+            <div style="font-size: 9pt;">Z-ОТЧЕТ ПО СМЕНЕ</div>
+            <div style="font-size: 8pt;">@Model.ShiftStart.ToString("dd.MM.yyyy")</div>
+        </div>
+
+        <div class="receipt-line"></div>
+
+        <div style="font-weight: bold; margin-bottom: 2mm;">СМЕНА:</div>
+        <div class="receipt-row" style="font-size: 9pt;">
+            <span>Начало:</span>
+            <span>@Model.ShiftStart.ToString("HH:mm")</span>
+        </div>
+        <div class="receipt-row" style="font-size: 9pt;">
+            <span>Конец:</span>
+            <span>@Model.ShiftEnd.ToString("HH:mm")</span>
+        </div>
+
+        <div class="receipt-line"></div>
+
+        <div style="font-weight: bold; margin-top: 3mm; margin-bottom: 2mm;">ИТОГИ:</div>
+
+        <div class="receipt-row">
+            <span>Заказов:</span>
+            <span style="font-weight: bold;">@Model.TotalOrders</span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Выручка:</span>
+            <span style="font-weight: bold;">@($"{Model.TotalRevenue:N2}") ₸</span>
+        </div>
+
+        <div class="receipt-row">
+            <span>Скидки:</span>
+            <span style="font-weight: bold;">@($"{Model.TotalDiscounts:N2}") ₸</span>
+        </div>
+
+        <div class="receipt-line"></div>
+
+        <div style="font-weight: bold; margin-top: 3mm; margin-bottom: 2mm;">ОПЛАТА:</div>
+
+        <div class="receipt-row">
+            <span>Наличные:</span>
+            <span>@($"{Model.CashPayments + Model.MixedCashPayments:N2}") ₸</span>
+        </div>
+        @if (Model.MixedCashPayments > 0)
+        {
+            <div class="receipt-row" style="padding-left: 5mm; font-size: 9pt;">
+                <span>в т.ч. смешанные:</span>
+                <span>@($"{Model.MixedCashPayments:N2}") ₸</span>
+            </div>
+        }
+
+        <div class="receipt-row">
+            <span>Картой:</span>
+            <span>@($"{Model.CardPayments + Model.MixedCardPayments:N2}") ₸</span>
+        </div>
+        @if (Model.MixedCardPayments > 0)
+        {
+            <div class="receipt-row" style="padding-left: 5mm; font-size: 9pt;">
+                <span>в т.ч. смешанные:</span>
+                <span>@($"{Model.MixedCardPayments:N2}") ₸</span>
+            </div>
+        }
+
+        @if (Model.MixedTotalPayments > 0)
+        {
+            <div class="receipt-row">
+                <span>Смешанные:</span>
+                <span>@($"{Model.MixedTotalPayments:N2}") ₸</span>
+            </div>
+        }
+
+        @if (Model.Notes != null && Model.Notes.Any())
+        {
+            <div class="receipt-line"></div>
+            <div style="font-weight: bold; margin-top: 3mm; margin-bottom: 2mm;">ЗАПИСИ:</div>
+            @foreach (var note in Model.Notes)
+            {
+                <div style="font-size: 9pt; margin: 1mm 0;">@(note.Length > 30 ? note.Substring(0, 30) + "..." : note)</div>
+            }
+        }
+
+        <div class="receipt-line"></div>
+
+        <div class="receipt-center" style="margin-top: 5mm; font-size: 8pt;">
+            <div>================================</div>
+            <div style="margin-top: 2mm;">Z-отчет сформирован</div>
+            <div>@DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")</div>
+            <div style="margin-top: 3mm;">================================</div>
+        </div>
+    </div>
+
+    <div class="no-print">
 
     <div class="row g-3">
         <div class="col-12 col-lg-4">
@@ -85,5 +241,6 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
