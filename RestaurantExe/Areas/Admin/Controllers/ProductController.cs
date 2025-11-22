@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.Data;
 using Restaurant.Entities;
 using Restaurant.ViewModels;
@@ -53,7 +53,8 @@ public class ProductController : Controller
         {
             Name = model.Name,
             Price = model.Price,
-            ImageUrl = imageUrl,
+            //Description = model.Description, // Добавлено
+            ImagePath = imageUrl,
             CategoryId = model.CategoryId
         };
 

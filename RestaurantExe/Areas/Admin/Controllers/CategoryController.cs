@@ -35,6 +35,7 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Categories.Create)]
         public IActionResult Create()
             {
+                
                 return View();
             }
 
@@ -109,11 +110,23 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Categories.Delete)]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                .Include(c => c.Products)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (category == null)
                 return NotFound();
 
+            // Remove products belonging to this category first.
+            // RecipeItems and other related entities are configured with cascade delete
+            // where appropriate in the DbContext, so removing products will cascade.
+            if (category.Products != null && category.Products.Any())
+            {
+                _context.Products.RemoveRange(category.Products);
+            }
+
             _context.Categories.Remove(category);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

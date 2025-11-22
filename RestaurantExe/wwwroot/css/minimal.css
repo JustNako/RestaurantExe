@@ -1,0 +1,99 @@
+/* Minimal, professional theme for Restaurant app */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --text: #111827; /* gray-900 */
+  --muted: #6b7280; /* gray-500 */
+  --accent: #0b5ed7; /* blue */
+  --max-w: 1100px;
+}
+
+/* Override Bootstrap color variables to remove purple/indigo defaults */
+:root,
+[data-bs-theme="light"] {
+  --bs-primary: var(--accent);
+  --bs-blue: var(--accent);
+  --bs-indigo: var(--accent);
+  --bs-purple: var(--accent);
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  max-width: var(--max-w);
+}
+
+.minimal-navbar {
+  background: transparent !important;
+  border-bottom: 0;
+  padding: 0.5rem 0;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: var(--text) !important;
+  letter-spacing: 0.2px;
+}
+
+.nav-link {
+  color: var(--muted) !important;
+  padding: 0.5rem 0.75rem;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  color: var(--text) !important;
+}
+
+main[role="main"] {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.footer {
+  padding: 1.25rem 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-align: center;
+  background: transparent;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+/* Reduce focus outlines but keep accessibility: use subtle ring */
+*:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(11,94,215,0.12);
+}
+
+/* Forms */
+.form-control {
+  border-radius: 6px;
+  border: 1px solid #e6e9ee;
+  padding: .5rem .75rem;
+}
+
+/* Utility: centered small muted text */
+.muted-small { color: var(--muted); font-size: .9rem; }

@@ -318,6 +318,22 @@ namespace Restaurant.Areas.Admin.Controllers
             return View(order);
         }
 
+        // GET: /Admin/Orders/Print/5
+        [HttpGet]
+        [Authorize(Policy = Permissions.Orders.View)]
+        public async Task<IActionResult> Print(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Table)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order == null) return NotFound();
+
+            return View(order);
+        }
+
         public async Task<IActionResult> Delete(int id)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == id);

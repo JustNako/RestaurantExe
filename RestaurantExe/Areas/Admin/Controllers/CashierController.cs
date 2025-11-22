@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Authorization;
 using Restaurant.Data;
 using Restaurant.Entities;
+using System.Diagnostics;
 
 namespace Restaurant.Areas.Admin.Controllers
 
@@ -51,13 +52,19 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Cash.Close)]
         public async Task<IActionResult> CloseOrder(int id, decimal discount, PaymentType paymentType, decimal? paidCash, decimal? paidCard)
         {
+            Debug.WriteLine("CloseOrder POST action started.");
             var order = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
                 
-            if (order == null) return NotFound();
+            if (order == null)
+            {
+                Debug.WriteLine($"Order with id {id} not found.");
+                return NotFound();
+            }
+            Debug.WriteLine($"Order with id {id} found.");
 
             // Проверим наличие ингридиентов по рецептам и подготовим списание
             var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
@@ -86,6 +93,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 if (ing.CurrentQuantity < kv.Value)
                 {
                     TempData["ErrorMessage"] = $"Недостаточно ингредиента '{ing.Name}'. Требуется {kv.Value} {ing.Unit}, есть {ing.CurrentQuantity} {ing.Unit}.";
+                    Debug.WriteLine($"Not enough ingredient '{ing.Name}'. Required {kv.Value} {ing.Unit}, have {ing.CurrentQuantity} {ing.Unit}.");
                     return RedirectToAction("Index");
                 }
             }
@@ -104,6 +112,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 if (Math.Abs(cash + card - finalAmount) > 0.01m) // допуск 1 тиын
                 {
                     TempData["ErrorMessage"] = $"Сумма наличными и картой должна равняться {finalAmount:N2} ₸. Введено: {cash + card:N2} ₸";
+                    Debug.WriteLine($"Amount of cash and card should be equal to {finalAmount:N2} ₸. Entered: {cash + card:N2} ₸");
                     return RedirectToAction(nameof(CloseOrder), new { id });
                 }
                 order.PaidCash = cash;
@@ -155,7 +164,9 @@ namespace Restaurant.Areas.Admin.Controllers
                 }
             }
 
+            Debug.WriteLine("Before SaveChangesAsync.");
             await _context.SaveChangesAsync();
+            Debug.WriteLine("After SaveChangesAsync.");
 
             TempData["SuccessMessage"] = $"✅ Заказ #{order.Id} успешно закрыт. Стол №{order.Table?.Number} освобожден.";
             if (lowAfterDeduct.Any())

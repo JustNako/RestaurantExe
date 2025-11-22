@@ -1,0 +1,65 @@
+/* Print styles for Order Details */
+@font-face {
+  font-family: InterVar;
+  src: local('Inter'), local('Segoe UI'), local('Arial');
+}
+
+@media print {
+  /* Hide everything by default and show only print area */
+  body * {
+    visibility: hidden !important;
+  }
+
+  #print-area, #print-area * {
+    visibility: visible !important;
+  }
+
+  #print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0.5cm 1cm;
+    font-family: InterVar, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color: #111827;
+    background: #fff;
+  }
+
+  /* Page settings */
+  @page {
+    margin: 8mm 10mm;
+    size: auto;
+  }
+
+  /* Make tables compact and printable */
+  table {
+    border-collapse: collapse !important;
+    width: 100%;
+    font-size: 12pt;
+  }
+
+  table th, table td {
+    border: 1px solid #ddd !important;
+    padding: 6px 8px !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-header {
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .print-meta {
+    font-size: 11pt;
+    color: #374151;
+  }
+
+  .text-end { text-align: right !important; }
+  .fw-bold { font-weight: 600 !important; }
+}
+
+/* Also hide interactive elements on screen when printing via dedicated class */
+.print-hide { display: inline !important; }

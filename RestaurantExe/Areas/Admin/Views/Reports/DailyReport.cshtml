@@ -108,7 +108,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <h2 class="mb-0">📅 Ежедневный отчёт</h2>
         <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" onclick="window.print()">🖨️ Печать</button>
+            <button class="btn btn-outline-secondary" onclick="window.print()"><i class="bi bi-printer"></i> Печать</button>
             <a asp-action="Index" class="btn btn-secondary">⬅ Назад</a>
         </div>
     </div>
@@ -335,7 +335,7 @@
                                         };
                                         <tr>
                                             <td>@o.Id</td>
-                                            <td>@o.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td><span data-datetime="@o.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@o.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></td>
                                             <td>@o.Table?.Number</td>
                                             <td class="text-end">@($"{(sum - o.Discount):N2} ₸")</td>
                                             <td>@paymentInfo</td>

@@ -19,7 +19,6 @@ namespace Restaurant.Controllers
         public async Task<IActionResult> Go(string code)
         {
             var link = await _context.QrLinks
-                .Include(q => q.Table)
                 .FirstOrDefaultAsync(x => x.Code == code && x.IsActive);
 
             if (link == null)
@@ -36,14 +35,8 @@ namespace Restaurant.Controllers
             link.ScanCount++;
             await _context.SaveChangesAsync();
 
-            return link.Type switch
-            {
-                QrLinkType.Table when link.TableId != null
-                    => RedirectToAction("Create", "Orders", new { area = "Admin", tableId = link.TableId }),
-                QrLinkType.CustomUrl when !string.IsNullOrWhiteSpace(link.CustomUrl)
-                    => Redirect(link.CustomUrl),
-                _ => NotFound("Некорректный тип QR кода")
-            };
+            // Всегда редиректим на Menu/Index?qrCode={code}
+            return RedirectToAction("Index", "Menu", new { qrCode = code });
         }
     }
 }

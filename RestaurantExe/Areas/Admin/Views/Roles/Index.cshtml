@@ -248,21 +248,23 @@
 
 <div class="roles-container">
     <div class="roles-header">
-        <h1 class="roles-title">🔐 Роли</h1>
+        <h1 class="roles-title"><i class="bi bi-shield-lock-fill me-2"></i>Роли</h1>
         <p class="roles-subtitle">Управление ролями и правами доступа</p>
         
         <div class="stats-container">
             <div class="stat-card">
                 <div class="stat-number" style="color: #007bff;">@Model.Count</div>
-                <div class="stat-label">🔐 Всего ролей</div>
+                <div class="stat-label"><i class="bi bi-shield-lock-fill me-1"></i>Всего ролей</div>
+
             </div>
         </div>
 
         <div class="actions-section">
             <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
                 <a asp-action="Create" class="btn-create">
-                    ➕ Добавить роль
+                    <i class="bi bi-plus-lg me-1"></i>Добавить роль
                 </a>
+
             </permission>
         </div>
     </div>
@@ -289,7 +291,9 @@
                     
                     <div class="role-info">
                         <div class="info-row">
-                            <span class="info-label">📝 Название:</span>
+                            <div class="info-label">
+                                <i class="bi bi-card-text me-1"></i>Название:
+                            </div>
                             <span class="info-value">@role.Name</span>
                         </div>
                         <!--<div class="info-row">
@@ -301,15 +305,17 @@
                     <div class="role-actions">
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
                             <a asp-action="Permissions" asp-route-id="@role.Id" class="btn-action btn-permissions">
-                                🔑 Права
+                                <i class="bi bi-key-fill me-1"></i>Права
                             </a>
+
                         </permission>
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
                             <form asp-action="Delete" method="post" class="d-inline">
                                 <input type="hidden" name="id" value="@role.Id" />
-                                <button class="btn-action btn-delete" onclick="return confirm('Удалить роль "@role.Name"?')">
-                                    🗑️ Удалить
+                                <button class="btn-action btn-delete" onclick="return confirm('Удалить роль \" @role.Name\"?')">
+                                    <i class="bi bi-trash-fill me-1"></i>Удалить
                                 </button>
+
                             </form>
                         </permission>
                     </div>

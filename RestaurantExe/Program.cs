@@ -15,14 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // Configure SQLite with a predictable on-disk path: <ContentRoot>/App_Data/restaurant.db
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var contentRoot = builder.Environment.ContentRootPath;
-    var dataDir = Path.Combine(contentRoot, "App_Data");
-    if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
-    var dbPath = Path.Combine(dataDir, "restaurant.db");
-    options.UseSqlite($"Data Source={dbPath}");
+    options.UseSqlite(connectionString);
 });
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -53,8 +51,12 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-
-
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -136,6 +138,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+app.UseSession();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
 app.UseRouting();
 
 app.UseAuthentication();
@@ -144,17 +152,12 @@ app.UseAuthorization();
 app.UseStaticFiles();
 
 app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "legacy_account",
-    pattern: "Account/{action=Login}/{id?}",
-    defaults: new { area = "Admin", controller = "Account" });
+    name: "Admin",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Admin}/{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 

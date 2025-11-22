@@ -394,7 +394,7 @@
     }
     
     <div class="dashboard-header">
-        <h1 class="dashboard-title">🪑 Статус столов</h1>
+        <h1 class="dashboard-title">Статус столов</h1>
         <p class="dashboard-subtitle">Мониторинг занятости столов в реальном времени</p>
         
         <div class="stats-container">
@@ -414,7 +414,7 @@
         
         <div class="filters">
             <div class="input-group" style="max-width: 340px;">
-                <span class="input-group-text">🔎</span>
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
                 <input id="tableSearch" type="text" class="form-control search-box" placeholder="Поиск по номеру стола..." />
             </div>
             <div class="btn-group" role="group">
@@ -519,7 +519,7 @@
 <div id="addTableModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 class="modal-title">🪑 Добавить новый стол</h2>
+            <h2 class="modal-title"><i class="fa-solid fa-table"></i> Добавить новый стол</h2>
             <p>Введите номер нового стола</p>
         </div>
         
@@ -536,13 +536,37 @@
                 </button>
                 <button type="submit" class="btn-modal btn-save">
                     ✅ Добавить стол
-                </button>
+                </button>                
             </div>
         </form>
     </div>
 </div>
 
 <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Список номеров столов из модели
+        const existingTableNumbers = Array.from(document.querySelectorAll('.table-card'))
+            .map(card => card.dataset.number.toLowerCase());
+
+        const addTableForm = document.getElementById('addTableForm');
+        const tableNumberInput = document.getElementById('tableNumber');
+
+        addTableForm.addEventListener('submit', function(e) {
+            const newNumber = tableNumberInput.value.trim().toLowerCase();
+            if (!newNumber) {
+                alert('Пожалуйста, введите номер стола');
+                e.preventDefault();
+                return;
+            }
+
+            if (existingTableNumbers.includes(newNumber)) {
+                alert(`Стол с номером "${tableNumberInput.value.trim()}" уже существует!`);
+                e.preventDefault();
+            }
+        });
+    });
+
+
     // Функции для работы с модальным окном
     function showAddTableForm() {
         const modal = document.getElementById('addTableModal');

@@ -10,6 +10,9 @@ namespace Restaurant.ViewModels
         [Required]
         public decimal Price { get; set; }
 
+        [Display(Name = "Description")]
+        public string? Description { get; set; }
+
         [Display(Name = "Image")]
         public IFormFile? ImageFile { get; set; }
 

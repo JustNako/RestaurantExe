@@ -274,13 +274,13 @@
     }
 
     <div class="qr-header">
-        <h1 class="qr-title">📱 QR коды</h1>
+        <h1 class="qr-title"><i class="bi bi-qr-code"></i> QR коды</h1>
         <p class="qr-subtitle">Управление динамичными QR кодами для столов и ссылок</p>
         
         <div class="stats-container">
             <div class="stat-card">
                 <div class="stat-number" style="color: #007bff;">@Model.Count</div>
-                <div class="stat-label">📱 Всего QR кодов</div>
+                <div class="stat-label"><i class="bi bi-qr-code"></i> Всего QR кодов</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" style="color: #28a745;">@Model.Count(q => q.IsActive)</div>
@@ -325,7 +325,7 @@
                     
                     <div class="qr-info">
                         <div class="info-row">
-                            <span class="info-label">📋 Тип:</span>
+                            <span class="info-label"><i class="fa-solid fa-copy"></i> Тип:</span>
                             <span class="info-value">
                                 @(qr.Type == Restaurant.Entities.QrLinkType.Table ? "Стол" : "Ссылка")
                             </span>
@@ -334,7 +334,7 @@
                         @if (qr.Type == Restaurant.Entities.QrLinkType.Table && !string.IsNullOrEmpty(qr.TableNumber))
                         {
                             <div class="info-row">
-                                <span class="info-label">🪑 Стол:</span>
+                                <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
                                 <span class="info-value">№@qr.TableNumber</span>
                             </div>
                         }                        
@@ -350,19 +350,19 @@
                         @if (!string.IsNullOrEmpty(qr.Description))
                         {
                             <div class="info-row">
-                                <span class="info-label">📝 Описание:</span>
+                                <span class="info-label"><i class="fa-solid fa-pencil"></i> Описание:</span>
                                 <span class="info-value">@qr.Description</span>
                             </div>
                         }
                         
                         <div class="info-row">
-                            <span class="info-label">👁️ Сканирований:</span>
+                            <span class="info-label"><i class="fa-regular fa-eye"></i> Сканирований:</span>
                             <span class="info-value">@qr.ScanCount</span>
                         </div>
                         
                         <div class="info-row">
-                            <span class="info-label">📅 Создан:</span>
-                            <span class="info-value">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                            <span class="info-label"><i class="fa-solid fa-calendar"></i> Создан:</span>
+                            <span class="info-value"><span data-datetime="@qr.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></span>
                         </div>
                         
                         @if (qr.ExpiresAt.HasValue)
@@ -376,19 +376,19 @@
                     
                     <div class="qr-actions">
                         <a asp-action="DownloadQr" asp-route-id="@qr.Id" class="btn-action btn-download">
-                            📥 Скачать
+                            <i class="fa-solid fa-download"></i> Скачать
                         </a>
                         
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
                             <a asp-action="Edit" asp-route-id="@qr.Id" class="btn-action btn-edit">
-                                ✏️ Изменить
+                                <i class="fa-solid fa-pencil"></i> Изменить
                             </a>
                         </permission>
                         
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
                             <form asp-action="Delete" asp-route-id="@qr.Id" method="post" class="d-inline">
                                 <button class="btn-action btn-delete" onclick="return confirm('Удалить QR код "@qr.Code"?')">
-                                    🗑️ Удалить
+                                    <i class="fa-solid fa-trash"></i> Удалить
                                 </button>
                             </form>
                         </permission>

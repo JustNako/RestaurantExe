@@ -38,10 +38,7 @@ else
                             }
                         </ul>
                         <h5>💰 Общая сумма: <strong>@total ₸</strong></h5>
-                        <form method="post" asp-action="CloseOrder">
-                            <input type="hidden" name="id" value="@order.Id" />
-                            <a asp-action="CloseOrder" asp-route-id="@order.Id" class="btn btn-primary">Закрыть</a>
-                        </form>
+                        <a asp-action="CloseOrder" asp-route-id="@order.Id" class="btn btn-primary">Закрыть</a>
 
 
                     </div>

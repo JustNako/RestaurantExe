@@ -1,0 +1,74 @@
+@model Restaurant.Entities.Order
+@{
+    Layout = null; // render a standalone page suitable for printing
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Чек №@Model.Id</title>
+    <link rel="stylesheet" href="~/css/print.css" />
+    <style>
+        /* Ensure a compact receipt look on screen as well */
+        body { background: #fff; color: #111827; }
+        .receipt { width: 58mm; margin: 8mm auto; font-family: "Courier New", monospace; }
+        .text-right { text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="receipt">
+        <div class="receipt-header">
+            <h3 style="margin:0">Restaurant</h3>
+            <div>Тел: +7 (xxx) xxx-xx-xx</div>
+            <div><span data-datetime="@Model.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></div>
+            <hr />
+        </div>
+
+        <div>
+            @if (Model.Items != null && Model.Items.Any())
+            {
+                foreach (var item in Model.Items)
+                {
+                    <div class="receipt-item">
+                        <div class="receipt-item-name">@item.Product?.Name</div>
+                        <div class="receipt-item-details">
+                            <div>@item.Quantity x @item.Price.ToString("N0") ₸</div>
+                            <div class="text-right">@((item.Price * item.Quantity).ToString("N0")) ₸</div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="receipt-line"></div>
+        <div class="receipt-row">
+            <div>Подитог</div>
+            <div class="text-right">@Model.Items.Sum(i => i.Price * i.Quantity).ToString("N0") ₸</div>
+        </div>
+        @if (Model.Discount > 0)
+        {
+            <div class="receipt-row">
+                <div>Скидка</div>
+                <div class="text-right">-@Model.Discount.ToString("N0") ₸</div>
+            </div>
+        }
+        <div class="receipt-row fw-bold">
+            <div>Итого</div>
+            <div class="text-right">@((Model.TotalPrice>0?Model.TotalPrice:Model.Items.Sum(i=>i.Price*i.Quantity)-Model.Discount).ToString("N0")) ₸</div>
+        </div>
+
+        <div style="margin-top:6mm; text-align:center; font-size:10pt;">
+            Спасибо за заказ!
+        </div>
+    </div>
+
+    <script>
+        // Auto-print when opened in a new tab
+        window.onload = function () {
+            window.print();
+        };
+    </script>
+</body>
+</html>

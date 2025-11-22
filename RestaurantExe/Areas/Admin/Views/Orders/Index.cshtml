@@ -337,7 +337,7 @@
         </div>
     }
     <div class="orders-header">
-        <h1 class="orders-title">📦 Список заказов</h1>
+        <h1 class="orders-title"><i class="bi bi-list-nested"></i> Список заказов</h1>
         <p class="orders-subtitle">Управление заказами ресторана</p>
         
         <div class="stats-container">
@@ -420,15 +420,15 @@
                     
                     <div class="order-info">
                         <div class="info-row">
-                            <span class="info-label">🪑 Стол:</span>
+                            <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
                             <span class="info-value">№@order.Table?.Number</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">📅 Дата:</span>
-                            <span class="info-value">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                            <span class="info-label"><i class="bi bi-calendar-event-fill"></i> Дата:</span>
+                            <span class="info-value"><span data-datetime="@order.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">💰 Сумма:</span>
+                            <span class="info-label"><i class="bi bi-cash-stack"></i> Сумма:</span>
                             <span class="info-value">@order.TotalPrice.ToString("0.00") ₸</span>
                         </div>
                     </div>
@@ -441,7 +441,7 @@
                         </permission>
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
                             <a asp-action="Edit" asp-route-id="@order.Id" class="btn-action btn-edit">
-                                ✏️ Редактировать
+                                <i class="bi bi-pen"></i> Редактировать
                             </a>
                         </permission>
                         @if (order.Status == OrderStatus.New)

@@ -194,7 +194,13 @@
                     <div class="stat-label">@(ViewBag.QrLink.IsActive ? "Активен" : "Неактивен")</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">@ViewBag.QrLink.CreatedAt.ToString("dd.MM.yyyy")</div>
+                    <div class="stat-value">
+                        <span data-datetime="@ViewBag.QrLink.CreatedAt.ToString("o")"
+                              data-format="date">
+                            @ViewBag.QrLink.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy")
+                        </span>
+                    </div>
+
                     <div class="stat-label">📅 Создан</div>
                 </div>
             </div>

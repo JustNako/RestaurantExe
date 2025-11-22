@@ -16,7 +16,8 @@ namespace Restaurant.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            // Redirect to admin login on app start
+            return RedirectToAction("Login", "Account", new { area = "Admin" });
         }
 
         public IActionResult Privacy()
