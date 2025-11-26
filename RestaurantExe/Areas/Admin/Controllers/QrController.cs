@@ -218,7 +218,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 Code = code,
                 Type = QrLinkType.Table,
                 TableId = tableId,
-                Description = $"QR код для стола №{table.Number}",
+                Description = $"Стол №{table.Number}",
                 IsActive = true
             };
 
@@ -248,7 +248,7 @@ namespace Restaurant.Areas.Admin.Controllers
                     Code = code,
                     Type = QrLinkType.Table,
                     TableId = tableId,
-                    Description = $"QR код для стола №{table.Number}",
+                    Description = $"Стол №{table.Number}",
                     IsActive = true
                 };
 

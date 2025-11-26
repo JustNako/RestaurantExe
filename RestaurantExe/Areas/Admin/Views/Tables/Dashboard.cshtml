@@ -6,158 +6,207 @@
 
 @section Styles {
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --free-color: #28a745;
+            --occupied-color: #dc3545;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --hover-transform: translateY(-5px);
+            --active-transform: translateY(-8px);
+            --transition: all 0.3s ease;
+        }
+
         .tables-dashboard {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
         }
 
         .dashboard-header {
             background: white;
             border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
             text-align: center;
         }
 
         .dashboard-title {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .dashboard-subtitle {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: #666;
         }
 
         .stats-container {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin: 15px 0;
         }
 
         .stat-card {
             background: white;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            min-width: 150px;
+            flex: 1 0 120px;
+            max-width: 150px;
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .stat-label {
             color: #666;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .filters { display:flex; gap:10px; justify-content:center; flex-wrap: wrap; margin-top: 10px; }
-        .filters .btn { border-radius: 999px; }
-        .search-box { border:2px solid #e9ecef; border-radius: 10px; padding: 8px 12px; }
-        .tables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        .filters {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-group {
+            flex-wrap: wrap;
+        }
+
+            .btn-group .btn {
+                flex: 1;
+                min-width: 80px;
+                border-radius: 50px;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+        .search-box {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px 12px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
 
         .table-card {
             background: white;
             border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
             position: relative;
-            overflow: visible;
             cursor: pointer;
             user-select: none;
-            min-height: 200px;
+            min-height: 180px;
         }
 
-        .table-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
+            .table-card:hover {
+                transform: var(--hover-transform);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            }
 
-        .table-card:active {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
-        }
+            .table-card:active {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            }
 
-        .table-card.actions-active {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            z-index: 10;
-        }
+            .table-card.actions-active {
+                transform: var(--active-transform);
+                box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+                z-index: 10;
+            }
 
-        .table-card.free {
-            border-left: 5px solid #28a745;
-        }
+            .table-card.free {
+                border-left: 4px solid var(--free-color);
+            }
 
-        .table-card.occupied {
-            border-left: 5px solid #dc3545;
-        }
+            .table-card.occupied {
+                border-left: 4px solid var(--occupied-color);
+            }
 
         .table-number {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             text-align: center;
         }
 
         .table-status {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .status-badge {
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 25px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
         .status-free {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, var(--free-color), #20c997);
             color: white;
         }
 
         .status-occupied {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            background: linear-gradient(135deg, var(--occupied-color), #fd7e14);
             color: white;
         }
 
         .table-actions {
-            display: flex;
-            gap: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
             justify-content: center;
-            flex-wrap: wrap;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(10px);
-            margin-top: 15px;
-            padding: 15px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
+            margin-top: 10px;
+            transition: var(--transition);
         }
 
+            .table-actions.show {
+                display: flex;
+            }
+
         .btn-table {
-            padding: 6px 12px;
-            border-radius: 15px;
+            padding: 8px 15px;
+            border-radius: 12px;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             text-decoration: none;
-            display: inline-block;
-            font-size: 0.85rem;
-            min-width: 80px;
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
         }
 
         .btn-create-order {
@@ -165,90 +214,78 @@
             color: white;
         }
 
-        .btn-create-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-            color: white;
-        }
+            .btn-create-order:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            }
 
         .btn-edit {
             background: linear-gradient(135deg, #ffc107, #e0a800);
             color: #212529;
         }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-            color: #212529;
-        }
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            }
 
         .btn-delete {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            background: linear-gradient(135deg, var(--occupied-color), #fd7e14);
             color: white;
         }
 
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
+            .btn-delete:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            }
 
         .btn-qr {
             background: linear-gradient(135deg, #6f42c1, #e83e8c);
             color: white;
         }
 
-        .btn-qr:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
-            color: white;
-        }
-
-        .actions-row {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 8px;
-        }
-
-        .actions-row:last-child {
-            margin-bottom: 0;
-        }
+            .btn-qr:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+            }
 
         .refresh-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #28a745, #20c997);
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--free-color), #20c997);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: var(--transition);
+            z-index: 100;
         }
 
-        .refresh-btn:hover {
-            transform: rotate(180deg) scale(1.1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
+            .refresh-btn:hover {
+                transform: rotate(180deg) scale(1.05);
+                box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            }
 
         .no-tables {
             background: white;
             border-radius: 20px;
-            padding: 50px;
+            padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: var(--card-shadow);
+            margin: 20px 10px;
         }
 
         .no-tables-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            margin-bottom: 15px;
         }
 
+        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -260,23 +297,27 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 15px;
         }
 
         .modal-content {
             background: white;
             border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
+            padding: 25px 20px;
+            width: 100%;
+            max-width: 480px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
             animation: modalSlideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @@keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-50px);
+                transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -285,18 +326,18 @@
 
         .modal-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-label {
@@ -304,39 +345,35 @@
             color: #495057;
             margin-bottom: 8px;
             display: block;
+            font-size: 0.95rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px 15px;
+            padding: 10px 12px;
             border: 2px solid #e9ecef;
             border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
         .modal-actions {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 25px;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .btn-modal {
-            padding: 12px 25px;
-            border-radius: 25px;
+            padding: 10px 15px;
+            border-radius: 15px;
             font-weight: 600;
             border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             text-decoration: none;
-            display: inline-block;
+            text-align: center;
+            width: 100%;
         }
 
         .btn-cancel {
@@ -344,66 +381,245 @@
             color: white;
         }
 
-        .btn-cancel:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
+            .btn-cancel:hover {
+                background: #5a6268;
+                transform: translateY(-2px);
+            }
 
         .btn-save {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, var(--free-color), #20c997);
             color: white;
         }
 
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-        }
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            }
 
-        @@media (max-width: 768px) {
-            .tables-grid {
-                grid-template-columns: 1fr;
+        /* Responsive Adjustments */
+        @@media (min-width: 768px) {
+            .tables-dashboard {
+                padding: 25px;
             }
-            
-            .stats-container {
-                flex-direction: column;
-                align-items: center;
+
+            .dashboard-header {
+                padding: 30px;
+                margin-bottom: 30px;
             }
-            
+
             .dashboard-title {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .stats-container {
+                gap: 30px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                padding: 20px;
+                min-width: 150px;
+                max-width: unset;
+            }
+
+            .stat-number {
                 font-size: 2rem;
             }
+
+            .filters {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .filters-row {
+                flex-direction: row;
+                gap: 15px;
+            }
+
+            .btn-group {
+                flex-wrap: nowrap;
+            }
+
+            .tables-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+                margin-top: 20px;
+            }
+
+            .table-card {
+                padding: 25px;
+                min-height: 200px;
+            }
+
+            .table-number {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+
+            .refresh-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+                bottom: 30px;
+                right: 30px;
+            }
+
+            .modal-content {
+                padding: 30px;
+                max-width: 500px;
+            }
+
+            .modal-title {
+                font-size: 1.8rem;
+            }
+
+            .modal-actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .btn-modal {
+                width: auto;
+                min-width: 120px;
+            }
         }
+
+        @@media (max-width: 576px) {
+            .dashboard-title {
+                font-size: 1.6rem;
+            }
+
+            .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .table-number {
+                font-size: 1.4rem;
+            }
+
+            .table-actions {
+                padding: 8px;
+            }
+
+            .btn-table {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            .refresh-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .no-tables {
+                padding: 25px 15px;
+            }
+
+            .no-tables-icon {
+                font-size: 2.5rem;
+            }
+            
+            /* ... другие стили ... */
+
+            .btn-group {
+                display: flex;
+                border-radius: 50px;
+                overflow: hidden;
+                border: 2px solid #e9ecef; /* Общая рамка для всей группы */
+                background-color: white;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+                min-width: 70px;
+                padding: 4px 8px;
+                font-size: 0.75rem;
+                margin: 0;
+                border: none; /* Убираем индивидуальные границы */
+                border-radius: 0; /* Сначала сбрасываем все радиусы */
+                transition: all 0.2s ease;
+            }
+                    /* Первый элемент - закругляем только левый край */
+            .btn-group .btn:first-child {
+                border-top-left-radius: 50px;
+                border-bottom-left-radius: 50px;
+            }
+            /* Последний элемент - закругляем только правый край */
+            .btn-group .btn:last-child {
+                border-top-right-radius: 50px;
+                border-bottom-right-radius: 50px;
+            }
+            /* Активная кнопка */
+            .btn-group .btn.active {
+                background-color: #6c757d;
+                color: white;
+                border: none;
+            }
+            /* Кнопка "Свободные" */
+            .btn-group .btn.btn-outline-success {
+                color: var(--free-color);
+                border: none;
+                background-color: transparent;
+            }
+
+            .btn-group .btn.btn-outline-success.active {
+                background-color: var(--free-color);
+                color: white;
+                border: none;
+            }
+                /* Кнопка "Занятые" */
+            .btn-group .btn.btn-outline-danger {
+                color: var(--occupied-color);
+                border: none;
+                background-color: transparent;
+            }
+
+            .btn-group .btn.btn-outline-danger.active {
+                background-color: var(--occupied-color);
+                color: white;
+                border: none;
+            }
+        
+     }
     </style>
 }
 
 <div class="tables-dashboard">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 280px; max-width: 90%;">
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    
+
     @if (TempData["InfoMessage"] != null)
     {
-        <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
+        <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 280px; max-width: 90%;">
             @TempData["InfoMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    
+
     <div class="dashboard-header">
         <h1 class="dashboard-title">Статус столов</h1>
         <p class="dashboard-subtitle">Мониторинг занятости столов в реальном времени</p>
-        
+
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number" style="color: #28a745;">@Model.Count(t => !t.IsOccupied)</div>
+                <div class="stat-number" style="color: var(--free-color);">@Model.Count(t => !t.IsOccupied)</div>
                 <div class="stat-label">🟢 Свободно</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" style="color: #dc3545;">@Model.Count(t => t.IsOccupied)</div>
+                <div class="stat-number" style="color: var(--occupied-color);">@Model.Count(t => t.IsOccupied)</div>
                 <div class="stat-label">🔴 Занято</div>
             </div>
             <div class="stat-card">
@@ -411,24 +627,28 @@
                 <div class="stat-label">📊 Всего</div>
             </div>
         </div>
-        
+
         <div class="filters">
-            <div class="input-group" style="max-width: 340px;">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input id="tableSearch" type="text" class="form-control search-box" placeholder="Поиск по номеру стола..." />
+            <div class="filters-row">
+                <div class="input-group w-100">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input id="tableSearch" type="text" class="form-control search-box" placeholder="Поиск по номеру стола..." />
+                </div>
             </div>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-secondary active" data-filter="all">Все</button>
-                <button type="button" class="btn btn-outline-success" data-filter="free">Свободные</button>
-                <button type="button" class="btn btn-outline-danger" data-filter="occupied">Занятые</button>
+            <div class="filters-row">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" data-filter="all">Все</button>
+                    <button type="button" class="btn btn-outline-success" data-filter="free">Свободные</button>
+                    <button type="button" class="btn btn-outline-danger" data-filter="occupied">Занятые</button>
+                </div>
             </div>
         </div>
 
         <div class="text-center mt-3">
-            <p class="text-muted mb-3">💡 Нажмите на карточку стола, чтобы увидеть доступные действия</p>
+            <p class="text-muted mb-3">💡 Нажмите на карточку стола для действий</p>
             <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
-                <button class="btn btn-success btn-lg" onclick="showAddTableForm()">
-                    ➕ Добавить новый стол
+                <button class="btn btn-success btn-lg px-4" onclick="showAddTableForm()">
+                    ➕ Добавить стол
                 </button>
             </permission>
         </div>
@@ -439,8 +659,8 @@
         <div class="no-tables">
             <div class="no-tables-icon">🪑</div>
             <h3>Столы не найдены</h3>
-            <p>Добавьте столы для начала работы</p>
-            <button class="btn btn-success" onclick="showAddTableForm()">➕ Добавить стол</button>
+            <p class="mb-3">Добавьте столы для начала работы</p>
+            <button class="btn btn-success px-4 py-2" onclick="showAddTableForm()">➕ Добавить стол</button>
         </div>
     }
     else
@@ -448,63 +668,58 @@
         <div class="tables-grid">
             @foreach (var table in Model.OrderBy(t => t.Number))
             {
-                        <div class="table-card @(table.IsOccupied ? "occupied" : "free")" data-number="@table.Number" data-status="@(table.IsOccupied ? "occupied" : "free")" onclick="toggleTableActions(this, event)">
-            <div class="table-number">Стол №@table.Number</div>
-            
-            <div class="table-status">
-                @if (table.IsOccupied)
-                {
-                    <span class="status-badge status-occupied">🔴 Занят</span>
-                }
-                else
-                {
-                    <span class="status-badge status-free">🟢 Свободен</span>
-                }
-            </div>
-            
-            <div class="table-actions" style="display: none;">
-                <div class="actions-row">
+                <div class="table-card @(table.IsOccupied ? "occupied" : "free")" data-number="@table.Number" data-status="@(table.IsOccupied ? "occupied" : "free")" onclick="toggleTableActions(this, event)">
+                    <div class="table-number">Стол №@table.Number</div>
 
-                    @if (!table.IsOccupied)
-                    {
-                        <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
-                            <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@table.Id" 
-                               class="btn-table btn-create-order">
-                                ➕ Заказ
-                            </a>
-                        </permission>
-                    }
-                    else
-                    {
-                        <span class="btn-table btn-create-order" style="opacity: 0.5; cursor: not-allowed;">
-                            ⏳ Занят
-                        </span>
-                    }
-                    
-                    <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
-                        <a asp-action="Edit" asp-route-id="@table.Id" 
-                           class="btn-table btn-edit">
-                            ✏️ Редактировать
-                        </a>
-                    </permission>
-                </div>
-                
-                <div class="actions-row">
-                    <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
-                        <a asp-action="Delete" asp-route-id="@table.Id"
-                           class="btn-table btn-delete">
-                            🗑️ Удалить
-                        </a>
-                    </permission>
+                    <div class="table-status">
+                        @if (table.IsOccupied)
+                        {
+                            <span class="status-badge status-occupied">🔴 Занят</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-free">🟢 Свободен</span>
+                        }
+                    </div>
 
-                    <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
-                        <a asp-controller="Qr" asp-action="ShowTableQr" asp-route-tableId="@table.Id"
-                           class="btn-table btn-qr">
-                            📱 QR
-                        </a>
-                    </permission>
-                </div>
-            </div>
+                    <div class="table-actions">
+                        <div class="d-grid gap-2">
+                            @if (!table.IsOccupied)
+                            {
+                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+                                    <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@table.Id" class="btn-table btn-create-order">
+                                        ➕ Создать заказ
+                                    </a>
+                                </permission>
+                            }
+                            else
+                            {
+                                <span class="btn-table btn-create-order disabled" style="opacity: 0.6; cursor: not-allowed;">
+                                    ⏳ Стол занят
+                                </span>
+                            }
+
+                            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
+                                <a asp-action="Edit" asp-route-id="@table.Id" class="btn-table btn-edit">
+                                    ✏️ Редактировать
+                                </a>
+                            </permission>
+
+                            <div class="d-flex gap-2">
+                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
+                                    <a asp-action="Delete" asp-route-id="@table.Id" class="btn-table btn-delete w-100">
+                                        🗑️ Удалить
+                                    </a>
+                                </permission>
+
+                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
+                                    <a asp-controller="Qr" asp-action="ShowTableQr" asp-route-tableId="@table.Id" class="btn-table btn-qr w-100">
+                                        📱 QR-код
+                                    </a>
+                                </permission>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
@@ -520,31 +735,32 @@
     <div class="modal-content">
         <div class="modal-header">
             <h2 class="modal-title"><i class="fa-solid fa-table"></i> Добавить новый стол</h2>
-            <p>Введите номер нового стола</p>
+            <p class="text-muted">Введите номер нового стола</p>
         </div>
-        
+
         <form id="addTableForm" asp-area="Admin" asp-controller="Tables" asp-action="Create" method="post">
             <div class="form-group">
                 <label for="tableNumber" class="form-label">Номер стола</label>
-                <input type="text" id="tableNumber" name="Number" class="form-control" 
+                <input type="text" id="tableNumber" name="Number" class="form-control"
                        placeholder="Например: 1, 2, 3..." required>
+                <small class="text-muted">Номер может содержать буквы и цифры</small>
             </div>
-            
+
             <div class="modal-actions">
                 <button type="button" class="btn-modal btn-cancel" onclick="hideAddTableForm()">
                     ❌ Отмена
                 </button>
                 <button type="submit" class="btn-modal btn-save">
                     ✅ Добавить стол
-                </button>                
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        // Список номеров столов из модели
+    document.addEventListener('DOMContentLoaded', function() {
+        // Список существующих номеров столов
         const existingTableNumbers = Array.from(document.querySelectorAll('.table-card'))
             .map(card => card.dataset.number.toLowerCase());
 
@@ -566,8 +782,7 @@
         });
     });
 
-
-    // Функции для работы с модальным окном
+    // Функции модального окна
     function showAddTableForm() {
         const modal = document.getElementById('addTableModal');
         modal.style.display = 'flex';
@@ -587,101 +802,96 @@
         }
     });
 
-    // Обработка отправки формы
-    document.getElementById('addTableForm').addEventListener('submit', function(e) {
-        const tableNumber = document.getElementById('tableNumber').value.trim();
-        if (!tableNumber) {
-            e.preventDefault();
-            alert('Пожалуйста, введите номер стола');
-            return;
-        }
-    });
-
-    // Фильтры и поиск
+    // Фильтрация и поиск
     (function(){
         const buttons = document.querySelectorAll('.filters [data-filter]');
         const search = document.getElementById('tableSearch');
         const cards = Array.from(document.querySelectorAll('.table-card'));
-        let active = 'all';
+        let activeFilter = 'all';
 
-        function apply(){
-            const q = (search?.value || '').trim().toLowerCase();
-            cards.forEach(c => {
-                const matchesFilter = active === 'all' || c.dataset.status === active;
-                const matchesSearch = !q || (c.dataset.number || '').toString().toLowerCase().includes(q);
-                c.style.display = (matchesFilter && matchesSearch) ? '' : 'none';
+        function applyFilter() {
+            const searchTerm = (search?.value || '').trim().toLowerCase();
+
+            cards.forEach(card => {
+                const matchesStatus = activeFilter === 'all' ||
+                                     card.dataset.status === activeFilter;
+
+                const matchesSearch = !searchTerm ||
+                                     card.dataset.number.toLowerCase().includes(searchTerm);
+
+                card.style.display = (matchesStatus && matchesSearch) ? 'block' : 'none';
             });
         }
-        buttons.forEach(b => b.addEventListener('click', () => {
-            buttons.forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            active = b.dataset.filter;
-            apply();
-        }));
-        if (search) search.addEventListener('input', apply);
-        apply();
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                activeFilter = button.dataset.filter;
+                applyFilter();
+            });
+        });
+
+        if (search) {
+            search.addEventListener('input', applyFilter);
+            search.addEventListener('focus', () => {
+                // Скрываем открытые действия при фокусе на поиск
+                document.querySelectorAll('.table-actions').forEach(actions => {
+                    actions.classList.remove('show');
+                    actions.closest('.table-card').classList.remove('actions-active');
+                });
+            });
+        }
+
+        applyFilter();
     })();
 
-    // Автообновление каждые 45 секунд (плавнее)
-    setInterval(function() { location.reload(); }, 45000);
-
-    // Функция для переключения Actions
+    // Функция переключения действий стола
     function toggleTableActions(card, event) {
-        // Если кликнули на кнопку, не переключаем Actions
-        if (event.target.closest('.table-actions')) {
+        // Не реагировать на клики по кнопкам действий
+        if (event.target.closest('.table-actions') ||
+            event.target.closest('.btn-table')) {
             return;
         }
-        
+
         const actions = card.querySelector('.table-actions');
-        const allActions = document.querySelectorAll('.table-actions');
-        
-        // Скрываем все другие Actions
-        allActions.forEach(action => {
-            if (action !== actions) {
-                action.style.display = 'none';
-                action.style.opacity = '0';
-                action.style.transform = 'translateY(10px)';
+        const isActive = card.classList.contains('actions-active');
+
+        // Скрыть все открытые панели действий
+        document.querySelectorAll('.table-card').forEach(otherCard => {
+            if (otherCard !== card) {
+                otherCard.classList.remove('actions-active');
+                otherCard.querySelector('.table-actions').classList.remove('show');
             }
         });
-        
-        // Переключаем текущие Actions
-        if (actions.style.display === 'none') {
-            // Показываем Actions
-            actions.style.display = 'flex';
-            actions.style.opacity = '0';
-            actions.style.transform = 'translateY(10px)';
-            
-            // Анимация появления
-            setTimeout(() => {
-                actions.style.transition = 'all 0.3s ease';
-                actions.style.opacity = '1';
-                actions.style.transform = 'translateY(0)';
-            }, 10);
-            
-            // Добавляем активный класс к карточке
-            card.classList.add('actions-active');
-        } else {
-            // Скрываем Actions
-            actions.style.transition = 'all 0.3s ease';
-            actions.style.opacity = '0';
-            actions.style.transform = 'translateY(10px)';
-            
-            setTimeout(() => {
-                actions.style.display = 'none';
-            }, 300);
-            
-            // Убираем активный класс
+
+        // Переключить текущую панель
+        if (isActive) {
             card.classList.remove('actions-active');
+            actions.classList.remove('show');
+        } else {
+            card.classList.add('actions-active');
+            actions.classList.add('show');
         }
     }
 
-    // Анимация при загрузке страницы
+    // Закрытие панелей при клике вне карточек
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.table-card') && !e.target.closest('.table-actions')) {
+            document.querySelectorAll('.table-card').forEach(card => {
+                card.classList.remove('actions-active');
+                card.querySelector('.table-actions').classList.remove('show');
+            });
+        }
+    });
+
+    // Анимация появления карточек
     document.addEventListener('DOMContentLoaded', function() {
         const cards = document.querySelectorAll('.table-card');
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'all 0.5s ease';
                 card.style.opacity = '1';
@@ -689,4 +899,16 @@
             }, index * 100);
         });
     });
+
+    // Автообновление каждые 45 секунд
+    setInterval(function() {
+        // Сохраняем открытые состояния перед перезагрузкой
+        const openCards = Array.from(document.querySelectorAll('.table-card.actions-active'))
+            .map(card => card.dataset.number);
+
+        location.reload();
+
+        // Восстановление состояний (псевдокод, реальная реализация сложнее)
+        // openCards.forEach(number => { /* восстановить состояние */ });
+    }, 45000);
 </script>

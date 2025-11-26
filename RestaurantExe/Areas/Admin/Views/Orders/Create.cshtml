@@ -5,96 +5,563 @@
 }
 
 <div class="create-order">
-    <h2 class="mb-4">📝 Новый заказ</h2>
+    <h1 class="page-title mb-3">📝 Новый заказ</h1>
 
     @section Styles {
         <style>
+            :root {
+                --primary-gradient: linear-gradient(135deg, #667eea, #764ba2);
+                --success-color: #28a745;
+                --border-radius: 16px;
+                --shadow: 0 4px 12px rgba(0,0,0,0.08);
+                --transition: all 0.3s ease;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #333;
+                text-align: center;
+            }
+
             .toolbar {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
                 margin-bottom: 16px;
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 16px;
+                box-shadow: var(--shadow);
+            }
+
+            .toolbar-row {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .categories-container {
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 12px;
+                box-shadow: var(--shadow);
+                margin-bottom: 16px;
+                position: relative;
             }
 
             .categories-bar {
                 display: flex;
                 gap: 8px;
-                flex-wrap: wrap;
-                margin-bottom: 12px;
+                overflow-x: auto;
+                padding-bottom: 4px;
+                scrollbar-width: none; /* Firefox */
             }
 
+                .categories-bar::-webkit-scrollbar {
+                    display: none; /* Chrome, Safari, Opera */
+                }
+
                 .categories-bar .pill {
+                    flex: 0 0 auto;
                     border: 1px solid #e9ecef;
-                    padding: 6px 12px;
+                    padding: 8px 16px;
                     border-radius: 999px;
                     background: #fff;
                     cursor: pointer;
                     user-select: none;
+                    font-weight: 500;
+                    transition: var(--transition);
+                    white-space: nowrap;
                 }
 
                     .categories-bar .pill.active {
-                        background: linear-gradient(135deg, #667eea, #764ba2);
+                        background: var(--primary-gradient);
                         color: #fff;
                         border-color: transparent;
+                        transform: scale(1.05);
+                        box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
                     }
+
+            .search-container {
+                background: white;
+                border-radius: var(--border-radius);
+                padding: 12px;
+                box-shadow: var(--shadow);
+                margin-bottom: 16px;
+            }
 
             .search-input {
                 border: 2px solid #e9ecef;
-                border-radius: 10px;
-                padding: 10px 12px;
+                border-radius: 12px;
+                padding: 12px 16px;
+                width: 100%;
+                font-size: 1rem;
+                transition: var(--transition);
             }
 
-            .product-card .card-body {
+                .search-input:focus {
+                    outline: none;
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                }
+
+            .product-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+                margin-bottom: 80px;
+            }
+
+            .product-card {
+                background: white;
+                border-radius: var(--border-radius);
+                overflow: hidden;
+                box-shadow: var(--shadow);
+                transition: var(--transition);
+                cursor: pointer;
+                height: 100%;
+                border: 1px solid #eee;
+            }
+
+                .product-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+                }
+
+                .product-card .card-body {
+                    padding: 16px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+            .product-header {
                 display: flex;
-                flex-direction: column;
-                gap: 8px;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+
+            .product-name {
+                font-weight: 600;
+                font-size: 1.1rem;
+                margin: 0;
+                flex: 1;
+            }
+
+            .product-price {
+                background: var(--primary-gradient);
+                color: white;
+                padding: 4px 10px;
+                border-radius: 8px;
+                font-weight: 700;
+                white-space: nowrap;
+                font-size: 0.95rem;
             }
 
             .qty-control {
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 10px;
+                justify-content: center;
+                margin-top: 8px;
             }
 
             .qty-btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
                 border: none;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background: #f1f3f5;
+                background: #f8f9fa;
                 cursor: pointer;
+                font-weight: 700;
+                font-size: 1.2rem;
+                transition: var(--transition);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             }
+
+                .qty-btn:hover {
+                    background: #e9ecef;
+                    transform: scale(1.1);
+                }
+
+                .qty-btn:active {
+                    transform: scale(0.95);
+                }
 
             .qty-input {
                 width: 70px;
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: 700;
+                border: 2px solid #e9ecef;
+                border-radius: 10px;
+                padding: 6px;
+                transition: var(--transition);
+            }
+
+                .qty-input:focus {
+                    outline: none;
+                    border-color: #667eea;
+                    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                }
+
+            .sticky-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #e9ecef;
+                padding: 12px 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 100;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
+
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .summary {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: #333;
+            }
+
+            .summary-total {
+                color: var(--success-color);
+                font-size: 1.3rem;
+            }
+
+            .submit-btn {
+                background: var(--primary-gradient);
+                color: white;
+                border: none;
+                border-radius: 14px;
+                padding: 12px 24px;
+                font-weight: 700;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition: var(--transition);
+                min-width: 180px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }
+
+                .submit-btn:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+                }
+
+                .submit-btn:disabled {
+                    opacity: 0.7;
+                    cursor: not-allowed;
+                    transform: none;
+                    box-shadow: none;
+                }
+
+            .table-select-container {
+                margin-bottom: 15px;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 40px 20px;
+                background: white;
+                border-radius: var(--border-radius);
+                box-shadow: var(--shadow);
+                margin-bottom: 16px;
+            }
+
+            .empty-icon {
+                font-size: 3rem;
+                margin-bottom: 15px;
+                color: #adb5bd;
+            }
+
+            .loading-spinner {
+                display: none;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .spinner {
+                border: 4px solid rgba(0, 0, 0, 0.1);
+                border-radius: 50%;
+                border-top: 4px solid #667eea;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto;
+            }
+
+            @@keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            /* Адаптивные улучшения для мобильных */
+            @@media (min-width: 768px) {
+                .toolbar {
+                    flex-direction: row;
+                    align-items: flex-end;
+                }
+
+                .toolbar-row {
+                    flex: 1;
+                }
+
+                    .toolbar-row:nth-child(1) {
+                        max-width: 45%;
+                    }
+
+                    .toolbar-row:nth-child(2) {
+                        max-width: 55%;
+                    }
+
+                .page-title {
+                    font-size: 2.2rem;
+                    text-align: left;
+                }
+
+                .sticky-footer {
+                    position: sticky;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    border-radius: var(--border-radius) var(--border-radius) 0 0;
+                }
+
+                .product-grid {
+                    margin-bottom: 30px;
+                }
+            }
+
+            @@media (max-width: 576px) {
+                .page-title {
+                    font-size: 1.5rem;
+                }
+
+                .qty-btn {
+                    width: 38px;
+                    height: 38px;
+                    font-size: 1rem;
+                }
+
+                .product-name {
+                    font-size: 1rem;
+                }
+
+                .product-price {
+                    font-size: 0.9rem;
+                    padding: 3px 8px;
+                }
+
+                .submit-btn {
+                    width: 100%;
+                    font-size: 1rem;
+                    min-width: unset;
+                }
+
+                .footer-content {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .summary {
+                    font-size: 1rem;
+                    text-align: center;
+                }
+            }
+
+            /* Анимации появления */
+            @@keyframes fadeInUp {
+                from
+
+            {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            }
+
+            .animate-fade-in-up {
+                animation: fadeInUp 0.5s ease forwards;
+            }
+
+            .animate-delay {
+                animation-delay: 0.1s;
             }
 
             .sticky-footer {
                 position: sticky;
                 bottom: 0;
-                background: #fff;
+                left: 0;
+                right: 0;
+                background: white;
                 border-top: 1px solid #e9ecef;
-                padding: 12px 0;
+                padding: 12px 16px;
                 display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 12px;
-                z-index: 5;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 100;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
+
+            @@media (max-width: 767.98px) {
+                .sticky-footer
+
+            {
+                position: relative;
+                margin-top: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border-radius: var(--border-radius);
+                border: 1px solid #e9ecef;
+                bottom: auto;
+                padding: 15px;
+            }
+
+            .footer-content .submit-btn {
+                width: 100%;
+                font-size: 1.1rem;
+                padding: 12px;
+                min-width: unset;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: stretch;
             }
 
             .summary {
-                font-weight: 600;
+                text-align: center;
+                font-size: 1rem;
+                line-height: 1.4;
             }
-        </style>
+
+            /* Дополнительный отступ внизу для мобильных */
+            body {
+                padding-bottom: 90px;
+            }
+
+            .create-order {
+                padding-bottom: 10px;
+            }
+
+            }
+
+            /* Плавающая кнопка для мобильных */
+            .mobile-action-button {
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                background: var(--primary-gradient);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 65px;
+                height: 65px;
+                font-size: 1.4rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                animation: pulse 2s infinite;
+            }
+
+                .mobile-action-button:hover {
+                    transform: scale(1.1) rotate(5deg);
+                    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+                }
+
+                .mobile-action-button:active {
+                    transform: scale(0.95);
+                }
+
+            .mobile-button-content {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-button-icon {
+                font-size: 1.4rem;
+                line-height: 1;
+            }
+
+            #mobileItemCount {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                background: #ff4d4d;
+                color: white;
+                border-radius: 50%;
+                width: 22px;
+                height: 22px;
+                font-size: 0.75rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                border: 2px solid white;
+                box-shadow: 0 0 0 2px #ff4d4d;
+            }
+
+            @@keyframes pulse {
+                0%
+
+            {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+
+            }
+
+            @@media (min-width: 768px) {
+                .mobile-action-button
+
+            {
+                display: none !important;
+            }
+
+            }</style>
     }
 
     @if (ViewBag.Errors != null && ViewBag.Errors.Count > 0)
     {
-        <div class="alert alert-danger">
-            <ul>
+        <div class="alert alert-danger animate-fade-in-up">
+            <ul class="mb-0">
                 @foreach (var err in ViewBag.Errors)
                 {
                     <li>@err</li>
@@ -103,142 +570,525 @@
         </div>
     }
 
-    <form asp-action="Create" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @if (!Model.Tables.Any())
+    {
+        <div class="alert alert-warning animate-fade-in-up">
+            ⚠️ Все столы заняты. Дождитесь освобождения стола или завершите существующие заказы.
+        </div>
+    }
 
-        <div class="toolbar">
-            <div>
-                <label class="form-label">🪑 Выберите стол</label>
-                <select asp-for="TableId" class="form-select" required>
+    <form asp-action="Create" method="post" id="orderForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="toolbar animate-fade-in-up">
+            <div class="toolbar-row">
+                <label class="form-label fw-bold d-block mb-2">🪑 Стол для заказа</label>
+                <select asp-for="TableId" class="form-select form-select-lg" required>
                     <option value="">-- Выберите свободный стол --</option>
                     @foreach (var table in Model.Tables)
                     {
-                        <option value="@table.Id">Стол №@table.Number - Свободен</option>
+                        <option value="@table.Id">Стол №@table.Number</option>
                     }
                 </select>
-                @if (!Model.Tables.Any())
+                <div class="form-text mt-1">Выберите стол, на который будет оформлен заказ</div>
+            </div>
+            <div class="toolbar-row">
+                <label class="form-label fw-bold d-block mb-2">🔎 Быстрый поиск</label>
+                <input type="text" id="search" class="search-input" placeholder="Название блюда или напитка..." autocomplete="off" />
+                <div class="form-text mt-1">Начните вводить для фильтрации</div>
+            </div>
+        </div>
+
+        <div class="categories-container animate-fade-in-up">
+            <div class="categories-bar">
+                <span class="pill active" data-category-id="all">Все категории</span>
+                @foreach (var cat in Model.Categories)
                 {
-                    <div class="alert alert-warning mt-2">
-                        ⚠️ Все столы заняты. Дождитесь освобождения стола или завершите существующие заказы.
-                    </div>
+                    <span class="pill" data-category-id="@cat.Id">@cat.Name</span>
                 }
             </div>
-            <div>
-                <label class="form-label">🔎 Поиск по продуктам</label>
-                <input type="text" id="search" class="form-control search-input" placeholder="Начните вводить название..." />
+        </div>
+
+        @if (!Model.Categories.Any() || Model.Categories.All(c => !c.Products.Any()))
+        {
+            <div class="empty-state animate-fade-in-up">
+                <div class="empty-icon">🍽️</div>
+                <h3 class="mb-2">Меню пусто</h3>
+                <p class="text-muted mb-3">В настоящий момент в меню нет доступных блюд. Добавьте блюда в категории меню.</p>
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                    ➕ Добавить блюда в меню
+                </a>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="search-container animate-fade-in-up">
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="searchMobile" class="search-input" placeholder="Поиск по всему меню..." autocomplete="off" />
+                </div>
+            </div>
 
-        <div class="categories-bar">
-            <span class="pill active" data-category-id="all">Все</span>
-            @foreach (var cat in Model.Categories)
-            {
-                <span class="pill" data-category-id="@cat.Id">@cat.Name</span>
-            }
-        </div>
-
-        <div id="product-list" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-            @foreach (var cat in Model.Categories)
-            {
-                foreach (var product in cat.Products)
+            <div id="product-list" class="product-grid">
+                @foreach (var cat in Model.Categories)
                 {
-                    <div class="col product-card" data-category-id="@cat.Id" data-name="@product.Name.ToLower()" data-price="@product.Price">
-                        <div class="card h-100">
+                    foreach (var product in cat.Products)
+                    {
+                        <div class="product-card animate-fade-in-up" data-category-id="@cat.Id" data-name="@product.Name.ToLower()" data-price="@product.Price">
                             <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h6 class="card-title mb-0">@product.Name</h6>
-                                    <span class="badge bg-primary">@product.Price.ToString("0.00") ₸</span>
+                                <div class="product-header">
+                                    <h5 class="product-name">@product.Name</h5>
+                                    <span class="product-price">@product.Price.ToString("0.00") ₸</span>
                                 </div>
                                 <input type="hidden" name="ProductsWithQuantity.Index" value="@product.Id" />
                                 <input type="hidden" name="ProductsWithQuantity[@product.Id].ProductId" value="@product.Id" />
-                                <div class="qty-control mt-2">
-                                    <button type="button" class="qty-btn btn-minus" aria-label="Decrease">−</button>
-                                    <input type="number" class="form-control form-control-sm qty-input" name="ProductsWithQuantity[@product.Id].Quantity" value="0" min="0" />
-                                    <button type="button" class="qty-btn btn-plus" aria-label="Increase">+</button>
+                                <div class="qty-control">
+                                    <button type="button" class="qty-btn btn-minus" aria-label="Уменьшить количество">−</button>
+                                    <input type="number" class="form-control qty-input" name="ProductsWithQuantity[@product.Id].Quantity" value="0" min="0" />
+                                    <button type="button" class="qty-btn btn-plus" aria-label="Увеличить количество">+</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
-            }
+            </div>
+
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p class="mt-2 text-muted">Загрузка...</p>
+            </div>
+        }
+
+        <div class="sticky-footer">
+            <div class="footer-content">
+                <div class="summary">
+                    <span>Выбрано: <span id="selCount" class="text-primary fw-bold">0</span> товаров </span>
+                    <span class="summary-total">на сумму: <span id="selTotal">0.00</span> ₸</span>
+                </div>
+                <button id="submitBtn" type="submit" class="submit-btn" disabled>
+                    ✅ Создать заказ (<span id="selCountBtn">0</span>)
+                </button>
+            </div>
+            <div class="text-center text-muted small">
+                Нажмите на карточку товара или используйте кнопки +/- для добавления в заказ
+            </div>
         </div>
 
-        <div class="sticky-footer mt-3">
-            <div class="summary">
-                Выбрано: <span id="selCount">0</span> • Итого: <span id="selTotal">0.00</span> ₸
+        <!-- Плавающая кнопка для мобильных устройств -->
+        <button class="mobile-action-button d-md-none" id="mobileSubmitBtn" title="Создать заказ">
+            <div class="mobile-button-content">
+                <span id="mobileItemCount">0</span>
+                <span class="mobile-button-icon">✅</span>
             </div>
-            <button id="submitBtn" type="submit" class="btn btn-success" disabled>✅ Сохранить заказ</button>
-        </div>
+        </button>
     </form>
 </div>
 
 @section Scripts {
     <script>
-        (function () {
-            const search = document.getElementById('search');
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchMain = document.getElementById('search');
+            const searchMobile = document.getElementById('searchMobile');
             const pills = document.querySelectorAll('.categories-bar .pill');
-            const cards = Array.from(document.querySelectorAll('#product-list .product-card'));
+            const cards = Array.from(document.querySelectorAll('.product-card'));
             const selCount = document.getElementById('selCount');
+            const selCountBtn = document.getElementById('selCountBtn');
             const selTotal = document.getElementById('selTotal');
             const submitBtn = document.getElementById('submitBtn');
+            const orderForm = document.getElementById('orderForm');
+            const loadingSpinner = document.getElementById('loadingSpinner');
 
+            // Синхронизация двух полей поиска
+            function syncSearch() {
+                if (searchMain && searchMobile) {
+                    searchMain.addEventListener('input', () => {
+                        searchMobile.value = searchMain.value;
+                        applyFilters();
+                    });
+
+                    searchMobile.addEventListener('input', () => {
+                        searchMain.value = searchMobile.value;
+                        applyFilters();
+                    });
+                }
+            }
+
+            // Применение фильтров
             function applyFilters() {
                 const active = document.querySelector('.categories-bar .pill.active');
                 const catId = active ? active.dataset.categoryId : 'all';
-                const q = (search?.value || '').trim().toLowerCase();
+                const q = (searchMain?.value || searchMobile?.value || '').trim().toLowerCase();
+
+                let visibleCount = 0;
                 cards.forEach(card => {
                     const matchesCat = catId === 'all' || card.dataset.categoryId === catId;
                     const matchesSearch = !q || card.dataset.name.includes(q);
-                    card.style.display = (matchesCat && matchesSearch) ? '' : 'none';
+                    const isVisible = matchesCat && matchesSearch;
+
+                    if (isVisible) {
+                        visibleCount++;
+                        card.style.display = '';
+                        // Добавляем задержку для анимации при первом появлении
+                        if (!card.style.opacity) {
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(10px)';
+                            setTimeout(() => {
+                                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, 100);
+                        }
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
+
+                // Показываем сообщение если нет результатов
+                if (visibleCount === 0 && cards.length > 0) {
+                    if (!document.getElementById('noResultsMessage')) {
+                        const message = document.createElement('div');
+                        message.id = 'noResultsMessage';
+                        message.className = 'empty-state';
+                        message.innerHTML = `
+                            <div class="empty-icon">🔍</div>
+                            <h3 class="mb-2">Ничего не найдено</h3>
+                            <p class="text-muted">Попробуйте изменить критерии поиска или выбрать другую категорию</p>
+                        `;
+                        document.querySelector('.product-grid').parentNode.insertBefore(message, document.querySelector('.product-grid').nextSibling);
+                    }
+                } else {
+                    const noResults = document.getElementById('noResultsMessage');
+                    if (noResults) noResults.remove();
+                }
             }
 
-            pills.forEach(p => p.addEventListener('click', () => {
-                pills.forEach(x => x.classList.remove('active'));
-                p.classList.add('active');
-                applyFilters();
-            }));
-            if (search) search.addEventListener('input', applyFilters);
+            // События для кнопок категорий
+            pills.forEach((pill, index) => {
+                pill.addEventListener('click', () => {
+                    pills.forEach(x => x.classList.remove('active'));
+                    pill.classList.add('active');
+                    applyFilters();
 
+                    // Скролл к товарам при выборе категории на мобильных
+                    if (window.innerWidth < 768) {
+                        document.querySelector('.product-grid').scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Пересчет суммы и количества
             function recalc() {
                 let count = 0;
                 let total = 0;
+
                 document.querySelectorAll('.qty-input').forEach(input => {
                     const qty = parseInt(input.value || '0', 10) || 0;
                     if (qty > 0) {
                         count += qty;
-                        const price = parseFloat(input.closest('.product-card').dataset.price);
+                        const card = input.closest('.product-card');
+                        const price = card ? parseFloat(card.dataset.price) : 0;
                         total += qty * price;
                     }
                 });
+
                 selCount.textContent = count.toString();
+                selCountBtn.textContent = count.toString();
                 selTotal.textContent = total.toFixed(2);
-                submitBtn.disabled = count === 0;
+                submitBtn.disabled = count === 0 || !document.querySelector('#TableId').value;
             }
 
+            // Обработчики кнопок +/- и ввода количества
             document.querySelectorAll('.btn-minus').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const input = btn.parentElement.querySelector('.qty-input');
-                    const val = Math.max(0, (parseInt(input.value || '0', 10) || 0) - 1);
-                    input.value = val;
-                    input.dispatchEvent(new Event('input'));
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.qty-input');
+                    const currentValue = parseInt(input.value || '0', 10) || 0;
+                    const newValue = Math.max(0, currentValue - 1);
+                    input.value = newValue;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // Анимация уменьшения
+                    animateQuantityChange(input, false);
                 });
-            });
-            document.querySelectorAll('.btn-plus').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const input = btn.parentElement.querySelector('.qty-input');
-                    const val = (parseInt(input.value || '0', 10) || 0) + 1;
-                    input.value = val;
-                    input.dispatchEvent(new Event('input'));
-                });
-            });
-            document.querySelectorAll('.qty-input').forEach(input => {
-                input.addEventListener('input', recalc);
             });
 
-            // init
+            document.querySelectorAll('.btn-plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const input = this.parentElement.querySelector('.qty-input');
+                    const currentValue = parseInt(input.value || '0', 10) || 0;
+                    const newValue = currentValue + 1;
+                    input.value = newValue;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // Анимация увеличения
+                    animateQuantityChange(input, true);
+                });
+            });
+
+            function animateQuantityChange(input, isIncrease) {
+                input.style.transform = isIncrease ? 'scale(1.2)' : 'scale(0.8)';
+                input.style.transition = 'transform 0.15s ease';
+                setTimeout(() => {
+                    input.style.transform = 'scale(1)';
+                }, 150);
+            }
+
+            document.querySelectorAll('.qty-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    let value = parseInt(this.value || '0', 10) || 0;
+                    value = Math.max(0, value);
+                    this.value = value.toString();
+                    recalc();
+                });
+
+                input.addEventListener('blur', function() {
+                    if (!this.value.trim()) this.value = '0';
+                });
+
+                // Поддержка колеса мыши для изменения количества
+                input.addEventListener('wheel', function(e) {
+                    e.preventDefault();
+                    const step = e.deltaY > 0 ? -1 : 1;
+                    let value = parseInt(this.value || '0', 10) || 0;
+                    value = Math.max(0, value + step);
+                    this.value = value.toString();
+                    this.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+            });
+
+            // Обработка отправки формы
+            orderForm?.addEventListener('submit', function(e) {
+                const tableId = document.querySelector('#TableId').value;
+                const itemCount = parseInt(selCount.textContent);
+
+                if (!tableId) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите стол для заказа');
+                    document.querySelector('#TableId').focus();
+                    return;
+                }
+
+                if (itemCount === 0) {
+                    e.preventDefault();
+                    alert('Добавьте хотя бы один товар в заказ');
+                    return;
+                }
+
+                // Показать индикатор загрузки
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Создание заказа...';
+                loadingSpinner.style.display = 'block';
+            });
+
+            // Выбор товара при клике на карточку
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.closest('.qty-btn, .qty-input')) return;
+
+                    const input = this.querySelector('.qty-input');
+                    const currentValue = parseInt(input.value || '0', 10) || 0;
+                    const newValue = currentValue > 0 ? 0 : 1;
+
+                    input.value = newValue.toString();
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // Анимация выделения
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 100);
+                });
+            });
+
+            // Активация категории при свайпе на мобильных
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.querySelector('.categories-bar')?.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            document.querySelector('.categories-bar')?.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    // Свайп влево - следующая категория
+                    const activeIndex = Array.from(pills).findIndex(p => p.classList.contains('active'));
+                    if (activeIndex < pills.length - 1) {
+                        pills[activeIndex + 1].click();
+                    }
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    // Свайп вправо - предыдущая категория
+                    const activeIndex = Array.from(pills).findIndex(p => p.classList.contains('active'));
+                    if (activeIndex > 0) {
+                        pills[activeIndex - 1].click();
+                    }
+                }
+            }
+
+            // Инициализация
+            syncSearch();
             applyFilters();
             recalc();
-        })();
+
+            // Анимация появления карточек при загрузке
+            setTimeout(() => {
+                document.querySelectorAll('.animate-fade-in-up').forEach((element, index) => {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        element.style.opacity = '1';
+                        element.style.transform = 'translateY(0)';
+                    }, 100 + (index * 50));
+                });
+            }, 100);
+
+            // Проверка выбора стола
+            document.querySelector('#TableId')?.addEventListener('change', recalc);
+        });
+
+                // Функция обновления счетчика на мобильной кнопке
+        function updateMobileButtonCounter() {
+            const count = parseInt(document.getElementById('selCountBtn')?.textContent || '0') || 0;
+            document.getElementById('mobileItemCount').textContent = count;
+
+            // Анимация появления при наличии товаров
+            const mobileBtn = document.getElementById('mobileSubmitBtn');
+            if (mobileBtn) {
+                if (count > 0) {
+                    mobileBtn.style.opacity = '1';
+                    mobileBtn.style.transform = 'translateY(0) scale(1)';
+                } else {
+                    mobileBtn.style.opacity = '0.7';
+                    mobileBtn.style.transform = 'translateY(10px) scale(0.95)';
+                }
+            }
+        }
+
+        // Обработчик клика по мобильной кнопке
+        document.getElementById('mobileSubmitBtn')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Плавный скролл к футеру
+            const footer = document.querySelector('.sticky-footer');
+            if (footer) {
+                // Сначала скроллим к контейнеру формы
+                const formContainer = document.querySelector('.create-order');
+                if (formContainer) {
+                    formContainer.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+
+                // Затем через небольшую задержку скроллим к футеру
+                setTimeout(() => {
+                    footer.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'end'
+                    });
+
+                    // Фокус на кнопке через задержку
+                    setTimeout(() => {
+                        const submitBtn = document.getElementById('submitBtn');
+                        if (submitBtn && !submitBtn.disabled) {
+                            submitBtn.focus();
+
+                            // Визуальная обратная связь
+                            submitBtn.style.transform = 'scale(1.03)';
+                            setTimeout(() => {
+                                submitBtn.style.transform = '';
+                            }, 300);
+                        }
+                    }, 400);
+                }, 300);
+            }
+        });
+
+        // Первоначальное скрытие кнопки при загрузке для мобильных
+        document.addEventListener('DOMContentLoaded', function() {
+            updateMobileButtonCounter();
+
+            if (window.innerWidth <= 767.98) {
+                const mobileBtn = document.getElementById('mobileSubmitBtn');
+                if (mobileBtn) {
+                    mobileBtn.style.opacity = '0';
+                    mobileBtn.style.transform = 'translateY(20px) scale(0.9)';
+                    setTimeout(() => {
+                        mobileBtn.style.transition = 'all 0.4s ease';
+                        mobileBtn.style.opacity = document.getElementById('selCountBtn').textContent > '0' ? '1' : '0.7';
+                        mobileBtn.style.transform = 'translateY(0) scale(1)';
+                    }, 300);
+                }
+            }
+        });
+
+        // Скрытие плавающей кнопки при прокрутке вверх
+        let lastScrollTop = 0;
+        let isScrolling = false;
+
+        window.addEventListener('scroll', function() {
+            if (window.innerWidth > 767.98) return;
+
+            const mobileBtn = document.getElementById('mobileSubmitBtn');
+            if (!mobileBtn) return;
+
+            isScrolling = true;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Показать/скрыть кнопку в зависимости от направления прокрутки
+            if (scrollTop > 200) {
+                if (scrollTop > lastScrollTop) {
+                    // Прокрутка вниз - показать кнопку
+                    mobileBtn.style.opacity = '1';
+                    mobileBtn.style.transform = 'translateY(0) scale(1)';
+                } else {
+                    // Прокрутка вверх - скрыть кнопку
+                    mobileBtn.style.opacity = '0';
+                    mobileBtn.style.transform = 'translateY(20px) scale(0.95)';
+                }
+            } else {
+                // Скрыть кнопку вверху страницы
+                mobileBtn.style.opacity = '0';
+                mobileBtn.style.transform = 'translateY(20px) scale(0.95)';
+            }
+
+            lastScrollTop = scrollTop;
+
+            // Сброс флага скроллинга после задержки
+            clearTimeout(this.scrollTimer);
+            this.scrollTimer = setTimeout(() => {
+                isScrolling = false;
+            }, 150);
+        });
+
+        // Обновление счетчика при изменении количества товаров
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new MutationObserver(updateMobileButtonCounter);
+            const targetNode = document.getElementById('selCountBtn');
+
+            if (targetNode) {
+                observer.observe(targetNode, {
+                    characterData: true,
+                    subtree: true,
+                    childList: true
+                });
+            }
+        });
+
+        // Закрытие клавиатуры при нажатии на мобильную кнопку
+        document.getElementById('mobileSubmitBtn')?.addEventListener('click', function() {
+            // Скрыть клавиатуру на мобильных
+            const activeElement = document.activeElement;
+            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+                activeElement.blur();
+            }
+        });
     </script>
 }

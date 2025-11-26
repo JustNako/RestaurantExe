@@ -308,16 +308,16 @@
                     <h6 class="text-muted mb-2">Список заказов</h6>
                     @if (Model != null && Model.Any())
                     {
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover align-middle">
+                        <div class="table-responsive fs-7">
+                            <table class="table table-striped table-hover align-middle table-sm mb-0">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Дата</th>
-                                        <th>Стол</th>
-                                        <th class="text-end">Сумма</th>
-                                        <th>Оплата</th>
-                                        <th class="text-end">Скидка</th>
+                                        <th class="d-none d-md-table-cell ps-1 pe-1">#</th>
+                                        <th class="pe-1">Дата</th>
+                                        <th class="d-none d-sm-table-cell pe-1">Стол</th>
+                                        <th class="text-end pe-2">Сумма</th>
+                                        <th class="pe-1">Оплата</th>
+                                        <th class="text-end pe-1 d-none d-md-table-cell">Скидка</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -325,25 +325,54 @@
                                     {
                                         var sum = o.Items.Sum(i => i.Price * i.Quantity);
                                         var finalAmount = sum - o.Discount;
-                                        string paymentInfo = o.PaymentType switch
+                                        string paymentType = o.PaymentType switch
                                         {
-                                            Restaurant.Entities.PaymentType.Online => $"Онлайн ({finalAmount:N2} ₸)",
-                                            Restaurant.Entities.PaymentType.Cash => $"Наличные ({(o.PaidCash > 0 ? o.PaidCash : finalAmount):N2} ₸)",
-                                            Restaurant.Entities.PaymentType.Card => $"Картой ({(o.PaidCard > 0 ? o.PaidCard : finalAmount):N2} ₸)",
-                                            Restaurant.Entities.PaymentType.Mixed => $"Наличные {o.PaidCash:N2} ₸ + Картой {o.PaidCard:N2} ₸",
+                                            Restaurant.Entities.PaymentType.Cash => "Наличные",
+                                            Restaurant.Entities.PaymentType.Card => "Картой",
+                                            Restaurant.Entities.PaymentType.Mixed => "Смешанная",
                                             _ => o.PaymentType.ToString()
                                         };
+
+                                        string paymentDetails = "";
+                                        if (o.PaymentType == Restaurant.Entities.PaymentType.Mixed)
+                                        {
+                                            paymentDetails = $"Нал.: {o.PaidCash:N0} ₸, Карта: {o.PaidCard:N0} ₸";
+                                        }
+                                        else if (o.PaymentType == Restaurant.Entities.PaymentType.Cash)
+                                        {
+                                            paymentDetails = $"Нал.: {(o.PaidCash > 0 ? o.PaidCash : finalAmount):N0} ₸";
+                                        }
+                                        else if (o.PaymentType == Restaurant.Entities.PaymentType.Card)
+                                        {
+                                            paymentDetails = $"Карта: {(o.PaidCard > 0 ? o.PaidCard : finalAmount):N0} ₸";
+                                        }
                                         <tr>
-                                            <td>@o.Id</td>
-                                            <td><span data-datetime="@o.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@o.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></td>
-                                            <td>@o.Table?.Number</td>
-                                            <td class="text-end">@($"{(sum - o.Discount):N2} ₸")</td>
-                                            <td>@paymentInfo</td>
-                                            <td class="text-end">@($"{o.Discount:N2} ₸")</td>
+                                            <td class="d-none d-md-table-cell ps-1 pe-1">@o.Id</td>
+                                            <td class="pe-1 text-nowrap small">@o.CreatedAt.ToString("dd.MM HH:mm")</td>
+                                            <td class="d-none d-sm-table-cell pe-1 small">@(o.Table?.Number ?? "-")</td>
+                                            <td class="text-end pe-2 fw-bold small">@($"{finalAmount:N0} ₸")</td>
+                                            <td class="pe-1">
+                                                <div class="small">@paymentType</div>
+                                                @if (!string.IsNullOrEmpty(paymentDetails))
+                                                {
+                                                    <div class="text-muted small d-none d-md-block">@paymentDetails</div>
+                                                }
+                                            </td>
+                                            <td class="text-end pe-1 d-none d-md-table-cell @(o.Discount > 0 ? "text-danger" : "") small">
+                                                @if (o.Discount > 0)
+                                                {
+                                                    @($"{o.Discount:N0} ₸")
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="d-md-none mt-2">
+                            <div class="alert alert-info small p-2 mb-0">
+                                <i class="bi bi-info-circle me-1"></i> Проведите влево для просмотра всех колонок
+                            </div>
                         </div>
                     }
                     else

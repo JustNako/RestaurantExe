@@ -233,14 +233,41 @@
             .roles-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats-container {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .roles-title {
                 font-size: 2rem;
+            }
+
+            .actions-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                width: 100%;
+            }
+
+                .actions-section .btn-create {
+                    width: 100%;
+                    max-width: none;
+                    box-sizing: border-box;
+                    padding: 12px 20px;
+                    font-size: 0.95rem;
+                }
+        }
+
+        /* ⚠️ ВАЖНО: этот медиазапрос — НА УРОВНЕ КОРНЯ, НЕ ВНУТРИ ПРЕДЫДУЩЕГО! */
+        @@media (max-width: 400px) {
+            .actions-section .btn-create {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
             }
         }
     </style>

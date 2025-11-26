@@ -172,6 +172,10 @@
         .info-value {
             color: #333;
             font-weight: 500;
+            word-wrap: break-word;
+            white-space: normal;
+            padding: 2px 0; /* Добавляем небольшие отступы */
+            line-height: 1.4; /* Увеличиваем высоту строки для лучшей читаемости */
         }
 
         .qr-actions {
@@ -243,16 +247,67 @@
             .qr-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats-container {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .qr-title {
                 font-size: 2rem;
             }
+
+            .actions-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                width: 100%; /* Явно задайте ширину */
+            }
+                /* Добавьте эти стили для внутренних элементов */
+            .actions-section .btn-create {
+                width: 100%; /* Растягиваем по ширине родителя */
+                max-width: none; /* Убираем возможные ограничения */
+                box-sizing: border-box; /* Учитываем padding и border в ширине */
+                padding: 12px 20px; /* Можно немного уменьшить padding для очень маленьких экранов */
+                font-size: 0.95rem; /* Опционально: уменьшить шрифт */
+            }
+        @@media (max-width: 400px) {
+            .actions-section .btn-create {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem; /* Уменьшаем размер цифр статистики */
+            }
+
+            .icon {
+                display: none;
+            }
+            /* Опционально: чуть уменьшить отступы */
+            .info-row {
+                padding: 10px 0;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .info-label,
+            .info-value {
+                font-size: 0.85rem;
+                line-height: 1.5; 
+            }
+
+            .qr-info > .info-row:first-child {
+                margin-top: 0;
+            }
+
+            .qr-header-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
         }
+    }
     </style>
 }
 
@@ -325,7 +380,9 @@
                     
                     <div class="qr-info">
                         <div class="info-row">
-                            <span class="info-label"><i class="fa-solid fa-copy"></i> Тип:</span>
+                            <span class="info-label">
+                                <span class="icon"><i class="fa-solid fa-copy"></i></span> Тип:
+                            </span>
                             <span class="info-value">
                                 @(qr.Type == Restaurant.Entities.QrLinkType.Table ? "Стол" : "Ссылка")
                             </span>
@@ -334,7 +391,9 @@
                         @if (qr.Type == Restaurant.Entities.QrLinkType.Table && !string.IsNullOrEmpty(qr.TableNumber))
                         {
                             <div class="info-row">
-                                <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
+                                <span class="info-label">
+                                    <span class="icon"><i class="fa-solid fa-table"></i></span> Стол:
+                                </span>
                                 <span class="info-value">№@qr.TableNumber</span>
                             </div>
                         }                        
@@ -350,25 +409,34 @@
                         @if (!string.IsNullOrEmpty(qr.Description))
                         {
                             <div class="info-row">
-                                <span class="info-label"><i class="fa-solid fa-pencil"></i> Описание:</span>
+                                <span class="info-label">
+                                    <span class="icon"><i class="fa-solid fa-pencil"></i></span> Описание:
+                                </span>
                                 <span class="info-value">@qr.Description</span>
                             </div>
                         }
-                        
+
                         <div class="info-row">
-                            <span class="info-label"><i class="fa-regular fa-eye"></i> Сканирований:</span>
+                            <span class="info-label">
+                                <span class="icon"><i class="fa-regular fa-eye"></i></span> Сканирований:
+                            </span>
                             <span class="info-value">@qr.ScanCount</span>
                         </div>
-                        
+
                         <div class="info-row">
-                            <span class="info-label"><i class="fa-solid fa-calendar"></i> Создан:</span>
-                            <span class="info-value"><span data-datetime="@qr.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></span>
+                            <span class="info-label">
+                                <span class="icon"><i class="fa-solid fa-calendar"></i></span> Создан:
+                            </span>
+                            <span data-datetime="@qr.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                            <span class="info-value"></span>
                         </div>
                         
                         @if (qr.ExpiresAt.HasValue)
                         {
                             <div class="info-row">
-                                <span class="info-label">⏰ Истекает:</span>
+                                <span class="info-label">
+                                    <span class="icon"><i class="fa-solid fa-clock"></i></span> Истекает:
+                                </span>
                                 <span class="info-value">@qr.ExpiresAt.Value.ToString("dd.MM.yyyy HH:mm")</span>
                             </div>
                         }

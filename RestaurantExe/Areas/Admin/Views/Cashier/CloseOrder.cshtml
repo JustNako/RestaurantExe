@@ -49,41 +49,9 @@
                     </div>
 
                     <div id="paymentInputs">
-                        <div class="payment-section" data-payment="Cash">
-                            <div class="payment-section-header">
-                                <h6 class="text-success mb-2"><i class="fas fa-money-bill-wave me-1"></i> Наличные</h6>
-                                <p class="text-muted small mb-3">Введите сумму, полученную наличными</p>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-text bg-success text-white">₸</span>
-                                <input type="number"
-                                       name="paidCash"
-                                       id="paidCashCash"
-                                       class="form-control"
-                                       value="@Model.PaidCash"
-                                       step="0.01"
-                                       placeholder="0.00"
-                                       min="0" />
-                            </div>
-                        </div>
+                        
 
-                        <div class="payment-section d-none" data-payment="Card">
-                            <div class="payment-section-header">
-                                <h6 class="text-primary mb-2"><i class="fas fa-credit-card me-1"></i> Картой</h6>
-                                <p class="text-muted small mb-3">Введите сумму, оплачиваемую картой</p>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-text bg-primary text-white">₸</span>
-                                <input type="number"
-                                       name="paidCard"
-                                       id="paidCardCard"
-                                       class="form-control"
-                                       value="@Model.PaidCard"
-                                       step="0.01"
-                                       placeholder="0.00"
-                                       min="0" />
-                            </div>
-                        </div>
+                       
 
                         <div class="payment-section mixed-payment-section d-none" data-payment="Mixed">
                             <div class="mixed-payment-header">
@@ -95,7 +63,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label class="form-label">
-                                            <i class="fas fa-money-bill-wave text-success"></i> Наличными (₸)
+                                            <i class="fas fa-money-bill-wave text-success"></i> Наличными(₸)
                                         </label>
                                         <div class="input-group">
                                             <input type="number"

@@ -63,7 +63,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 Code = qrCode,
                 Type = QrLinkType.Table,
                 TableId = table.Id,
-                Description = $"QR код для стола №{table.Number}",
+                Description = $"Стол №{table.Number}",
                 IsActive = true
             };
 

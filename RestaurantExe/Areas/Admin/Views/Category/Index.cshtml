@@ -222,16 +222,49 @@
             .categories-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .stats-container {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .categories-title {
                 font-size: 2rem;
             }
+
+            .actions-section {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                width: 100%;
+            }
+
+                .actions-section .btn-create {
+                    width: 100%;
+                    max-width: none;
+                    box-sizing: border-box;
+                    padding: 12px 20px;
+                    font-size: 0.95rem;
+                    /* Добавляем перенос слов */
+                    word-wrap: break-word;
+                    white-space: normal;
+                    text-align: center;
+                }
         }
+
+        @@media (max-width: 400px) {
+            .actions-section .btn-create {
+                padding: 8px 12px; /* Уменьшаем padding */
+                font-size: 0.8rem; /* Уменьшаем шрифт */
+                /* Опционально: можно сократить текст */
+                /* Если хотите — замените текст на "➕ Кат." или "➕ Новая" */
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
+    
     </style>
 }
 
@@ -254,7 +287,7 @@
         <div class="actions-section">
             <permission asp-permission="@Restaurant.Authorization.Permissions.Categories.Create">
                 <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="btn-create">
-                    ➕ Создать категорию
+                    ➕ Создать
                 </a>
             </permission>
 

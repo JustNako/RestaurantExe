@@ -361,6 +361,8 @@ namespace Restaurant.Areas.Admin.Controllers
                 order.Table.IsOccupied = false;
             }
 
+            
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));

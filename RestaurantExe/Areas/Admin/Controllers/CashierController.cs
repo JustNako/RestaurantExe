@@ -24,11 +24,12 @@ namespace Restaurant.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var orders = await _context.Orders
-                .Where(o => !o.IsClosed)
+                .Where(o => !o.IsClosed && o.Status != OrderStatus.Cancelled)
                 .Include(o => o.Table)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.Product)
                 .ToListAsync();
+
 
             return View(orders);
         }
