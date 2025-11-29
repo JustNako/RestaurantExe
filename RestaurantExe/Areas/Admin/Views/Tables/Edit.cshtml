@@ -14,10 +14,6 @@
         <input asp-for="Number" class="form-control" />
         <span asp-validation-for="Number" class="text-danger"></span>
     </div>
-    <div class="form-check mb-3">
-        <input asp-for="IsOccupied" class="form-check-input" />
-        <label class="form-check-label">Занят</label>
-    </div>
     <button asp-action="Dashboard" type="submit" class="btn btn-primary">Сохранить</button>
     <a asp-action="Dashboard" class="btn btn-secondary">Назад</a>
 </form>

@@ -553,6 +553,37 @@
     </style>
 }
 
+
+@{
+    var active = Model.FirstOrDefault(s => s.ClosedAt == null);
+}
+
+<div class="active-shift-card">
+    <div class="active-shift-content">
+        @if (active != null)
+        {
+            <div class="shift-status">Активная смена</div>
+            <div class="shift-header">
+                <div class="shift-details">
+                    <div class="shift-time">Открыта: @active.OpenedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    <div class="shift-cashier">Кассир: @active.OpenedBy</div>
+                </div>
+                <div class="shift-cash">
+                    <div class="cash-label">Наличные при открытии</div>
+                    <div class="cash-amount">@($"{active.OpeningCash:N2} ₸")</div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="no-active-shift">
+                <div class="mb-3">🕒 В данный момент нет активной смены</div>
+                <div class="text-muted">Откройте новую смену для начала работы с заказами</div>
+            </div>
+        }
+    </div>
+</div>
+
 <div class="shifts-page">
     <div class="page-header">
         <h1 class="page-title">⏱️ Смены</h1>
@@ -565,6 +596,8 @@
             </a>
         </div>
     </div>
+
+
 
     @if (TempData["SuccessMessage"] != null)
     {
@@ -582,35 +615,7 @@
         </div>
     }
 
-    @{
-        var active = Model.FirstOrDefault(s => s.ClosedAt == null);
-    }
-
-    <div class="active-shift-card">
-        <div class="active-shift-content">
-            @if (active != null)
-            {
-                <div class="shift-status">Активная смена</div>
-                <div class="shift-header">
-                    <div class="shift-details">
-                        <div class="shift-time">Открыта: @active.OpenedAt.ToString("dd.MM.yyyy HH:mm")</div>
-                        <div class="shift-cashier">Кассир: @active.OpenedBy</div>
-                    </div>
-                    <div class="shift-cash">
-                        <div class="cash-label">Наличные при открытии</div>
-                        <div class="cash-amount">@($"{active.OpeningCash:N2} ₸")</div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="no-active-shift">
-                    <div class="mb-3">🕒 В данный момент нет активной смены</div>
-                    <div class="text-muted">Откройте новую смену для начала работы с заказами</div>
-                </div>
-            }
-        </div>
-    </div>
+    
 
     <div class="history-section">
         <div class="section-header">

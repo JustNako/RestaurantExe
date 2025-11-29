@@ -23,7 +23,11 @@ namespace Restaurant.Entities
         public Shift? Shift { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.New; // Новый статус по умолчанию
 
+        //public Place Place { get; set; }
+
     }
+
+   
 
     public enum PaymentType
     {

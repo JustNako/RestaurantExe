@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Data;
 using Restaurant.Entities;
@@ -108,7 +109,11 @@ namespace RestaurantExe.Controllers
             {
                 var cart = GetCartFromSession();
                 if (cart == null || cart.Count == 0)
+                {
                     return Json(new { success = false, message = "Корзина пуста" });
+                    
+                }
+                
 
                 // Find table by qrCode
                 var qrLink = await _context.QrLinks.FirstOrDefaultAsync(q => q.Code == qrCode);

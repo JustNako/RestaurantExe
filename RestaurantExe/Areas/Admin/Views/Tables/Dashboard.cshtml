@@ -6,374 +6,302 @@
 
 @section Styles {
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --free-color: #28a745;
-            --occupied-color: #dc3545;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            --hover-transform: translateY(-5px);
-            --active-transform: translateY(-8px);
-            --transition: all 0.3s ease;
-        }
-
-        .tables-dashboard {
-            background: var(--primary-gradient);
-            min-height: 100vh;
-            padding: 15px;
-        }
-
-        .dashboard-header {
-            background: white;
-            border-radius: 20px;
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--card-shadow);
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .dashboard-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
-        }
+            .header h1 {
+                font-size: 2.2rem;
+                color: #333;
+                margin-bottom: 5px;
+            }
 
-        .dashboard-subtitle {
-            font-size: 1rem;
-            color: #666;
-        }
+            .header p {
+                color: #666;
+                font-size: 1.1rem;
+            }
 
-        .stats-container {
+        /* Статистика */
+        .stats {
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
 
-        .stat-card {
+        .stat {
             background: white;
-            border-radius: 15px;
-            padding: 15px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            flex: 1 0 120px;
-            max-width: 150px;
+            min-width: 140px;
         }
 
         .stat-number {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 3px;
+            font-weight: bold;
+            margin: 5px 0;
         }
 
         .stat-label {
+            font-size: 0.9rem;
             color: #666;
-            font-size: 0.85rem;
         }
 
+        /* Фильтры и поиск */
         .filters {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .filters-row {
-            display: flex;
-            gap: 10px;
+            gap: 15px;
+            align-items: center;
             flex-wrap: wrap;
             justify-content: center;
+            margin: 20px 0;
         }
-
-        .btn-group {
-            flex-wrap: wrap;
-        }
-
-            .btn-group .btn {
-                flex: 1;
-                min-width: 80px;
-                border-radius: 50px;
-                padding: 6px 12px;
-                font-size: 0.85rem;
-            }
 
         .search-box {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 8px 12px;
-            width: 100%;
-            max-width: 300px;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            font-size: 1rem;
+            width: 250px;
+            max-width: 100%;
         }
 
+        .filter-btns {
+            display: flex;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            min-width: 100px;
+            text-align: center;
+        }
+
+            .filter-btn.active {
+                background: #6c757d;
+                color: white;
+            }
+
+            .filter-btn.free {
+                color: #28a745;
+            }
+
+                .filter-btn.free.active {
+                    background: #28a745;
+                    color: white;
+                }
+
+            .filter-btn.occupied {
+                color: #dc3545;
+            }
+
+                .filter-btn.occupied.active {
+                    background: #dc3545;
+                    color: white;
+                }
+
+        /* Сетка столов */
         .tables-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
 
         .table-card {
             background: white;
-            border-radius: 20px;
+            border: 2px solid #eee;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: var(--card-shadow);
-            transition: var(--transition);
-            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
             cursor: pointer;
-            user-select: none;
-            min-height: 180px;
         }
 
             .table-card:hover {
-                transform: var(--hover-transform);
-                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            }
-
-            .table-card:active {
-                transform: translateY(-2px);
-                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-            }
-
-            .table-card.actions-active {
-                transform: var(--active-transform);
-                box-shadow: 0 20px 45px rgba(0,0,0,0.2);
-                z-index: 10;
-            }
-
-            .table-card.free {
-                border-left: 4px solid var(--free-color);
-            }
-
-            .table-card.occupied {
-                border-left: 4px solid var(--occupied-color);
+                transform: translateY(-4px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             }
 
         .table-number {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
             text-align: center;
-        }
-
-        .table-status {
-            text-align: center;
-            margin-bottom: 15px;
         }
 
         .status-badge {
-            padding: 6px 16px;
-            border-radius: 25px;
-            font-weight: 600;
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
             font-size: 0.9rem;
+            margin: 5px 0;
         }
 
         .status-free {
-            background: linear-gradient(135deg, var(--free-color), #20c997);
-            color: white;
+            background: #e9f7ef;
+            color: #28a745;
+            border: 1px solid #28a745;
         }
 
         .status-occupied {
-            background: linear-gradient(135deg, var(--occupied-color), #fd7e14);
-            color: white;
+            background: #fdecea;
+            color: #dc3545;
+            border: 1px solid #dc3545;
         }
 
-        .table-actions {
+        .actions {
             display: none;
-            flex-direction: column;
-            gap: 10px;
-            justify-content: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            margin-top: 10px;
-            transition: var(--transition);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            gap: 8px;
         }
 
-            .table-actions.show {
+            .actions.show {
                 display: flex;
+                flex-direction: column;
             }
 
-        .btn-table {
+        .action-btn {
             padding: 8px 15px;
-            border-radius: 12px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
+            border: 1px solid #ddd;
+            border-radius: 8px;
             text-decoration: none;
             display: block;
             text-align: center;
-            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s ease;
         }
 
-        .btn-create-order {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-        }
-
-            .btn-create-order:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+            .action-btn:hover {
+                background: #f8f9fa;
             }
 
-        .btn-edit {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
-        }
-
-            .btn-edit:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            .action-btn.create {
+                background: #007bff;
+                color: white;
+                border: none;
             }
 
-        .btn-delete {
-            background: linear-gradient(135deg, var(--occupied-color), #fd7e14);
-            color: white;
-        }
-
-            .btn-delete:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            .action-btn.edit {
+                background: #ffc107;
+                color: #212529;
+                border: none;
             }
 
-        .btn-qr {
-            background: linear-gradient(135deg, #6f42c1, #e83e8c);
-            color: white;
-        }
-
-            .btn-qr:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(111, 66, 193, 0.3);
+            .action-btn.delete {
+                background: #dc3545;
+                color: white;
+                border: none;
             }
 
-        .refresh-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--free-color), #20c997);
+            .action-btn.qr {
+                background: #6f42c1;
+                color: white;
+                border: none;
+            }
+
+        /* Кнопка добавления */
+        .add-table-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 12px 25px;
+            background: #28a745;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            transition: var(--transition);
-            z-index: 100;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s ease;
         }
 
-            .refresh-btn:hover {
-                transform: rotate(180deg) scale(1.05);
-                box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            .add-table-btn:hover {
+                background: #218838;
             }
 
-        .no-tables {
-            background: white;
-            border-radius: 20px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: var(--card-shadow);
-            margin: 20px 10px;
-        }
-
-        .no-tables-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        /* Modal Styles */
+        /* Модальное окно */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            padding: 15px;
+            padding: 20px;
         }
 
         .modal-content {
             background: white;
-            border-radius: 20px;
-            padding: 25px 20px;
+            border-radius: 12px;
+            padding: 25px;
             width: 100%;
-            max-width: 480px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: modalSlideIn 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        @@keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            text-align: center;
-            margin-bottom: 20px;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 8px;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
         }
 
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
         }
 
         .form-label {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 8px;
             display: block;
-            font-size: 0.95rem;
+            margin-bottom: 5px;
+            font-weight: 500;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
         .modal-actions {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin-top: 20px;
         }
 
         .btn-modal {
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-weight: 600;
+            padding: 8px 15px;
             border: none;
+            border-radius: 8px;
             cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            text-align: center;
-            width: 100%;
+            font-weight: 500;
+            flex: 1;
         }
 
         .btn-cancel {
@@ -381,286 +309,211 @@
             color: white;
         }
 
-            .btn-cancel:hover {
-                background: #5a6268;
-                transform: translateY(-2px);
-            }
-
         .btn-save {
-            background: linear-gradient(135deg, var(--free-color), #20c997);
+            background: #28a745;
             color: white;
         }
 
-            .btn-save:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-            }
+        /* Адаптивность */
+        @@media (max-width: 768px) {
+            .tables-grid
 
-        /* Responsive Adjustments */
-        @@media (min-width: 768px) {
-            .tables-dashboard {
-                padding: 25px;
-            }
-
-            .dashboard-header {
-                padding: 30px;
-                margin-bottom: 30px;
-            }
-
-            .dashboard-title {
-                font-size: 2.5rem;
-            }
-
-            .dashboard-subtitle {
-                font-size: 1.2rem;
-            }
-
-            .stats-container {
-                gap: 30px;
-                margin-bottom: 30px;
-            }
-
-            .stat-card {
-                padding: 20px;
-                min-width: 150px;
-                max-width: unset;
-            }
-
-            .stat-number {
-                font-size: 2rem;
-            }
-
-            .filters {
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .filters-row {
-                flex-direction: row;
-                gap: 15px;
-            }
-
-            .btn-group {
-                flex-wrap: nowrap;
-            }
-
-            .tables-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 20px;
-                margin-top: 20px;
-            }
-
-            .table-card {
-                padding: 25px;
-                min-height: 200px;
-            }
-
-            .table-number {
-                font-size: 2rem;
-                margin-bottom: 15px;
-            }
-
-            .refresh-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-                bottom: 30px;
-                right: 30px;
-            }
-
-            .modal-content {
-                padding: 30px;
-                max-width: 500px;
-            }
-
-            .modal-title {
-                font-size: 1.8rem;
-            }
-
-            .modal-actions {
-                flex-direction: row;
-                justify-content: center;
-            }
-
-            .btn-modal {
-                width: auto;
-                min-width: 120px;
-            }
+        {
+            grid-template-columns: 1fr;
         }
 
-        @@media (max-width: 576px) {
-            .dashboard-title {
-                font-size: 1.6rem;
-            }
+        .search-box {
+            width: 100% !important;
+            margin-bottom: 10px;
+        }
 
-            .stat-number {
-                font-size: 1.6rem;
-            }
+        .filter-btns {
+            width: 100% !important;
+            margin-top: 5px;
+            justify-content: center;
+        }
 
-            .table-number {
-                font-size: 1.4rem;
-            }
+        .stat {
+            min-width: 120px;
+            padding: 10px 15px;
+        }
 
-            .table-actions {
-                padding: 8px;
-            }
+        .table-card {
+            padding: 15px;
+        }
 
-            .btn-table {
-                padding: 6px 10px;
-                font-size: 0.8rem;
-            }
+        }
+        @@media (max-width: 460px) {
+            body
 
-            .refresh-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1.1rem;
-                bottom: 15px;
-                right: 15px;
-            }
+        {
+            padding: 10px;
+        }
 
-            .no-tables {
-                padding: 25px 15px;
-            }
+        .dashboard-container {
+            max-width: 100%;
+            padding: 0 10px;
+        }
 
-            .no-tables-icon {
-                font-size: 2.5rem;
-            }
-            
-            /* ... другие стили ... */
+        .header h1 {
+            font-size: 1.6rem;
+        }
 
-            .btn-group {
-                display: flex;
-                border-radius: 50px;
-                overflow: hidden;
-                border: 2px solid #e9ecef; /* Общая рамка для всей группы */
-                background-color: white;
-            }
+        .header p {
+            font-size: 1rem;
+        }
 
-            .btn-group .btn {
-                flex: 1;
-                min-width: 70px;
-                padding: 4px 8px;
-                font-size: 0.75rem;
-                margin: 0;
-                border: none; /* Убираем индивидуальные границы */
-                border-radius: 0; /* Сначала сбрасываем все радиусы */
-                transition: all 0.2s ease;
-            }
-                    /* Первый элемент - закругляем только левый край */
-            .btn-group .btn:first-child {
-                border-top-left-radius: 50px;
-                border-bottom-left-radius: 50px;
-            }
-            /* Последний элемент - закругляем только правый край */
-            .btn-group .btn:last-child {
-                border-top-right-radius: 50px;
-                border-bottom-right-radius: 50px;
-            }
-            /* Активная кнопка */
-            .btn-group .btn.active {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-            }
-            /* Кнопка "Свободные" */
-            .btn-group .btn.btn-outline-success {
-                color: var(--free-color);
-                border: none;
-                background-color: transparent;
-            }
+        .stats {
+            flex-direction: column;
+            gap: 12px;
+            margin: 15px 0;
+        }
 
-            .btn-group .btn.btn-outline-success.active {
-                background-color: var(--free-color);
-                color: white;
-                border: none;
-            }
-                /* Кнопка "Занятые" */
-            .btn-group .btn.btn-outline-danger {
-                color: var(--occupied-color);
-                border: none;
-                background-color: transparent;
-            }
+        .stat {
+            min-width: auto;
+            width: 100%;
+            padding: 12px 15px;
+        }
 
-            .btn-group .btn.btn-outline-danger.active {
-                background-color: var(--occupied-color);
-                color: white;
-                border: none;
-            }
-        
-     }
-    </style>
+        .filters {
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .search-box {
+            width: 100% !important;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+
+        .filter-btns {
+            width: 100% !important;
+            justify-content: space-between;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .filter-btn {
+            min-width: auto;
+            flex: 1;
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .tables-grid {
+            grid-template-columns: 1fr !important;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .table-card {
+            padding: 15px 12px;
+        }
+
+        .table-number {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 5px 12px;
+        }
+
+        .actions {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .action-btn {
+            font-size: 0.9rem;
+            padding: 7px 10px;
+        }
+
+        .add-table-btn {
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 12px;
+        }
+
+        /* Модальное окно под 460 */
+        .modal-content {
+            max-width: 320px;
+            padding: 20px 15px;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            font-size: 0.9rem;
+            padding: 8px 10px;
+        }
+
+        .btn-modal {
+            font-size: 0.9rem;
+            padding: 7px 10px;
+        }
+
+        }</style>
 }
 
-<div class="tables-dashboard">
+<div class="dashboard-container">
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 280px; max-width: 90%;">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 280px;">
             @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    @if (TempData["InfoMessage"] != null)
-    {
-        <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 280px; max-width: 90%;">
-            @TempData["InfoMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="header">
+        <h1>Статус столов</h1>
+        <p>Мониторинг занятости столов</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-number" style="color: #28a745;">@Model.Count(t => !t.IsOccupied)</div>
+            <div class="stat-label">🟢 Свободно</div>
         </div>
-    }
-
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">Статус столов</h1>
-        <p class="dashboard-subtitle">Мониторинг занятости столов в реальном времени</p>
-
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-number" style="color: var(--free-color);">@Model.Count(t => !t.IsOccupied)</div>
-                <div class="stat-label">🟢 Свободно</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: var(--occupied-color);">@Model.Count(t => t.IsOccupied)</div>
-                <div class="stat-label">🔴 Занято</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #007bff;">@Model.Count</div>
-                <div class="stat-label">📊 Всего</div>
-            </div>
+        <div class="stat">
+            <div class="stat-number" style="color: #dc3545;">@Model.Count(t => t.IsOccupied)</div>
+            <div class="stat-label">🔴 Занято</div>
         </div>
-
-        <div class="filters">
-            <div class="filters-row">
-                <div class="input-group w-100">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input id="tableSearch" type="text" class="form-control search-box" placeholder="Поиск по номеру стола..." />
-                </div>
-            </div>
-            <div class="filters-row">
-                <div class="btn-group w-100" role="group">
-                    <button type="button" class="btn btn-outline-secondary active" data-filter="all">Все</button>
-                    <button type="button" class="btn btn-outline-success" data-filter="free">Свободные</button>
-                    <button type="button" class="btn btn-outline-danger" data-filter="occupied">Занятые</button>
-                </div>
-            </div>
+        <div class="stat">
+            <div class="stat-number">@Model.Count</div>
+            <div class="stat-label">📊 Всего</div>
         </div>
+    </div>
 
-        <div class="text-center mt-3">
-            <p class="text-muted mb-3">💡 Нажмите на карточку стола для действий</p>
-            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
-                <button class="btn btn-success btn-lg px-4" onclick="showAddTableForm()">
-                    ➕ Добавить стол
-                </button>
-            </permission>
+    <div class="filters">
+        <input id="tableSearch" type="text" class="search-box" placeholder="Поиск по номеру..." />
+        <div class="filter-btns">
+            <div class="filter-btn active" data-filter="all">Все</div>
+            <div class="filter-btn free" data-filter="free">Свободные</div>
+            <div class="filter-btn occupied" data-filter="occupied">Занятые</div>
         </div>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="no-tables">
-            <div class="no-tables-icon">🪑</div>
-            <h3>Столы не найдены</h3>
-            <p class="mb-3">Добавьте столы для начала работы</p>
-            <button class="btn btn-success px-4 py-2" onclick="showAddTableForm()">➕ Добавить стол</button>
+        <div style="text-align: center; padding: 40px; background: white; border-radius: 12px; margin: 20px 0;">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🪑</div>
+            <h3>Нет столов</h3>
+            <p>Добавьте первый стол, чтобы начать работу.</p>
+            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+                <a href="#" onclick="showAddTableForm()" class="add-table-btn">➕ Добавить стол</a>
+            </permission>
         </div>
     }
     else
@@ -668,56 +521,34 @@
         <div class="tables-grid">
             @foreach (var table in Model.OrderBy(t => t.Number))
             {
-                <div class="table-card @(table.IsOccupied ? "occupied" : "free")" data-number="@table.Number" data-status="@(table.IsOccupied ? "occupied" : "free")" onclick="toggleTableActions(this, event)">
+                <div class="table-card" data-number="@table.Number" data-status="@(table.IsOccupied ? "occupied" : "free")">
                     <div class="table-number">Стол №@table.Number</div>
-
-                    <div class="table-status">
-                        @if (table.IsOccupied)
+                    <div class="status-badge @(table.IsOccupied ? "status-occupied" : "status-free")">
+                        @(table.IsOccupied ? "🔴 Занят" : "🟢 Свободен")
+                    </div>
+                    <div class="actions">
+                        @if (!table.IsOccupied)
                         {
-                            <span class="status-badge status-occupied">🔴 Занят</span>
+                            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+                                <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@table.Id" class="action-btn create">➕ Создать заказ</a>
+                            </permission>
                         }
                         else
                         {
-                            <span class="status-badge status-free">🟢 Свободен</span>
+                            <span class="action-btn" style="opacity: 0.6; cursor: not-allowed;">⏳ Стол занят</span>
                         }
-                    </div>
 
-                    <div class="table-actions">
-                        <div class="d-grid gap-2">
-                            @if (!table.IsOccupied)
-                            {
-                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
-                                    <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@table.Id" class="btn-table btn-create-order">
-                                        ➕ Создать заказ
-                                    </a>
-                                </permission>
-                            }
-                            else
-                            {
-                                <span class="btn-table btn-create-order disabled" style="opacity: 0.6; cursor: not-allowed;">
-                                    ⏳ Стол занят
-                                </span>
-                            }
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
+                            <a asp-action="Edit" asp-route-id="@table.Id" class="action-btn edit">✏️ Редактировать</a>
+                        </permission>
 
-                            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
-                                <a asp-action="Edit" asp-route-id="@table.Id" class="btn-table btn-edit">
-                                    ✏️ Редактировать
-                                </a>
+                        <div style="display: flex; gap: 8px; width: 100%;">
+                            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
+                                <a asp-action="Delete" asp-route-id="@table.Id" class="action-btn delete">🗑️ Удалить</a>
                             </permission>
-
-                            <div class="d-flex gap-2">
-                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
-                                    <a asp-action="Delete" asp-route-id="@table.Id" class="btn-table btn-delete w-100">
-                                        🗑️ Удалить
-                                    </a>
-                                </permission>
-
-                                <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
-                                    <a asp-controller="Qr" asp-action="ShowTableQr" asp-route-tableId="@table.Id" class="btn-table btn-qr w-100">
-                                        📱 QR-код
-                                    </a>
-                                </permission>
-                            </div>
+                            <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.View">
+                                <a asp-controller="Qr" asp-action="ShowTableQr" asp-route-tableId="@table.Id" class="action-btn qr">📱 QR-код</a>
+                            </permission>
                         </div>
                     </div>
                 </div>
@@ -725,182 +556,105 @@
         </div>
     }
 
-    <button class="refresh-btn" onclick="location.reload()" title="Обновить статус">
-        🔄
-    </button>
+    <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+        <a href="#" onclick="showAddTableForm()" class="add-table-btn">➕ Добавить стол</a>
+    </permission>
 </div>
 
-<!-- Модальное окно для добавления стола -->
+<!-- Модальное окно -->
 <div id="addTableModal" class="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header">
-            <h2 class="modal-title"><i class="fa-solid fa-table"></i> Добавить новый стол</h2>
-            <p class="text-muted">Введите номер нового стола</p>
-        </div>
-
+        <h3 class="modal-title">➕ Добавить стол</h3>
         <form id="addTableForm" asp-area="Admin" asp-controller="Tables" asp-action="Create" method="post">
             <div class="form-group">
-                <label for="tableNumber" class="form-label">Номер стола</label>
-                <input type="text" id="tableNumber" name="Number" class="form-control"
-                       placeholder="Например: 1, 2, 3..." required>
-                <small class="text-muted">Номер может содержать буквы и цифры</small>
+                <label class="form-label">Номер стола</label>
+                <input type="text" id="tableNumber" name="Number" class="form-control" required placeholder="Например: 1, A1, Бар-1" />
             </div>
-
             <div class="modal-actions">
-                <button type="button" class="btn-modal btn-cancel" onclick="hideAddTableForm()">
-                    ❌ Отмена
-                </button>
-                <button type="submit" class="btn-modal btn-save">
-                    ✅ Добавить стол
-                </button>
+                <button type="button" class="btn-modal btn-cancel" onclick="hideAddTableForm()">❌ Отмена</button>
+                <button type="submit" class="btn-modal btn-save">✅ Добавить</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Список существующих номеров столов
-        const existingTableNumbers = Array.from(document.querySelectorAll('.table-card'))
-            .map(card => card.dataset.number.toLowerCase());
+    // Фильтрация и поиск
+    let activeFilter = 'all';
+    const searchInput = document.getElementById('tableSearch');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.table-card');
 
-        const addTableForm = document.getElementById('addTableForm');
-        const tableNumberInput = document.getElementById('tableNumber');
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
 
-        addTableForm.addEventListener('submit', function(e) {
-            const newNumber = tableNumberInput.value.trim().toLowerCase();
-            if (!newNumber) {
-                alert('Пожалуйста, введите номер стола');
-                e.preventDefault();
-                return;
-            }
+        cards.forEach(card => {
+            const cardNumber = card.dataset.number.toLowerCase();
+            const cardStatus = card.dataset.status;
 
-            if (existingTableNumbers.includes(newNumber)) {
-                alert(`Стол с номером "${tableNumberInput.value.trim()}" уже существует!`);
-                e.preventDefault();
-            }
+            const matchesSearch = !searchTerm || cardNumber.includes(searchTerm);
+            const matchesFilter = activeFilter === 'all' || cardStatus === activeFilter;
+
+            card.style.display = matchesSearch && matchesFilter ? 'block' : 'none';
+        });
+    }
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.filter;
+            applyFilters();
         });
     });
 
-    // Функции модального окна
+    searchInput.addEventListener('input', applyFilters);
+
+    // Показ/скрытие действий
+    document.addEventListener('click', function(e) {
+        const card = e.target.closest('.table-card');
+        if (!card) return;
+
+        // Закрываем все открытые действия
+        document.querySelectorAll('.table-card .actions.show').forEach(el => el.classList.remove('show'));
+
+        // Открываем текущие
+        const actions = card.querySelector('.actions');
+        if (actions) {
+            actions.classList.add('show');
+        }
+    });
+
+    // Модальное окно
     function showAddTableForm() {
-        const modal = document.getElementById('addTableModal');
-        modal.style.display = 'flex';
+        document.getElementById('addTableModal').style.display = 'flex';
         document.getElementById('tableNumber').focus();
     }
 
     function hideAddTableForm() {
-        const modal = document.getElementById('addTableModal');
-        modal.style.display = 'none';
+        document.getElementById('addTableModal').style.display = 'none';
         document.getElementById('addTableForm').reset();
     }
 
-    // Закрытие модального окна при клике вне его
     document.getElementById('addTableModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            hideAddTableForm();
-        }
+        if (e.target === this) hideAddTableForm();
     });
 
-    // Фильтрация и поиск
-    (function(){
-        const buttons = document.querySelectorAll('.filters [data-filter]');
-        const search = document.getElementById('tableSearch');
-        const cards = Array.from(document.querySelectorAll('.table-card'));
-        let activeFilter = 'all';
-
-        function applyFilter() {
-            const searchTerm = (search?.value || '').trim().toLowerCase();
-
-            cards.forEach(card => {
-                const matchesStatus = activeFilter === 'all' ||
-                                     card.dataset.status === activeFilter;
-
-                const matchesSearch = !searchTerm ||
-                                     card.dataset.number.toLowerCase().includes(searchTerm);
-
-                card.style.display = (matchesStatus && matchesSearch) ? 'block' : 'none';
-            });
-        }
-
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                buttons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                activeFilter = button.dataset.filter;
-                applyFilter();
-            });
-        });
-
-        if (search) {
-            search.addEventListener('input', applyFilter);
-            search.addEventListener('focus', () => {
-                // Скрываем открытые действия при фокусе на поиск
-                document.querySelectorAll('.table-actions').forEach(actions => {
-                    actions.classList.remove('show');
-                    actions.closest('.table-card').classList.remove('actions-active');
-                });
-            });
-        }
-
-        applyFilter();
-    })();
-
-    // Функция переключения действий стола
-    function toggleTableActions(card, event) {
-        // Не реагировать на клики по кнопкам действий
-        if (event.target.closest('.table-actions') ||
-            event.target.closest('.btn-table')) {
+    // Проверка дубликатов при отправке формы
+    document.getElementById('addTableForm').addEventListener('submit', function(e) {
+        const number = document.getElementById('tableNumber').value.trim();
+        if (!number) {
+            alert('Введите номер стола');
+            e.preventDefault();
             return;
         }
 
-        const actions = card.querySelector('.table-actions');
-        const isActive = card.classList.contains('actions-active');
-
-        // Скрыть все открытые панели действий
-        document.querySelectorAll('.table-card').forEach(otherCard => {
-            if (otherCard !== card) {
-                otherCard.classList.remove('actions-active');
-                otherCard.querySelector('.table-actions').classList.remove('show');
-            }
-        });
-
-        // Переключить текущую панель
-        if (isActive) {
-            card.classList.remove('actions-active');
-            actions.classList.remove('show');
-        } else {
-            card.classList.add('actions-active');
-            actions.classList.add('show');
-        }
-    }
-
-    // Закрытие панелей при клике вне карточек
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.table-card') && !e.target.closest('.table-actions')) {
-            document.querySelectorAll('.table-card').forEach(card => {
-                card.classList.remove('actions-active');
-                card.querySelector('.table-actions').classList.remove('show');
-            });
+        const existingNumbers = Array.from(cards).map(c => c.dataset.number.toLowerCase());
+        if (existingNumbers.includes(number.toLowerCase())) {
+            alert(`Стол "${number}" уже существует!`);
+            e.preventDefault();
         }
     });
-
-    // Анимация появления карточек
-    document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.table-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                card.style.transition = 'all 0.5s ease';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
-        });
-    });
-
-    // Автообновление каждые 45 секунд
     setInterval(function() {
         // Сохраняем открытые состояния перед перезагрузкой
         const openCards = Array.from(document.querySelectorAll('.table-card.actions-active'))
@@ -912,3 +666,13 @@
         // openCards.forEach(number => { /* восстановить состояние */ });
     }, 45000);
 </script>
+
+
+
+
+
+
+
+
+
+        
