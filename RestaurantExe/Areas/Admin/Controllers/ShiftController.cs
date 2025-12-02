@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Restaurant.Authorization;
 using Restaurant.Data;
 using Restaurant.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Restaurant.Authorization;
+using System.Security.Claims;
 
 namespace Restaurant.Areas.Admin.Controllers
 {
@@ -43,7 +44,11 @@ namespace Restaurant.Areas.Admin.Controllers
             {
                 OpenedAt = DateTime.Now,
                 OpenedBy = User.Identity.Name ?? "Admin",
-                OpeningCash = openingCash
+                OpeningCash = openingCash,
+                Role = User.Claims
+                    .FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value
+                    ?? User.FindFirstValue(ClaimTypes.Role)
+                    ?? "User"
             };
 
             _context.Shifts.Add(shift);

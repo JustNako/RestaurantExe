@@ -147,6 +147,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 }
             }
 
+            
             // Создаём заказ
             var order = new Order
             {
@@ -154,7 +155,9 @@ namespace Restaurant.Areas.Admin.Controllers
                 CreatedAt = DateTime.Now,
                 TotalPrice = totalAmount,
                 Items = orderItems,
-                ShiftId = activeShift.Id
+                ShiftId = activeShift.Id,
+                Place = vm.Place
+
             };
 
             _context.Orders.Add(order);

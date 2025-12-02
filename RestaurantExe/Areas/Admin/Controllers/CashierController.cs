@@ -27,8 +27,13 @@ namespace Restaurant.Areas.Admin.Controllers
                 .Where(o => !o.IsClosed && o.Status != OrderStatus.Cancelled)
                 .Include(o => o.Table)
                 .Include(o => o.Items)
-                    .ThenInclude(i => i.Product)
+                .ThenInclude(i => i.Product)
                 .ToListAsync();
+
+            foreach (var order in orders)
+            {
+                order.Items ??= new List<OrderItem>();
+            }
 
 
             return View(orders);
@@ -45,6 +50,8 @@ namespace Restaurant.Areas.Admin.Controllers
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null) return NotFound();
+
+            order.Items ??= new();
 
             return View(order);
         }
@@ -174,6 +181,8 @@ namespace Restaurant.Areas.Admin.Controllers
             {
                 TempData["WarningMessage"] = "Низкий остаток: " + string.Join(", ", lowAfterDeduct);
             }
+
+            
 
             return RedirectToAction("PrintReceipt", new { id = order.Id });
         }

@@ -6,7 +6,7 @@ namespace Restaurant.Entities
     public class Order
     {
         public int Id { get; set; }
-        public int TableId { get; set; }
+        public int? TableId { get; set; }
         public Table Table { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool IsClosed { get; set; }
@@ -23,11 +23,18 @@ namespace Restaurant.Entities
         public Shift? Shift { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.New; // Новый статус по умолчанию
 
-        //public Place Place { get; set; }
+        public Place Place { get; set; }
 
     }
 
-   
+
+
+    public enum Place
+    {
+        DineIn,
+        Takeaway,
+        Delivery
+    }
 
     public enum PaymentType
     {

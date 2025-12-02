@@ -7,11 +7,14 @@ namespace Restaurant.ViewModels
     {
         public List<Category> Categories { get; set; } = new();
         public List<Table> Tables { get; set; } = new();
-        public int TableId { get; set; }
+        public int? TableId { get; set; }
         public List<Product> Products { get; set; } = new();
 
         [Required(ErrorMessage = "Добавьте хотя бы один продукт.")]
         public List<OrderProductInput> ProductsWithQuantity { get; set; } = new();
+
+        [Required(ErrorMessage = "Укажите, как будет выполнен заказ.")]
+        public Place Place { get; set; }
     }
 
     public class OrderProductInput
@@ -23,8 +26,11 @@ namespace Restaurant.ViewModels
     public class EditOrderViewModel
     {
         public int Id { get; set; }
-        public int TableId { get; set; }
+        public int? TableId { get; set; }
         public List<Table> Tables { get; set; } = new();
+
+        [Required(ErrorMessage = "Укажите, как будет выполнен заказ.")]
+        public Place Place { get; set; }
         public List<Category> Categories { get; set; } = new();
         public List<Product> Products { get; set; } = new();
         public List<OrderProductInput> ProductsWithQuantity { get; set; } = new();

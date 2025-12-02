@@ -464,9 +464,25 @@
                     
                     <div class="order-info">
                         <div class="info-row">
-                            <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
-                            <span class="info-value">№@order.Table?.Number</span>
+                            @if (order.Place == Place.DineIn && order.Table != null)
+                            {
+                                <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
+                                <span class="info-value">№@order.Table.Number</span>
+                            }
+                            else if (order.Place == Place.Delivery)
+                            {
+                                <span class="info-label"><i class="fa-solid fa-truck"></i> Доставка</span>
+                            }
+                            else if (order.Place == Place.Takeaway)
+                            {
+                                <span class="info-label"><i class="fa-solid fa-box"></i> С собой</span>
+                            }
+                            else
+                            {
+                                <span class="info-label"><i class="fa-solid fa-question"></i> Без стола</span>
+                            }
                         </div>
+
                         <div class="info-row">
                             <span class="info-label"><i class="bi bi-calendar-event-fill"></i> Дата:</span>
                             <span class="info-value"><span data-datetime="@order.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@order.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span></span>

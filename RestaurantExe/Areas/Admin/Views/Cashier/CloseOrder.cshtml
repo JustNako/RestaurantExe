@@ -13,17 +13,43 @@
     <div class="col-md-6 col-lg-5">
         <div class="card shadow">
             <div class="card-body">
-                <h5 class="card-title">Стол №@Model.Table.Number</h5>
-                <div class="alert alert-info mb-3">
-                    <small>💡 При закрытии заказа стол №@Model.Table.Number будет автоматически освобожден</small>
-                </div>
+                <h5 class="card-title">
+                    @if (Model.Place == Place.DineIn && Model.Table != null)
+                    {
+                        <text>Стол №@Model.Table.Number</text>
+                    }
+                    else
+                    {
+                        @(Model.Place switch
+                        {
+                            Place.Takeaway => "С собой",
+                            Place.Delivery => "Доставка",
+                            _ => "Без стола"
+                        })
+                                        }
+                </h5>
+                @if (Model.Place == Place.DineIn && Model.Table != null)
+                {
+                    <div class="alert alert-info mb-3">
+                        <small>💡 При закрытии заказа стол №@Model.Table.Number будет автоматически освобожден</small>
+                    </div>
+                }
+                else if (Model.Place == Place.Delivery)
+                {
+                    <div class="alert alert-warning mb-3">
+                        <small>🚚 Убедитесь, что доставка выполнена перед закрытием заказа</small>
+                    </div>
+                }
+                
 
                 <ul class="list-group mb-3">
-                    @foreach (var item in Model.Items)
+                    @foreach (var item in Model.Items ?? Enumerable.Empty<OrderItem>())
                     {
                         <li class="list-group-item d-flex justify-content-between">
-                            <span>@item.Product.Name (@item.Quantity)</span>
-                            <span>@(item.Price* item.Quantity) ₸</span>
+                            <span>
+                                @(item.Product?.Name ?? "[Удалён]") (@item.Quantity)
+                            </span>
+                            <span>@(item.Price * item.Quantity) ₸</span>
                         </li>
                     }
                 </ul>
@@ -110,9 +136,14 @@
 
                     <div class="d-flex justify-content-between">
                         <a asp-action="Index" class="btn btn-secondary">Отмена</a>
-                        <button type="submit" class="btn btn-success" onclick="return confirm('Закрыть заказ и освободить стол №@Model.Table.Number?')">
-                            ✅ Закрыть заказ
+                        <button type="submit" class="btn btn-success"
+                                onclick="return confirm(@Html.Raw(Json.Serialize(
+                                        Model.Place == Place.DineIn && Model.Table != null
+                                            ? $"Закрыть заказ и освободить стол №{Model.Table.Number}?"
+                                            : "Закрыть заказ?")))">
+                            Закрыть заказ
                         </button>
+
                     </div>
                 </form>
             </div>

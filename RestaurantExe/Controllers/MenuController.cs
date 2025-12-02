@@ -6,9 +6,15 @@ using Restaurant.Entities;
 using RestaurantExe.Helpers;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RestaurantExe.Controllers
 {
+    public class OrderPayload
+    {
+        public string QrCode { get; set; }
+        public List<CartItemDto> Items { get; set; }
+    }
     public class MenuController : Controller
     {
         private readonly AppDbContext _context;
@@ -103,20 +109,20 @@ namespace RestaurantExe.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SubmitOrder(string qrCode)
+        public async Task<IActionResult> SubmitOrder([FromBody] OrderPayload payload)
         {
             try
             {
-                var cart = GetCartFromSession();
+                var cart = payload.Items;
                 if (cart == null || cart.Count == 0)
                 {
                     return Json(new { success = false, message = "Корзина пуста" });
-                    
+
                 }
-                
+
 
                 // Find table by qrCode
-                var qrLink = await _context.QrLinks.FirstOrDefaultAsync(q => q.Code == qrCode);
+                var qrLink = await _context.QrLinks.FirstOrDefaultAsync(q => q.Code == payload.QrCode);
                 if (qrLink == null || qrLink.TableId == null)
                     return Json(new { success = false, message = "Стол не найден" });
 

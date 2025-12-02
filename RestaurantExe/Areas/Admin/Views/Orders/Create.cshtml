@@ -582,20 +582,30 @@
 
         <div class="toolbar animate-fade-in-up">
             <div class="toolbar-row">
+                <label class="form-label fw-bold d-block mb-2">📍 Тип заказа</label>
+                <div class="btn-group w-100" role="group" aria-label="Тип заказа">
+                    <input type="radio" class="btn-check" name="Place" id="placeDineIn" value="DineIn" autocomplete="off" checked required>
+                    <label class="btn btn-outline-primary flex-fill" for="placeDineIn">Здесь</label>
+
+                    <input type="radio" class="btn-check" name="Place" id="placeTakeaway" value="Takeaway" autocomplete="off" required>
+                    <label class="btn btn-outline-primary flex-fill" for="placeTakeaway">С собой</label>
+
+                    <input type="radio" class="btn-check" name="Place" id="placeDelivery" value="Delivery" autocomplete="off" required>
+                    <label class="btn btn-outline-primary flex-fill" for="placeDelivery">Доставка</label>
+                </div>
+                <div class="form-text mt-1">Выберите, как клиент получит заказ</div>
+            </div>
+
+            <div class="toolbar-row table-select-container" id="tableSection">
                 <label class="form-label fw-bold d-block mb-2">🪑 Стол для заказа</label>
-                <select asp-for="TableId" class="form-select form-select-lg" required>
+                <select asp-for="TableId" class="form-select form-select-lg">
                     <option value="">-- Выберите свободный стол --</option>
                     @foreach (var table in Model.Tables)
                     {
                         <option value="@table.Id">Стол №@table.Number</option>
                     }
                 </select>
-                <div class="form-text mt-1">Выберите стол, на который будет оформлен заказ</div>
-            </div>
-            <div class="toolbar-row">
-                <label class="form-label fw-bold d-block mb-2">🔎 Быстрый поиск</label>
-                <input type="text" id="search" class="search-input" placeholder="Название блюда или напитка..." autocomplete="off" />
-                <div class="form-text mt-1">Начните вводить для фильтрации</div>
+                <div class="form-text mt-1">Только для заказов «Здесь»</div>
             </div>
         </div>
 
@@ -615,7 +625,7 @@
                 <div class="empty-icon">🍽️</div>
                 <h3 class="mb-2">Меню пусто</h3>
                 <p class="text-muted mb-3">В настоящий момент в меню нет доступных блюд. Добавьте блюда в категории меню.</p>
-                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="btn btn-primary">
                     ➕ Добавить блюда в меню
                 </a>
             </div>
@@ -776,6 +786,36 @@
                 });
             });
 
+            function updatePlaceDependentFields() {
+                const placeInputs = document.querySelectorAll('input[name="Place"]');
+                const tableSection = document.getElementById('tableSection');
+                const tableSelect = document.getElementById('TableId');
+
+                // Найти выбранный Place
+                const selectedPlace = Array.from(placeInputs).find(input => input.checked)?.value;
+
+                // Показать/скрыть выбор стола
+                if (selectedPlace === 'DineIn') {
+                    tableSection.style.display = 'block';
+                    tableSelect.setAttribute('required', 'required');
+                } else {
+                    tableSection.style.display = 'none';
+                    tableSelect.removeAttribute('required');
+                    tableSelect.value = ''; // сбросить выбор
+                }
+
+                // Пересчёт (чтобы кнопка не включалась при DineIn без стола)
+                recalc();
+            }
+
+            // Привязать обработчик
+            document.querySelectorAll('input[name="Place"]').forEach(input => {
+                input.addEventListener('change', updatePlaceDependentFields);
+            });
+
+            // Инициализация при загрузке
+            updatePlaceDependentFields();
+
             // Пересчет суммы и количества
             function recalc() {
                 let count = 0;
@@ -794,7 +834,15 @@
                 selCount.textContent = count.toString();
                 selCountBtn.textContent = count.toString();
                 selTotal.textContent = total.toFixed(2);
-                submitBtn.disabled = count === 0 || !document.querySelector('#TableId').value;
+                const selectedPlace = document.querySelector('input[name="Place"]:checked')?.value;
+                const tableId = document.querySelector('#TableId')?.value;
+
+                let isFormValid = count > 0;
+                if (selectedPlace === 'DineIn') {
+                    isFormValid = isFormValid && !!tableId;
+                }
+
+                submitBtn.disabled = !isFormValid;
             }
 
             // Обработчики кнопок +/- и ввода количества
@@ -859,8 +907,9 @@
             orderForm?.addEventListener('submit', function(e) {
                 const tableId = document.querySelector('#TableId').value;
                 const itemCount = parseInt(selCount.textContent);
+                const selectedPlace = document.querySelector('input[name="Place"]:checked')?.value;
 
-                if (!tableId) {
+                if (selectedPlace === 'DineIn' && !tableId) {
                     e.preventDefault();
                     alert('Пожалуйста, выберите стол для заказа');
                     document.querySelector('#TableId').focus();
@@ -930,10 +979,15 @@
                 }
             }
 
+                   
+            
+
             // Инициализация
             syncSearch();
             applyFilters();
             recalc();
+
+
 
             // Анимация появления карточек при загрузке
             setTimeout(() => {

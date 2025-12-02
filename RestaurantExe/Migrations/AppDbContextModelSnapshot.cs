@@ -277,13 +277,16 @@ namespace RestaurantExe.Migrations
                     b.Property<int>("PaymentType")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Place")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("ShiftId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TableId")
+                    b.Property<int?>("TableId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("TotalPrice")
@@ -446,6 +449,10 @@ namespace RestaurantExe.Migrations
                     b.Property<decimal>("OpeningCash")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Shifts");
@@ -588,9 +595,7 @@ namespace RestaurantExe.Migrations
 
                     b.HasOne("Restaurant.Entities.Table", "Table")
                         .WithMany("Orders")
-                        .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TableId");
 
                     b.Navigation("Shift");
 
