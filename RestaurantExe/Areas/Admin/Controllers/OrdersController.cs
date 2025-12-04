@@ -74,8 +74,11 @@ namespace Restaurant.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Получаем только свободные столы
-            var availableTables = _context.Tables.Where(t => !t.IsOccupied).ToList();
+            // Получаем столы, доступные для заказа (свободные или забронированные позже)
+            var allTables = _context.Tables.ToList();
+            var availableTables = allTables
+                .Where(t => Restaurant.Helpers.TableStatusHelper.IsTableAvailableForOrder(_context, t.Id))
+                .ToList();
 
             var model = new CreateOrderViewModel
             {
@@ -116,8 +119,37 @@ namespace Restaurant.Areas.Admin.Controllers
             if (!ModelState.IsValid || vm.ProductsWithQuantity == null || !vm.ProductsWithQuantity.Any(p => p.Quantity > 0))
             {
                 vm.Categories = await _context.Categories.Include(c => c.Products).ToListAsync();
-                vm.Tables = await _context.Tables.ToListAsync();
+                var allTables = await _context.Tables.ToListAsync();
+                vm.Tables = allTables
+                    .Where(t => Restaurant.Helpers.TableStatusHelper.IsTableAvailableForOrder(_context, t.Id))
+                    .ToList();
                 return View(vm);
+            }
+
+            // Проверяем доступность стола с учетом бронирований
+            if (vm.TableId.HasValue)
+            {
+                var isAvailable = Restaurant.Helpers.TableStatusHelper.IsTableAvailableForOrder(_context, vm.TableId.Value);
+                if (!isAvailable)
+                {
+                    var tableStatus = Restaurant.Helpers.TableStatusHelper.GetTableStatus(_context, 
+                        await _context.Tables.FindAsync(vm.TableId.Value));
+                    
+                    string errorMessage = tableStatus switch
+                    {
+                        Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "Стол уже занят активным заказом.",
+                        Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "Стол забронирован на это время. Невозможно создать заказ.",
+                        _ => "Стол недоступен для заказа."
+                    };
+
+                    ModelState.AddModelError(nameof(vm.TableId), errorMessage);
+                    vm.Categories = await _context.Categories.Include(c => c.Products).ToListAsync();
+                    var allTables = await _context.Tables.ToListAsync();
+                    vm.Tables = allTables
+                        .Where(t => Restaurant.Helpers.TableStatusHelper.IsTableAvailableForOrder(_context, t.Id))
+                        .ToList();
+                    return View(vm);
+                }
             }
 
             // Получаем продукты
@@ -249,9 +281,20 @@ namespace Restaurant.Areas.Admin.Controllers
                     return NotFound();
                 }
 
-                if (newTable.IsOccupied)
+                // Проверяем доступность нового стола с учетом бронирований
+                var isAvailable = Restaurant.Helpers.TableStatusHelper.IsTableAvailableForOrder(_context, newTableId.Value);
+                if (!isAvailable)
                 {
-                    ModelState.AddModelError(nameof(vm.TableId), "Выбранный стол уже занят.");
+                    var tableStatus = Restaurant.Helpers.TableStatusHelper.GetTableStatus(_context, newTable);
+                    
+                    string errorMessage = tableStatus switch
+                    {
+                        Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "Выбранный стол уже занят активным заказом.",
+                        Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "Выбранный стол забронирован на это время.",
+                        _ => "Выбранный стол недоступен."
+                    };
+
+                    ModelState.AddModelError(nameof(vm.TableId), errorMessage);
                     vm.Tables = await _context.Tables.ToListAsync();
                     vm.Categories = await _context.Categories.Include(c => c.Products).ToListAsync();
                     return View(vm);

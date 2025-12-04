@@ -16,5 +16,6 @@ namespace Restaurant.Entities
 
         // Навигация
         public ICollection<Order>? Orders { get; set; }
+        public ICollection<Reservation>? Reservations { get; set; }
     }
 }

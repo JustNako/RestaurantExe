@@ -116,8 +116,26 @@
                 color: #dc3545;
             }
 
-                .filter-btn.occupied.active {
-                    background: #dc3545;
+            .filter-btn.occupied.active {
+                background: #dc3545;
+                color: white;
+            }
+
+            .filter-btn.reserved-now {
+                color: #ff9800;
+            }
+
+                .filter-btn.reserved-now.active {
+                    background: #ff9800;
+                    color: white;
+                }
+
+            .filter-btn.reserved-later {
+                color: #2196f3;
+            }
+
+                .filter-btn.reserved-later.active {
+                    background: #2196f3;
                     color: white;
                 }
 
@@ -170,6 +188,18 @@
             background: #fdecea;
             color: #dc3545;
             border: 1px solid #dc3545;
+        }
+
+        .status-reserved-now {
+            background: #fff3e0;
+            color: #ff9800;
+            border: 1px solid #ff9800;
+        }
+
+        .status-reserved-later {
+            background: #e3f2fd;
+            color: #2196f3;
+            border: 1px solid #2196f3;
         }
 
         .actions {
@@ -481,14 +511,33 @@
         <p>Мониторинг занятости столов</p>
     </div>
 
+    @{
+        var tableStatuses = ViewBag.TableStatuses as Dictionary<int, Restaurant.Helpers.TableStatusHelper.TableStatus> ?? new Dictionary<int, Restaurant.Helpers.TableStatusHelper.TableStatus>();
+        var currentReservations = ViewBag.CurrentReservations as Dictionary<int, Restaurant.Entities.Reservation> ?? new Dictionary<int, Restaurant.Entities.Reservation>();
+        var nextReservations = ViewBag.NextReservations as Dictionary<int, Restaurant.Entities.Reservation> ?? new Dictionary<int, Restaurant.Entities.Reservation>();
+        
+        var freeCount = Model.Count(t => tableStatuses.GetValueOrDefault(t.Id) == Restaurant.Helpers.TableStatusHelper.TableStatus.Free);
+        var occupiedCount = Model.Count(t => tableStatuses.GetValueOrDefault(t.Id) == Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied);
+        var reservedNowCount = Model.Count(t => tableStatuses.GetValueOrDefault(t.Id) == Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow);
+        var reservedLaterCount = Model.Count(t => tableStatuses.GetValueOrDefault(t.Id) == Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedLater);
+    }
+    
     <div class="stats">
         <div class="stat">
-            <div class="stat-number" style="color: #28a745;">@Model.Count(t => !t.IsOccupied)</div>
+            <div class="stat-number" style="color: #28a745;">@freeCount</div>
             <div class="stat-label">🟢 Свободно</div>
         </div>
         <div class="stat">
-            <div class="stat-number" style="color: #dc3545;">@Model.Count(t => t.IsOccupied)</div>
+            <div class="stat-number" style="color: #dc3545;">@occupiedCount</div>
             <div class="stat-label">🔴 Занято</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number" style="color: #ff9800;">@reservedNowCount</div>
+            <div class="stat-label">🟠 Забронировано сейчас</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number" style="color: #2196f3;">@reservedLaterCount</div>
+            <div class="stat-label">🔵 Забронировано позже</div>
         </div>
         <div class="stat">
             <div class="stat-number">@Model.Count</div>
@@ -502,6 +551,8 @@
             <div class="filter-btn active" data-filter="all">Все</div>
             <div class="filter-btn free" data-filter="free">Свободные</div>
             <div class="filter-btn occupied" data-filter="occupied">Занятые</div>
+            <div class="filter-btn reserved-now" data-filter="reserved-now">Забронировано сейчас</div>
+            <div class="filter-btn reserved-later" data-filter="reserved-later">Забронировано позже</div>
         </div>
     </div>
 
@@ -521,27 +572,81 @@
         <div class="tables-grid">
             @foreach (var table in Model.OrderBy(t => t.Number))
             {
-                <div class="table-card" data-number="@table.Number" data-status="@(table.IsOccupied ? "occupied" : "free")">
+                var status = tableStatuses.GetValueOrDefault(table.Id, Restaurant.Helpers.TableStatusHelper.TableStatus.Free);
+                var currentReservation = currentReservations.GetValueOrDefault(table.Id);
+                var nextReservation = nextReservations.GetValueOrDefault(table.Id);
+                
+                string statusClass = status switch
+                {
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Free => "status-free",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "status-occupied",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "status-reserved-now",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedLater => "status-reserved-later",
+                    _ => "status-free"
+                };
+                
+                string statusText = status switch
+                {
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Free => "🟢 Свободен",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "🔴 Занят",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "🟠 Забронирован сейчас",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedLater => "🔵 Забронирован позже",
+                    _ => "🟢 Свободен"
+                };
+                
+                string statusFilter = status switch
+                {
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Free => "free",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "occupied",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "reserved-now",
+                    Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedLater => "reserved-later",
+                    _ => "free"
+                };
+                
+                <div class="table-card" data-number="@table.Number" data-status="@statusFilter">
                     <div class="table-number">Стол №@table.Number</div>
-                    <div class="status-badge @(table.IsOccupied ? "status-occupied" : "status-free")">
-                        @(table.IsOccupied ? "🔴 Занят" : "🟢 Свободен")
+                    <div class="status-badge @statusClass">
+                        @statusText
                     </div>
+                    @if (currentReservation != null)
+                    {
+                        <div style="font-size: 0.85rem; color: #666; margin: 5px 0;">
+                            Бронирование: @currentReservation.CustomerName<br/>
+                            До: @((currentReservation.EndTime ?? currentReservation.ReservationTime.AddHours(2)).ToString("HH:mm"))
+                        </div>
+                    }
+                    else if (nextReservation != null)
+                    {
+                        <div style="font-size: 0.85rem; color: #666; margin: 5px 0;">
+                            Бронирование: @nextReservation.ReservationTime.ToString("dd.MM HH:mm")<br/>
+                            @nextReservation.CustomerName
+                        </div>
+                    }
                     <div class="actions">
-                        @if (!table.IsOccupied)
+                        @if (status == Restaurant.Helpers.TableStatusHelper.TableStatus.Free || status == Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedLater)
                         {
                             <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
                                 <a asp-controller="Orders" asp-action="Create" asp-route-tableId="@table.Id" class="action-btn create">➕ Создать заказ</a>
                             </permission>
                         }
-                        else
+                        else if (status == Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied)
                         {
                             <span class="action-btn" style="opacity: 0.6; cursor: not-allowed;">⏳ Стол занят</span>
+                        }
+                        else if (status == Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow)
+                        {
+                            <span class="action-btn" style="opacity: 0.6; cursor: not-allowed; background: #ff9800;">⏰ Забронирован</span>
                         }
 
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
                             <a asp-action="Edit" asp-route-id="@table.Id" class="action-btn edit">✏️ Редактировать</a>
                         </permission>
 
+                        <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Create">
+                            <a asp-controller="Reservations" asp-action="Create" asp-route-tableId="@table.Id" class="action-btn" style="background: #17a2b8; color: white; border: none;">
+                                📅 Забронировать
+                            </a>
+                        </permission>
                         <div style="display: flex; gap: 8px; width: 100%;">
                             <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
                                 <a asp-action="Delete" asp-route-id="@table.Id" class="action-btn delete">🗑️ Удалить</a>

@@ -1,0 +1,80 @@
+@model Restaurant.Entities.Reservation
+@{
+    ViewData["Title"] = "Создать бронирование";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var tables = ViewBag.Tables as List<Restaurant.Entities.Table> ?? new List<Restaurant.Entities.Table>();
+    var tableId = ViewBag.TableId as int?;
+}
+
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4>Создать бронирование</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+                    
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="TableId" class="form-label">Стол *</label>
+                        <select asp-for="TableId" class="form-select" required>
+                            <option value="">Выберите стол</option>
+                            @foreach (var table in tables)
+                            {
+                                <option value="@table.Id" selected="@(Model?.TableId == table.Id || tableId == table.Id)">Стол №@table.Number</option>
+                            }
+                        </select>
+                        <span asp-validation-for="TableId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ReservationTime" class="form-label">Дата и время бронирования *</label>
+                        <input asp-for="ReservationTime" type="datetime-local" class="form-control" required 
+                               value="@(Model?.ReservationTime != default(DateTime) ? Model.ReservationTime.ToString("yyyy-MM-ddTHH:mm") : DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" />
+                        <span asp-validation-for="ReservationTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EndTime" class="form-label">Время окончания (необязательно, по умолчанию +2 часа)</label>
+                        <input asp-for="EndTime" type="datetime-local" class="form-control" 
+                               value="@(Model?.EndTime.HasValue == true ? Model.EndTime.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CustomerName" class="form-label">Имя клиента *</label>
+                        <input asp-for="CustomerName" class="form-control" required maxlength="200" value="@Model?.CustomerName" />
+                        <span asp-validation-for="CustomerName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CustomerPhone" class="form-label">Телефон клиента *</label>
+                        <input asp-for="CustomerPhone" class="form-control" required maxlength="50" value="@Model?.CustomerPhone" />
+                        <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Примечания</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" maxlength="500">@Model?.Notes</textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-2"></i>Создать
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

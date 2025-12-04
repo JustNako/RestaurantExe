@@ -24,6 +24,7 @@ namespace Restaurant.Data
         public DbSet<RecipeItem> RecipeItems { get; set; }
         public DbSet<StockMovement> StockMovements { get; set; }
         public DbSet<QrLink> QrLinks { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -74,6 +75,13 @@ namespace Restaurant.Data
                 .WithMany()
                 .HasForeignKey(q => q.TableId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure Reservation-Table relationship
+            modelBuilder.Entity<Reservation>()
+                .HasOne(r => r.Table)
+                .WithMany(t => t.Reservations)
+                .HasForeignKey(r => r.TableId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
 

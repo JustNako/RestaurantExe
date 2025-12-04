@@ -1,0 +1,115 @@
+@model List<Restaurant.Entities.Reservation>
+@{
+    ViewData["Title"] = "Бронирования";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var selectedDate = ViewBag.SelectedDate as DateTime? ?? DateTime.Today;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Бронирования</h2>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Создать бронирование
+        </a>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="d-flex gap-2 align-items-end">
+            <div class="flex-grow-1">
+                <label class="form-label">Дата</label>
+                <input type="date" name="date" value="@selectedDate.ToString("yyyy-MM-dd")" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-primary">Показать</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Сегодня</a>
+        </form>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Стол</th>
+                    <th>Время</th>
+                    <th>Клиент</th>
+                    <th>Телефон</th>
+                    <th>Статус</th>
+                    <th>Примечания</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var reservation in Model)
+                {
+                    <tr>
+                        <td><strong>Стол №@reservation.Table.Number</strong></td>
+                        <td>
+                            @reservation.ReservationTime.ToString("dd.MM.yyyy HH:mm")<br/>
+                            <small class="text-muted">до @((reservation.EndTime ?? reservation.ReservationTime.AddHours(2)).ToString("HH:mm"))</small>
+                        </td>
+                        <td>@reservation.CustomerName</td>
+                        <td>@reservation.CustomerPhone</td>
+                        <td>
+                            @switch (reservation.Status)
+                            {
+                                case Restaurant.Entities.ReservationStatus.Active:
+                                    <span class="badge bg-primary">Активно</span>
+                                    break;
+                                case Restaurant.Entities.ReservationStatus.Completed:
+                                    <span class="badge bg-success">Завершено</span>
+                                    break;
+                                case Restaurant.Entities.ReservationStatus.Cancelled:
+                                    <span class="badge bg-secondary">Отменено</span>
+                                    break;
+                                case Restaurant.Entities.ReservationStatus.NoShow:
+                                    <span class="badge bg-warning">Не пришел</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@(reservation.Notes ?? "-")</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                @if (reservation.Status == Restaurant.Entities.ReservationStatus.Active)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@reservation.Id" class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form asp-action="Complete" asp-route-id="@reservation.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-success" title="Завершить">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="Cancel" asp-route-id="@reservation.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-warning" title="Отменить">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <form asp-action="Delete" asp-route-id="@reservation.Id" method="post" class="d-inline" 
+                                      onsubmit="return confirm('Удалить бронирование?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>На выбранную дату бронирований нет.
+    </div>
+}
+

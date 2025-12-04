@@ -28,7 +28,27 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Orders.View)]
         public async Task<IActionResult> Dashboard()
         {
-            var tables = await _context.Tables.ToListAsync();
+            var tables = await _context.Tables
+                .Include(t => t.Reservations)
+                .ToListAsync();
+            
+            // Передаем информацию о статусах столов
+            ViewBag.TableStatuses = tables.ToDictionary(
+                t => t.Id, 
+                t => Restaurant.Helpers.TableStatusHelper.GetTableStatus(_context, t)
+            );
+            
+            // Передаем информацию о текущих и будущих бронированиях
+            ViewBag.CurrentReservations = tables.ToDictionary(
+                t => t.Id,
+                t => Restaurant.Helpers.TableStatusHelper.GetCurrentReservation(_context, t.Id)
+            );
+            
+            ViewBag.NextReservations = tables.ToDictionary(
+                t => t.Id,
+                t => Restaurant.Helpers.TableStatusHelper.GetNextReservation(_context, t.Id)
+            );
+            
             return View(tables);
         }
 

@@ -424,6 +424,51 @@ namespace RestaurantExe.Migrations
                     b.ToTable("RecipeItems");
                 });
 
+            modelBuilder.Entity("Restaurant.Entities.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ReservationTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TableId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TableId");
+
+                    b.ToTable("Reservations");
+                });
+
             modelBuilder.Entity("Restaurant.Entities.Shift", b =>
                 {
                     b.Property<int>("Id")
@@ -661,6 +706,17 @@ namespace RestaurantExe.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Restaurant.Entities.Reservation", b =>
+                {
+                    b.HasOne("Restaurant.Entities.Table", "Table")
+                        .WithMany("Reservations")
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("Restaurant.Entities.ShiftNote", b =>
                 {
                     b.HasOne("Restaurant.Entities.Shift", "Shift")
@@ -717,6 +773,8 @@ namespace RestaurantExe.Migrations
             modelBuilder.Entity("Restaurant.Entities.Table", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }
