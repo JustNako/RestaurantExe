@@ -43,7 +43,7 @@ namespace Restaurant.Services
 
                 foreach (var reservation in upcomingReservations)
                 {
-                    var message = $"Бронирование за столом №{reservation.Table.Number} начинается через 15 минут: {reservation.ReservationTime:HH:mm}. Создавать новые заказы запрещено.";
+                    var message = $"Бронирование за столом №{reservation.Table.Number} начинается через 15 минут: {reservation.ReservationTime:HH:mm}. Советуем не создавать новые заказы.";
 
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", message, cancellationToken: stoppingToken);
 

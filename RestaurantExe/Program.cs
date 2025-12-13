@@ -7,6 +7,7 @@ using Restaurant.Authorization;
 using Restaurant.Data;
 using Restaurant.Entities;
 using Restaurant.Hubs;
+using Restaurant.Services;
 using System;
 using System.Security.Claims;
 
@@ -60,6 +61,8 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<ReservationReminderService>();
+
 
 var app = builder.Build();
 

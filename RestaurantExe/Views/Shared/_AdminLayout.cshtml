@@ -310,6 +310,52 @@
                 line-height: 1;
                 vertical-align: middle;
             }
+
+
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 320px;
+        }
+
+        .toast {
+            position: relative;
+            background: #ff9800;
+            color: white;
+            padding: 12px 35px 12px 18px; /* Добавляем отступ справа под крестик */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-weight: 600;
+            font-size: 0.95rem;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .toast .close-btn {
+                position: absolute;
+                top: 50%;
+                right: 10px;
+                transform: translateY(-50%);
+                color: white;
+                font-weight: bold;
+                font-size: 18px;
+                line-height: 1;
+                cursor: pointer;
+                user-select: none;
+            }
     </style>
 </head>
 <body>
@@ -447,8 +493,13 @@
 
     </div>
 
+
+    <div id="toastContainer" class="toast-container"></div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <!-- Временно убираем inputmask для тестирования -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script> -->
 
@@ -502,6 +553,71 @@
         // Обновляем сразу и затем каждую секунду
         updateLocalTime();
         setInterval(updateLocalTime, 1000);
+
+
+
+
+        function showToast(message, duration = 5000) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.classList.add('toast');
+            toast.textContent = message;
+
+            // Создаем кнопку закрытия
+            const closeBtn = document.createElement('span');
+            closeBtn.classList.add('close-btn');
+            closeBtn.innerHTML = '&times;'; // HTML код крестика
+            closeBtn.title = 'Закрыть';
+
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Чтобы не срабатывал клик по тосту
+                hideToast(toast);
+            });
+
+            toast.appendChild(closeBtn);
+
+            container.appendChild(toast);
+
+            
+
+            // Показать с анимацией
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Автоматически скрыть
+            setTimeout(() => {
+                hideToast(toast);
+            }, duration);
+
+            // Клик по тосту — сразу скрыть
+            toast.addEventListener('click', () => hideToast(toast));
+
+            container.appendChild(toast);
+        }
+
+        function hideToast(toast) {
+            toast.classList.remove('show');
+            // Удалить из DOM после анимации
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+
+        // SignalR код
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl('/notificationsHub')
+            .build();
+
+        connection.start().then(() => {
+            console.log('SignalR connected');
+        }).catch(err => console.error(err.toString()));
+
+        connection.on('ReceiveNotification', function(message) {
+            showToast(message);
+        });
 
 
     </script>

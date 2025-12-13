@@ -449,6 +449,9 @@ namespace RestaurantExe.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsReminderSent")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
