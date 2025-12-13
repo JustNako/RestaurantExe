@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Restaurant.Entities;
-using System;
-using Microsoft.EntityFrameworkCore;
-using Restaurant.Data;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Authorization;
+using Restaurant.Data;
+using Restaurant.Entities;
+using Restaurant.Hubs;
+using System;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +58,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -158,6 +161,9 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+app.MapHub<NotificationsHub>("/notificationsHub");
 
 
 

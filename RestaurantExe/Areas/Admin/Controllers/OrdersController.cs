@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Restaurant.Authorization;
 using Restaurant.Data;
 using Restaurant.Entities;
+using Restaurant.Helpers;
 using Restaurant.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Restaurant.Authorization;
 
 namespace Restaurant.Areas.Admin.Controllers
 {
@@ -134,12 +135,17 @@ namespace Restaurant.Areas.Admin.Controllers
                 {
                     var tableStatus = Restaurant.Helpers.TableStatusHelper.GetTableStatus(_context, 
                         await _context.Tables.FindAsync(vm.TableId.Value));
-                    
+
                     string errorMessage = tableStatus switch
                     {
-                        Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "Стол уже занят активным заказом.",
-                        Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "Стол забронирован на это время. Невозможно создать заказ.",
-                        _ => "Стол недоступен для заказа."
+                        TableStatusHelper.TableStatus.Occupied =>
+                            "Стол уже занят активным заказом.",
+
+                        TableStatusHelper.TableStatus.Reserved =>
+                            "Стол забронирован на это время. Невозможно создать заказ.",
+
+                        _ =>
+                            "Стол недоступен для заказа."
                     };
 
                     ModelState.AddModelError(nameof(vm.TableId), errorMessage);
@@ -286,12 +292,17 @@ namespace Restaurant.Areas.Admin.Controllers
                 if (!isAvailable)
                 {
                     var tableStatus = Restaurant.Helpers.TableStatusHelper.GetTableStatus(_context, newTable);
-                    
+
                     string errorMessage = tableStatus switch
                     {
-                        Restaurant.Helpers.TableStatusHelper.TableStatus.Occupied => "Выбранный стол уже занят активным заказом.",
-                        Restaurant.Helpers.TableStatusHelper.TableStatus.ReservedNow => "Выбранный стол забронирован на это время.",
-                        _ => "Выбранный стол недоступен."
+                        TableStatusHelper.TableStatus.Occupied =>
+                            "Стол уже занят активным заказом.",
+
+                        TableStatusHelper.TableStatus.Reserved =>
+                            "Стол забронирован на это время. Невозможно создать заказ.",
+
+                        _ =>
+                            "Стол недоступен для заказа."
                     };
 
                     ModelState.AddModelError(nameof(vm.TableId), errorMessage);

@@ -32,6 +32,9 @@ namespace Restaurant.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public string? CreatedBy { get; set; } // ID пользователя, создавшего бронирование
+
+        public bool IsReminderSent { get; set; } = false; // Флаг для отслеживания отправки напоминания
+
     }
 
     public enum ReservationStatus
