@@ -21,19 +21,39 @@ namespace Restaurant.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index(DateTime? date = null)
         {
-            var targetDate = date ?? DateTime.Today;
-            var startOfDay = targetDate.Date;
-            var endOfDay = startOfDay.AddDays(1);
+            if (date.HasValue)
+            {
+                // Если дата выбрана — показываем бронирования только на этот день
+                var targetDate = date.Value.Date;
+                var startOfDay = targetDate;
+                var endOfDay = startOfDay.AddDays(1);
 
-            var reservations = await _context.Reservations
-                .Include(r => r.Table)
-                .Where(r => r.ReservationTime >= startOfDay && r.ReservationTime < endOfDay)
-                .OrderBy(r => r.ReservationTime)
-                .ToListAsync();
+                var reservations = await _context.Reservations
+                    .Include(r => r.Table)
+                    .Where(r => r.ReservationTime > startOfDay && r.ReservationTime < endOfDay)
+                    .OrderBy(r => r.ReservationTime)
+                    .ToListAsync();
 
-            ViewBag.SelectedDate = targetDate;
-            return View(reservations);
+                ViewBag.SelectedDate = targetDate;
+                ViewBag.ShowAll = false;
+
+                return View(reservations);
+            }
+            else
+            {
+                // Если дата не выбрана — показываем все бронирования, сгруппированные по дате
+                var reservations = await _context.Reservations
+                    .Include(r => r.Table)
+                    .OrderBy(r => r.ReservationTime)
+                    .ToListAsync();
+
+                ViewBag.ShowAll = true;
+
+                // Передаем все бронирования в модель, но в представлении сделаем группировку по датам
+                return View(reservations);
+            }
         }
+
 
         [HttpGet]
         [Authorize(Policy = Permissions.Orders.Create)]

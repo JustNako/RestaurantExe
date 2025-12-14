@@ -1,4 +1,5 @@
 @model Restaurant.Entities.Reservation
+
 @{
     ViewData["Title"] = "Создать бронирование";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -15,8 +16,14 @@
             <div class="card-body">
                 <form asp-action="Create" method="post">
                     @Html.AntiForgeryToken()
-                    
-                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+                    <!-- Внутри <form> -->
+                    @if (ViewContext.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <h5><i class="bi bi-exclamation-triangle-fill me-1"></i> Исправьте ошибки</h5>
+                            <div asp-validation-summary="ModelOnly" class="mt-2"></div>
+                        </div>
+                    }
 
                     <div class="mb-3">
                         <label asp-for="TableId" class="form-label">Стол *</label>
@@ -24,7 +31,9 @@
                             <option value="">Выберите стол</option>
                             @foreach (var table in tables)
                             {
-                                <option value="@table.Id" selected="@(Model?.TableId == table.Id || tableId == table.Id)">Стол №@table.Number</option>
+                                <option value="@table.Id" selected="@(Model?.TableId == table.Id || tableId == table.Id)">
+                                    Стол №@table.Number
+                                </option>
                             }
                         </select>
                         <span asp-validation-for="TableId" class="text-danger"></span>
@@ -32,27 +41,31 @@
 
                     <div class="mb-3">
                         <label asp-for="ReservationTime" class="form-label">Дата и время бронирования *</label>
-                        <input asp-for="ReservationTime" type="datetime-local" class="form-control" required 
-                               value="@(Model?.ReservationTime != default(DateTime) ? Model.ReservationTime.ToString("yyyy-MM-ddTHH:mm") : DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" />
+                        <input asp-for="ReservationTime" type="datetime-local" class="form-control" required
+                               value="@(Model?.ReservationTime != default(DateTime)
+                                                                  ? Model.ReservationTime.ToString("yyyy-MM-ddTHH:mm")
+                                                                  : DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" />
                         <span asp-validation-for="ReservationTime" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="EndTime" class="form-label">Время окончания (необязательно, по умолчанию +2 часа)</label>
-                        <input asp-for="EndTime" type="datetime-local" class="form-control" 
+                        <input asp-for="EndTime" type="datetime-local" class="form-control"
                                value="@(Model?.EndTime.HasValue == true ? Model.EndTime.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
                         <span asp-validation-for="EndTime" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="CustomerName" class="form-label">Имя клиента *</label>
-                        <input asp-for="CustomerName" class="form-control" required maxlength="200" value="@Model?.CustomerName" />
+                        <input asp-for="CustomerName" class="form-control" required maxlength="200"
+                               value="@Model?.CustomerName" />
                         <span asp-validation-for="CustomerName" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">
                         <label asp-for="CustomerPhone" class="form-label">Телефон клиента *</label>
-                        <input asp-for="CustomerPhone" class="form-control" required maxlength="50" value="@Model?.CustomerPhone" />
+                        <input asp-for="CustomerPhone" class="form-control" required maxlength="50"
+                               value="@Model?.CustomerPhone" />
                         <span asp-validation-for="CustomerPhone" class="text-danger"></span>
                     </div>
 
@@ -75,6 +88,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
-

@@ -58,11 +58,11 @@ namespace Restaurant.Authorization
             public const string Close = "Cash.Close"; 
         }
 
-        public static class Inventory
+        /*public static class Inventory
         {
             public const string View = "Inventory.View";
             public const string Manage = "Inventory.Manage"; // создание ингредиентов, рецептов, приход
-        }
+        }*/
 
         public static readonly string[] All = new[]
         {
@@ -73,8 +73,8 @@ namespace Restaurant.Authorization
             Roles.Manage,
             Users.Manage,
             Shifts.Open, Shifts.Close,
-            Cash.View, Cash.Edit, Cash.Close,
-            Inventory.View, Inventory.Manage
+            Cash.View, Cash.Edit, Cash.Close
+            /*Inventory.View, Inventory.Manage*/
         };
     }
 }
