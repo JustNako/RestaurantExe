@@ -9,30 +9,30 @@
 @section Styles {
     <style>
         .roles-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #222222 0%, #444444 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .roles-header {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             text-align: center;
         }
 
         .roles-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
             margin-bottom: 10px;
         }
 
         .roles-subtitle {
             font-size: 1.2rem;
-            color: #666;
+            color: #555;
             margin-bottom: 25px;
         }
 
@@ -44,7 +44,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: #f5f5f5;
             border-radius: 15px;
             padding: 20px;
             text-align: center;
@@ -56,10 +56,11 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
+            color: #222;
         }
 
         .stat-label {
-            color: #666;
+            color: #555;
             font-size: 0.9rem;
         }
 
@@ -71,8 +72,8 @@
         }
 
         .btn-create {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
+            background: #222;
+            color: #fff;
             border: none;
             padding: 12px 25px;
             border-radius: 25px;
@@ -81,11 +82,12 @@
             transition: all 0.3s ease;
         }
 
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
-            color: white;
-        }
+            .btn-create:hover {
+                background: #444;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+                color: #fff;
+                transform: translateY(-2px);
+            }
 
         .roles-grid {
             display: grid;
@@ -95,7 +97,7 @@
         }
 
         .role-card {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -104,20 +106,20 @@
             overflow: hidden;
         }
 
-        .role-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
+            .role-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            }
 
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+            .role-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: #333;
+            }
 
         .role-header {
             display: flex;
@@ -129,11 +131,11 @@
         .role-name {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
         }
 
         .role-id {
-            background: linear-gradient(135deg, #6c757d, #495057);
+            background: #666;
             color: white;
             padding: 4px 12px;
             border-radius: 15px;
@@ -151,16 +153,16 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 8px 0;
-            border-bottom: 1px solid #f8f9fa;
+            border-bottom: 1px solid #eee;
         }
 
         .info-label {
             font-weight: 600;
-            color: #495057;
+            color: #444;
         }
 
         .info-value {
-            color: #333;
+            color: #222;
             font-weight: 500;
         }
 
@@ -181,47 +183,47 @@
             text-decoration: none;
             display: inline-block;
             font-size: 0.9rem;
+            color: #fff;
         }
 
         .btn-permissions {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
+            background: #222;
         }
 
-        .btn-permissions:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-            color: white;
-        }
+            .btn-permissions:hover {
+                background: #444;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+                transform: translateY(-2px);
+            }
 
         .btn-edit {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
+            background: #666;
+            color: #fff;
         }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-            color: #212529;
-        }
+            .btn-edit:hover {
+                background: #888;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                transform: translateY(-2px);
+            }
 
         .btn-delete {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
-            color: white;
+            background: #a00;
         }
 
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
+            .btn-delete:hover {
+                background: #c33;
+                box-shadow: 0 5px 15px rgba(170,0,0,0.4);
+                transform: translateY(-2px);
+            }
 
         .no-roles {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 50px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            color: #222;
         }
 
         .no-roles-icon {
@@ -259,7 +261,6 @@
                 }
         }
 
-        /* ⚠️ ВАЖНО: этот медиазапрос — НА УРОВНЕ КОРНЯ, НЕ ВНУТРИ ПРЕДЫДУЩЕГО! */
         @@media (max-width: 400px) {
             .actions-section .btn-create {
                 padding: 10px 15px;
@@ -277,12 +278,11 @@
     <div class="roles-header">
         <h1 class="roles-title"><i class="bi bi-shield-lock-fill me-2"></i>Роли</h1>
         <p class="roles-subtitle">Управление ролями и правами доступа</p>
-        
+
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number" style="color: #007bff;">@Model.Count</div>
+                <div class="stat-number">@Model.Count</div>
                 <div class="stat-label"><i class="bi bi-shield-lock-fill me-1"></i>Всего ролей</div>
-
             </div>
         </div>
 
@@ -291,7 +291,6 @@
                 <a asp-action="Create" class="btn-create">
                     <i class="bi bi-plus-lg me-1"></i>Добавить роль
                 </a>
-
             </permission>
         </div>
     </div>
@@ -315,7 +314,7 @@
                         <div class="role-name">@role.Name</div>
                         <!--<span class="role-id">#@role.Id</span>-->
                     </div>
-                    
+
                     <div class="role-info">
                         <div class="info-row">
                             <div class="info-label">
@@ -323,18 +322,13 @@
                             </div>
                             <span class="info-value">@role.Name</span>
                         </div>
-                        <!--<div class="info-row">
-                            <span class="info-label">🆔 ID:</span>
-                            <span class="info-value">@role.Id</span>
-                        </div>-->
                     </div>
-                    
+
                     <div class="role-actions">
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
                             <a asp-action="Permissions" asp-route-id="@role.Id" class="btn-action btn-permissions">
                                 <i class="bi bi-key-fill me-1"></i>Права
                             </a>
-
                         </permission>
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Roles.Manage">
                             <form asp-action="Delete" method="post" class="d-inline">
@@ -342,7 +336,6 @@
                                 <button class="btn-action btn-delete" onclick="return confirm('Удалить роль \" @role.Name\"?')">
                                     <i class="bi bi-trash-fill me-1"></i>Удалить
                                 </button>
-
                             </form>
                         </permission>
                     </div>
@@ -359,7 +352,7 @@
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'all 0.5s ease';
                 card.style.opacity = '1';

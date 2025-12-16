@@ -37,6 +37,8 @@ namespace Restaurant.Areas.Admin.Controllers
                 ViewBag.SelectedDate = targetDate;
                 ViewBag.ShowAll = false;
 
+                
+
                 return View(reservations);
             }
             else
@@ -104,6 +106,8 @@ namespace Restaurant.Areas.Admin.Controllers
                 ViewBag.TableId = reservation.TableId;
                 return View(reservation);
             }
+
+            
 
             // Устанавливаем время окончания (по умолчанию +2 часа)
             if (!reservation.EndTime.HasValue)

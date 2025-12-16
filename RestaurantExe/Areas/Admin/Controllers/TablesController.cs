@@ -21,7 +21,9 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Orders.View)]
         public async Task<IActionResult> Index()
         {
-            var tables = await _context.Tables.ToListAsync();
+            var tables = await _context.Tables
+                .Where(t => !t.IsDeleted)
+                .ToListAsync();
             return View(tables);
         }
 
@@ -29,6 +31,7 @@ namespace Restaurant.Areas.Admin.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var tables = await _context.Tables
+                .Where(t => !t.IsDeleted)
                 .Include(t => t.Reservations)
                 .ToListAsync();
             
@@ -145,17 +148,13 @@ namespace Restaurant.Areas.Admin.Controllers
             var table = await _context.Tables.FindAsync(id);
             if (table == null) return NotFound();
 
-            try
-            {
-                _context.Tables.Remove(table);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = $"🗑️ Стол №{table.Number} удален.";
-            }
-            catch (DbUpdateException)
-            {
-                TempData["ErrorMessage"] = "Невозможно удалить стол, так как он связан с заказами.";
-            }
+            table.IsDeleted = true;
+            _context.Tables.Update(table);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"🗑️ Стол №{table.Number} скрыт.";
             return RedirectToAction(nameof(Dashboard));
         }
+
     }
 }

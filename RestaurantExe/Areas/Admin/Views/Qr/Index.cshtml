@@ -7,30 +7,30 @@
 @section Styles {
     <style>
         .qr-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #222222 0%, #444444 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .qr-header {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             text-align: center;
         }
 
         .qr-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
             margin-bottom: 10px;
         }
 
         .qr-subtitle {
             font-size: 1.2rem;
-            color: #666;
+            color: #555;
             margin-bottom: 25px;
         }
 
@@ -42,7 +42,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: #f5f5f5;
             border-radius: 15px;
             padding: 20px;
             text-align: center;
@@ -54,10 +54,11 @@
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 5px;
+            color: #222;
         }
 
         .stat-label {
-            color: #666;
+            color: #555;
             font-size: 0.9rem;
         }
 
@@ -69,8 +70,8 @@
         }
 
         .btn-create {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
+            background: #222;
+            color: #fff;
             border: none;
             padding: 12px 25px;
             border-radius: 25px;
@@ -79,11 +80,12 @@
             transition: all 0.3s ease;
         }
 
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
-            color: white;
-        }
+            .btn-create:hover {
+                background: #444;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+                color: #fff;
+                transform: translateY(-2px);
+            }
 
         .qr-grid {
             display: grid;
@@ -93,7 +95,7 @@
         }
 
         .qr-card {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -102,20 +104,20 @@
             overflow: hidden;
         }
 
-        .qr-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
+            .qr-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            }
 
-        .qr-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+            .qr-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: #333;
+            }
 
         .qr-header-info {
             display: flex;
@@ -127,9 +129,9 @@
         .qr-code {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
             font-family: monospace;
-            background: #f8f9fa;
+            background: #f5f5f5;
             padding: 8px 12px;
             border-radius: 10px;
         }
@@ -142,13 +144,13 @@
         }
 
         .status-active {
-            background: #d4edda;
-            color: #155724;
+            background: #d4dcd4;
+            color: #2a3b2a;
         }
 
         .status-inactive {
-            background: #f8d7da;
-            color: #721c24;
+            background: #f0d7d7;
+            color: #6b2020;
         }
 
         .qr-info {
@@ -161,21 +163,21 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 8px 0;
-            border-bottom: 1px solid #f8f9fa;
+            border-bottom: 1px solid #eee;
         }
 
         .info-label {
             font-weight: 600;
-            color: #495057;
+            color: #444;
         }
 
         .info-value {
-            color: #333;
+            color: #222;
             font-weight: 500;
             word-wrap: break-word;
             white-space: normal;
-            padding: 2px 0; /* Добавляем небольшие отступы */
-            line-height: 1.4; /* Увеличиваем высоту строки для лучшей читаемости */
+            padding: 2px 0;
+            line-height: 1.4;
         }
 
         .qr-actions {
@@ -195,47 +197,48 @@
             text-decoration: none;
             display: inline-block;
             font-size: 0.9rem;
+            color: #fff;
         }
 
         .btn-download {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
+            background: #007bff;
         }
 
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-            color: white;
-        }
+            .btn-download:hover {
+                background: #0056b3;
+                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+                transform: translateY(-2px);
+            }
 
         .btn-edit {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
+            background: #666;
+            color: #fff;
         }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-            color: #212529;
-        }
+            .btn-edit:hover {
+                background: #888;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                transform: translateY(-2px);
+            }
 
         .btn-delete {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
-            color: white;
+            background: #a00;
+            color: #fff;
         }
 
-        .btn-delete:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
+            .btn-delete:hover {
+                background: #c33;
+                box-shadow: 0 5px 15px rgba(170,0,0,0.4);
+                transform: translateY(-2px);
+            }
 
         .no-qr {
-            background: white;
+            background: #fff;
             border-radius: 20px;
             padding: 50px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            color: #222;
         }
 
         .no-qr-icon {
@@ -261,16 +264,18 @@
                 flex-direction: column;
                 align-items: stretch;
                 gap: 15px;
-                width: 100%; /* Явно задайте ширину */
+                width: 100%;
             }
-                /* Добавьте эти стили для внутренних элементов */
-            .actions-section .btn-create {
-                width: 100%; /* Растягиваем по ширине родителя */
-                max-width: none; /* Убираем возможные ограничения */
-                box-sizing: border-box; /* Учитываем padding и border в ширине */
-                padding: 12px 20px; /* Можно немного уменьшить padding для очень маленьких экранов */
-                font-size: 0.95rem; /* Опционально: уменьшить шрифт */
-            }
+
+                .actions-section .btn-create {
+                    width: 100%;
+                    max-width: none;
+                    box-sizing: border-box;
+                    padding: 12px 20px;
+                    font-size: 0.95rem;
+                }
+        }
+
         @@media (max-width: 400px) {
             .actions-section .btn-create {
                 padding: 10px 15px;
@@ -278,13 +283,13 @@
             }
 
             .stat-number {
-                font-size: 1.5rem; /* Уменьшаем размер цифр статистики */
+                font-size: 1.5rem;
             }
 
             .icon {
                 display: none;
             }
-            /* Опционально: чуть уменьшить отступы */
+
             .info-row {
                 padding: 10px 0;
                 margin-bottom: 15px;
@@ -294,7 +299,7 @@
             .info-label,
             .info-value {
                 font-size: 0.85rem;
-                line-height: 1.5; 
+                line-height: 1.5;
             }
 
             .qr-info > .info-row:first-child {
@@ -307,7 +312,6 @@
                 gap: 10px;
             }
         }
-    }
     </style>
 }
 
@@ -319,7 +323,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    
+
     @if (TempData["InfoMessage"] != null)
     {
         <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 1050; min-width: 300px;">
@@ -331,18 +335,18 @@
     <div class="qr-header">
         <h1 class="qr-title"><i class="bi bi-qr-code"></i> QR коды</h1>
         <p class="qr-subtitle">Управление динамичными QR кодами для столов и ссылок</p>
-        
+
         <div class="stats-container">
             <div class="stat-card">
-                <div class="stat-number" style="color: #007bff;">@Model.Count</div>
+                <div class="stat-number">@Model.Count</div>
                 <div class="stat-label"><i class="bi bi-qr-code"></i> Всего QR кодов</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" style="color: #28a745;">@Model.Count(q => q.IsActive)</div>
+                <div class="stat-number">@Model.Count(q => q.IsActive)</div>
                 <div class="stat-label">🟢 Активных</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" style="color: #6f42c1;">@Model.Sum(q => q.ScanCount)</div>
+                <div class="stat-number">@Model.Sum(q => q.ScanCount)</div>
                 <div class="stat-label">👁️ Всего сканирований</div>
             </div>
         </div>
@@ -377,7 +381,7 @@
                             @(qr.IsActive ? "🟢 Активен" : "🔴 Неактивен")
                         </span>
                     </div>
-                    
+
                     <div class="qr-info">
                         <div class="info-row">
                             <span class="info-label">
@@ -387,7 +391,7 @@
                                 @(qr.Type == Restaurant.Entities.QrLinkType.Table ? "Стол" : "Ссылка")
                             </span>
                         </div>
-                        
+
                         @if (qr.Type == Restaurant.Entities.QrLinkType.Table && !string.IsNullOrEmpty(qr.TableNumber))
                         {
                             <div class="info-row">
@@ -396,8 +400,8 @@
                                 </span>
                                 <span class="info-value">№@qr.TableNumber</span>
                             </div>
-                        }                        
-                        
+                        }
+
                         @if (qr.Type == Restaurant.Entities.QrLinkType.CustomUrl && !string.IsNullOrEmpty(qr.CustomUrl))
                         {
                             <div class="info-row">
@@ -405,7 +409,7 @@
                                 <span class="info-value" style="word-break: break-all;">@qr.CustomUrl</span>
                             </div>
                         }
-                        
+
                         @if (!string.IsNullOrEmpty(qr.Description))
                         {
                             <div class="info-row">
@@ -428,9 +432,8 @@
                                 <span class="icon"><i class="fa-solid fa-calendar"></i></span> Создан:
                             </span>
                             <span data-datetime="@qr.CreatedAt.ToUniversalTime().ToString("o")" data-format="short">@qr.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
-                            <span class="info-value"></span>
                         </div>
-                        
+
                         @if (qr.ExpiresAt.HasValue)
                         {
                             <div class="info-row">
@@ -441,21 +444,21 @@
                             </div>
                         }
                     </div>
-                    
+
                     <div class="qr-actions">
                         <a asp-action="DownloadQr" asp-route-id="@qr.Id" class="btn-action btn-download">
                             <i class="fa-solid fa-download"></i> Скачать
                         </a>
-                        
+
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Edit">
                             <a asp-action="Edit" asp-route-id="@qr.Id" class="btn-action btn-edit">
                                 <i class="fa-solid fa-pencil"></i> Изменить
                             </a>
                         </permission>
-                        
+
                         <permission asp-permission="@Restaurant.Authorization.Permissions.Orders.Delete">
                             <form asp-action="Delete" asp-route-id="@qr.Id" method="post" class="d-inline">
-                                <button class="btn-action btn-delete" onclick="return confirm('Удалить QR код "@qr.Code"?')">
+                                <button class="btn-action btn-delete" onclick="return confirm('Удалить QR код " @qr.Code"?')">
                                     <i class="fa-solid fa-trash"></i> Удалить
                                 </button>
                             </form>
@@ -474,7 +477,7 @@
         cards.forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'all 0.5s ease';
                 card.style.opacity = '1';

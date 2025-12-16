@@ -9,9 +9,10 @@
 @section Styles {
     <style>
         .orders-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e0e0e0 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #222;
         }
 
         .orders-header {
@@ -21,18 +22,19 @@
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
+            color: #222;
         }
 
         .orders-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
             margin-bottom: 10px;
         }
 
         .orders-subtitle {
             font-size: 1.2rem;
-            color: #666;
+            color: #555;
             margin-bottom: 25px;
         }
 
@@ -44,12 +46,13 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: #fefefe;
             border-radius: 15px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.07);
             min-width: 150px;
+            color: #333;
         }
 
         .stat-number {
@@ -72,7 +75,7 @@
         }
 
         .btn-create {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, #333 0%, #000 100%);
             color: white;
             border: none;
             padding: 12px 25px;
@@ -82,11 +85,11 @@
             transition: all 0.3s ease;
         }
 
-        .btn-create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
-            color: white;
-        }
+            .btn-create:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+                color: white;
+            }
 
         .filter-section {
             display: flex;
@@ -95,21 +98,23 @@
         }
 
         .form-select {
-            border: 2px solid #e9ecef;
+            border: 2px solid #ccc;
             border-radius: 20px;
             padding: 8px 15px;
             font-weight: 500;
             transition: all 0.3s ease;
+            background: white;
+            color: #222;
         }
 
-        .form-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+            .form-select:focus {
+                outline: none;
+                border-color: #555;
+                box-shadow: 0 0 0 3px rgba(85,85,85,0.2);
+            }
 
         .btn-filter {
-            background: linear-gradient(135deg, #007bff, #0056b3);
+            background: linear-gradient(135deg, #555, #222);
             color: white;
             border: none;
             padding: 8px 20px;
@@ -118,10 +123,10 @@
             transition: all 0.3s ease;
         }
 
-        .btn-filter:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-        }
+            .btn-filter:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            }
 
         .orders-grid {
             display: grid;
@@ -138,22 +143,23 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            color: #222;
         }
 
-        .order-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
+            .order-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            }
 
-        .order-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+            .order-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(135deg, #555, #222);
+            }
 
         .order-header {
             display: flex;
@@ -165,7 +171,7 @@
         .order-id {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #333;
+            color: #111;
         }
 
         .order-status {
@@ -173,21 +179,19 @@
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.9rem;
+            color: white;
         }
 
         .status-new {
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
+            background: linear-gradient(135deg, #666, #444);
         }
 
         .status-completed {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
+            background: linear-gradient(135deg, #222, #000);
         }
 
         .status-cancelled {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
-            color: white;
+            background: linear-gradient(135deg, #800000, #400000);
         }
 
         .order-info {
@@ -200,16 +204,17 @@
             align-items: center;
             margin-bottom: 10px;
             padding: 8px 0;
-            border-bottom: 1px solid #f8f9fa;
+            border-bottom: 1px solid #f1f1f1;
+            color: #333;
         }
 
         .info-label {
             font-weight: 600;
-            color: #495057;
+            color: #444;
         }
 
         .info-value {
-            color: #333;
+            color: #222;
             font-weight: 500;
         }
 
@@ -230,40 +235,39 @@
             text-decoration: none;
             display: inline-block;
             font-size: 0.9rem;
+            color: white;
         }
 
         .btn-view {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
+            background: linear-gradient(135deg, #555, #222);
         }
 
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-            color: white;
-        }
+            .btn-view:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                color: white;
+            }
 
         .btn-edit {
-            background: linear-gradient(135deg, #ffc107, #e0a800);
-            color: #212529;
+            background: linear-gradient(135deg, #999, #666);
+            color: #fff;
         }
 
-        .btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-            color: #212529;
-        }
+            .btn-edit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(150,150,150,0.3);
+                color: #fff;
+            }
 
         .btn-cancel {
-            background: linear-gradient(135deg, #dc3545, #fd7e14);
-            color: white;
+            background: linear-gradient(135deg, #800000, #400000);
         }
 
-        .btn-cancel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
+            .btn-cancel:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(128,0,0,0.5);
+                color: white;
+            }
 
         .no-orders {
             background: white;
@@ -271,6 +275,7 @@
             padding: 50px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            color: #222;
         }
 
         .no-orders-icon {
@@ -279,98 +284,102 @@
         }
 
         .tip-section {
-            background: #e3f2fd;
+            background: #f0f0f0;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 25px;
-            border-left: 5px solid #2196f3;
+            border-left: 5px solid #444;
         }
 
         .tip-text {
-            color: #1976d2;
+            color: #444;
             font-weight: 500;
             margin: 0;
         }
 
         .tip-link {
-            color: #1976d2;
+            color: #222;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .tip-link:hover {
-            text-decoration: underline;
-        }
+            .tip-link:hover {
+                text-decoration: underline;
+            }
 
         @@media (max-width: 768px) {
-            .orders-grid {
-                grid-template-columns: 1fr;
-            }
+            .orders-grid
 
-            .stats-container {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .orders-title {
-                font-size: 2rem;
-            }
-
-            .actions-section {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 15px; /* Убедитесь, что gap сохранен */
-                width: 100%; /* Явно задайте ширину */
-            }
-                /* Добавьте эти стили для внутренних элементов */
-                .actions-section .btn-create,
-                .actions-section .tip-section,
-                .actions-section .filter-section {
-                    width: 100%; /* Растягиваем по ширине родителя */
-                    max-width: none; /* Убираем возможные ограничения */
-                    box-sizing: border-box; /* Учитываем padding и border в ширине */
-                }
-
-                .actions-section .btn-create {
-                    padding: 12px 20px; /* Можно немного уменьшить padding для очень маленьких экранов */
-                    font-size: 0.95rem; /* Опционально: уменьшить шрифт */
-                }
-
-                .actions-section .filter-section {
-                    justify-content: center;
-                    flex-wrap: wrap; /* Разрешаем перенос элементов внутри filter-section */
-                }
-
-                .actions-section .form-select,
-                .actions-section .btn-filter {
-                    width: auto; /* Позволяем им занимать нужное пространство */
-                    min-width: 120px; /* Минимальная ширина для читаемости */
-                    flex: 1 1 auto; /* Разрешаем растягиваться */
-                }
+        {
+            grid-template-columns: 1fr;
         }
-            /* Для очень маленьких экранов (например, < 400px) можно добавить дополнительные стили */
-        @@media (max-width: 400px) {
+
+        .stats-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .orders-title {
+            font-size: 2rem;
+        }
+
+        .actions-section {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+            width: 100%;
+        }
+
+            .actions-section .btn-create,
+            .actions-section .tip-section,
+            .actions-section .filter-section {
+                width: 100%;
+                max-width: none;
+                box-sizing: border-box;
+            }
+
             .actions-section .btn-create {
-                padding: 10px 15px;
-                font-size: 0.85rem;
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+
+            .actions-section .filter-section {
+                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .actions-section .form-select,
             .actions-section .btn-filter {
-                min-width: 100px;
-                font-size: 0.85rem;
-                padding: 6px 10px;
+                width: auto;
+                min-width: 120px;
+                flex: 1 1 auto;
             }
 
-            .stat-number {
-                font-size: 1.5rem; /* Уменьшаем размер цифр статистики */
-            }
         }
-    
 
+        @@media (max-width: 400px) {
+            .actions-section .btn-create
+
+        {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+        }
+
+        .actions-section .form-select,
+        .actions-section .btn-filter {
+            min-width: 100px;
+            font-size: 0.85rem;
+            padding: 6px 10px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+
+        }
     </style>
-    
 }
+
 
 <div class="orders-container">
     @if (TempData["ErrorMessage"] != null)
@@ -464,10 +473,23 @@
                     
                     <div class="order-info">
                         <div class="info-row">
-                            @if (order.Place == Place.DineIn && order.Table != null)
+                            @if (order.Place == Place.DineIn && order.Table?.IsDeleted == true)
                             {
-                                <span class="info-label"><i class="fa-solid fa-table"></i> Стол:</span>
-                                <span class="info-value">№@order.Table.Number</span>
+                                <span class="info-label text-danger">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Удалённый стол:
+                                </span>
+                                <span class="info-value text-danger">
+                                    №@order.Table.Number
+                                </span>
+                            }
+                            else if (order.Place == Place.DineIn && order.Table != null)
+                            {
+                                <span class="info-label">
+                                    <i class="fa-solid fa-table"></i> Стол:
+                                </span>
+                                <span class="info-value">
+                                    №@order.Table.Number
+                                </span>
                             }
                             else if (order.Place == Place.Delivery)
                             {
@@ -476,7 +498,7 @@
                             else if (order.Place == Place.Takeaway)
                             {
                                 <span class="info-label"><i class="fa-solid fa-box"></i> С собой</span>
-                            }
+                            }                            
                             else
                             {
                                 <span class="info-label"><i class="fa-solid fa-question"></i> Без стола</span>
