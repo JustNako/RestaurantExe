@@ -26,6 +26,8 @@ namespace Restaurant.Data
         public DbSet<QrLink> QrLinks { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
+        public DbSet<Settings> Settings { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -82,6 +84,9 @@ namespace Restaurant.Data
                 .WithMany(t => t.Reservations)
                 .HasForeignKey(r => r.TableId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Settings>()
+                .HasKey(s => s.Id);
 
         }
 

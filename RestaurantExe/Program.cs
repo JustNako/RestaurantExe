@@ -64,6 +64,10 @@ builder.Services.AddSignalR();
 builder.Services.AddHostedService<ReservationReminderService>();
 
 
+
+builder.Services.AddScoped<ISettingsService, SettingsService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

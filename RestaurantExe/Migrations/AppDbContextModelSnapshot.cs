@@ -472,6 +472,23 @@ namespace RestaurantExe.Migrations
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("Restaurant.Entities.Settings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RestaurantName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal?>("ServiceChargePercentage")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("Restaurant.Entities.Shift", b =>
                 {
                     b.Property<int>("Id")

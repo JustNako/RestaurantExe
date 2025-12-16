@@ -522,6 +522,15 @@
                     </a>
                 </li>
             }
+            @if (User.HasClaim(Restaurant.Authorization.Permissions.ClaimType, Restaurant.Authorization.Permissions.Orders.View))
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")"
+                       asp-area="Admin" asp-controller="Settings" asp-action="Index">
+                        <i class="bi bi-settings-check me-2"></i>Настройки
+                    </a>
+                </li>
+            }
         </ul>
 
         <div class="px-3 mt-auto pb-3">
