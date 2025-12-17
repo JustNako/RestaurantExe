@@ -191,7 +191,7 @@ namespace Restaurant.Areas.Admin.Controllers
             {
                 TableId = vm.TableId,
                 CreatedAt = DateTime.Now,
-                TotalPrice = totalAmount,
+                TotalAmount = totalAmount,
                 Items = orderItems,
                 ShiftId = activeShift.Id,
                 Place = vm.Place
@@ -346,7 +346,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 }
             }
 
-            order.TotalPrice = totalAmount;
+            order.TotalAmount = totalAmount;
 
             await _context.SaveChangesAsync();
 

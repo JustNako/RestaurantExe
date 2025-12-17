@@ -4,7 +4,6 @@
     ViewData["Title"] = "Закрытие заказа";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
-    var total = Model.Items.Sum(i => i.Price * i.Quantity);
 }
 
 <h2 class="mb-4">💵 Закрытие заказа</h2>
@@ -56,8 +55,13 @@
 
                 <h5 class="mb-3">
                     💰 Общая сумма:
-                    <strong id="total-amount">@total</strong> ₸
+                    <strong id="total-amount">@Model.TotalAmount</strong> ₸
                 </h5>
+                <h6 class="mb-3">
+                    Процент за обслуживание:
+                    <strong>@Model.ServicePercent% || @Model.ServiceAmount ₸</strong>
+                </h6>
+
 
                 <form asp-action="CloseOrder" asp-route-id="@Model.Id" method="post">
                     <div class="mb-3">

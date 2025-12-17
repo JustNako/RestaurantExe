@@ -5,7 +5,7 @@
 
     var subtotal = (Model.Items?.Sum(i => i.Price * i.Quantity)) ?? 0M;
     var discount = Model.Discount;
-    var total = Model.TotalPrice > 0 ? Model.TotalPrice : (subtotal - discount);
+    var total = Model.TotalAmount > 0 ? Model.TotalAmount : (subtotal - discount);
 
     var statusClass = Model.Status == Restaurant.Entities.OrderStatus.New
         ? "badge bg-warning text-dark"

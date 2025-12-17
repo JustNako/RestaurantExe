@@ -268,6 +268,9 @@ namespace RestaurantExe.Migrations
                     b.Property<bool>("IsClosed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal>("ItemsTotal")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("PaidCard")
                         .HasColumnType("TEXT");
 
@@ -280,6 +283,12 @@ namespace RestaurantExe.Migrations
                     b.Property<int>("Place")
                         .HasColumnType("INTEGER");
 
+                    b.Property<decimal>("ServiceAmount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("ServicePercent")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("ShiftId")
                         .HasColumnType("INTEGER");
 
@@ -289,7 +298,7 @@ namespace RestaurantExe.Migrations
                     b.Property<int?>("TableId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("TotalPrice")
+                    b.Property<decimal>("TotalAmount")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

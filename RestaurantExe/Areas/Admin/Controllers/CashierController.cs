@@ -23,16 +23,26 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Cash.View)]
         public async Task<IActionResult> Index()
         {
+            var settings = await _context.Settings.FirstOrDefaultAsync();
+            var servicePercent = settings?.ServiceChargePercentage ?? 0m;
+
             var orders = await _context.Orders
                 .Where(o => !o.IsClosed && o.Status != OrderStatus.Cancelled)
                 .Include(o => o.Table)
                 .Include(o => o.Items)
+
                 .ThenInclude(i => i.Product)
+
                 .ToListAsync();
 
             foreach (var order in orders)
             {
                 order.Items ??= new List<OrderItem>();
+
+                var itemsTotal = order.Items.Sum(i => i.Price * i.Quantity);
+                order.ServicePercent = servicePercent;
+                order.ServiceAmount = Math.Round(itemsTotal * servicePercent / 100m, 2);
+                order.TotalAmount = Math.Max(0m, itemsTotal + order.ServiceAmount - order.Discount);
             }
 
 
@@ -51,7 +61,21 @@ namespace Restaurant.Areas.Admin.Controllers
 
             if (order == null) return NotFound();
 
-            order.Items ??= new();
+            if (!order.IsClosed)
+            {
+                var settings = await _context.Settings.FirstOrDefaultAsync();
+                var servicePercent = settings?.ServiceChargePercentage ?? 0m;
+
+                order.ItemsTotal = order.Items.Sum(i => i.Price * i.Quantity);
+                order.ServicePercent = servicePercent;
+                order.ServiceAmount = Math.Round(order.ItemsTotal * servicePercent / 100m, 2);
+                order.TotalAmount = Math.Max(0,
+                    order.ItemsTotal + order.ServiceAmount - order.Discount
+                );
+
+                await _context.SaveChangesAsync();
+            }
+
 
             return View(order);
         }
@@ -64,9 +88,11 @@ namespace Restaurant.Areas.Admin.Controllers
             var order = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.Items)
-                    .ThenInclude(i => i.Product)
+                .ThenInclude(i => i.Product)
                 .FirstOrDefaultAsync(o => o.Id == id);
-                
+
+            
+
             if (order == null)
             {
                 Debug.WriteLine($"Order with id {id} not found.");
@@ -74,6 +100,7 @@ namespace Restaurant.Areas.Admin.Controllers
             }
             Debug.WriteLine($"Order with id {id} found.");
 
+            /*
             // Проверим наличие ингридиентов по рецептам и подготовим списание
             var productIds = order.Items.Select(i => i.ProductId).Distinct().ToList();
             var recipes = await _context.RecipeItems
@@ -81,6 +108,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 .Include(ri => ri.Ingredient)
                 .ToListAsync();
 
+            
             // агрегируем списание по ингредиентам
             var requiredByIngredient = new Dictionary<int, decimal>();
             foreach (var item in order.Items)
@@ -105,27 +133,37 @@ namespace Restaurant.Areas.Admin.Controllers
                     return RedirectToAction("Index");
                 }
             }
+            */
 
-            var total = order.Items.Sum(i => i.Price * i.Quantity);
-            var finalAmount = Math.Max(0m, total - discount);
 
+
+            // обновляем только скидку и итог
             order.Discount = discount;
+            order.TotalAmount = Math.Max(0,
+                order.ItemsTotal + order.ServiceAmount - discount
+            );
+
+            var finalAmount = order.TotalAmount;
             order.PaymentType = paymentType;
-            
+
+
             // Обработка частичных платежей
             if (paymentType == PaymentType.Mixed)
             {
                 var cash = Math.Max(0m, paidCash ?? 0m);
                 var card = Math.Max(0m, paidCard ?? 0m);
-                if (Math.Abs(cash + card - finalAmount) > 0.01m) // допуск 1 тиын
+
+                if (Math.Abs(cash + card - finalAmount) > 0.01m)
                 {
-                    TempData["ErrorMessage"] = $"Сумма наличными и картой должна равняться {finalAmount:N2} ₸. Введено: {cash + card:N2} ₸";
-                    Debug.WriteLine($"Amount of cash and card should be equal to {finalAmount:N2} ₸. Entered: {cash + card:N2} ₸");
+                    TempData["ErrorMessage"] =
+                        $"Сумма наличными и картой должна равняться {finalAmount:N2} ₸";
                     return RedirectToAction(nameof(CloseOrder), new { id });
                 }
+
                 order.PaidCash = cash;
                 order.PaidCard = card;
             }
+
             else if (paymentType == PaymentType.Cash)
             {
                 order.PaidCash = finalAmount;
@@ -151,6 +189,7 @@ namespace Restaurant.Areas.Admin.Controllers
                 order.Table.IsOccupied = false;
             }
 
+            /*
             // списываем ингредиенты и создаем движения
             var lowAfterDeduct = new List<string>();
             foreach (var kv in requiredByIngredient)
@@ -171,16 +210,17 @@ namespace Restaurant.Areas.Admin.Controllers
                     lowAfterDeduct.Add($"{ing.Name} ({ing.CurrentQuantity} {ing.Unit})");
                 }
             }
+            */
 
             Debug.WriteLine("Before SaveChangesAsync.");
             await _context.SaveChangesAsync();
             Debug.WriteLine("After SaveChangesAsync.");
 
             TempData["SuccessMessage"] = $"✅ Заказ #{order.Id} успешно закрыт. Стол №{order.Table?.Number} освобожден.";
-            if (lowAfterDeduct.Any())
+            /*if (lowAfterDeduct.Any())
             {
                 TempData["WarningMessage"] = "Низкий остаток: " + string.Join(", ", lowAfterDeduct);
-            }
+            }*/
 
             
 
@@ -191,6 +231,8 @@ namespace Restaurant.Areas.Admin.Controllers
         [Authorize(Policy = Permissions.Cash.View)]
         public async Task<IActionResult> PrintReceipt(int id)
         {
+            
+
             var order = await _context.Orders
                 .Include(o => o.Table)
                 .Include(o => o.Items)

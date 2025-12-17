@@ -56,7 +56,7 @@
         }
         <div class="receipt-row fw-bold">
             <div>Итого</div>
-            <div class="text-right">@((Model.TotalPrice>0?Model.TotalPrice:Model.Items.Sum(i=>i.Price*i.Quantity)-Model.Discount).ToString("N0")) ₸</div>
+            <div class="text-right">@((Model.TotalAmount > 0 ? Model.TotalAmount : Model.Items.Sum(i => i.Price * i.Quantity) - Model.Discount).ToString("N0")) ₸</div>
         </div>
 
         <div style="margin-top:6mm; text-align:center; font-size:10pt;">

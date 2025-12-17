@@ -132,7 +132,7 @@ namespace RestaurantExe.Controllers
                     TableId = qrLink.TableId.Value,
                     CreatedAt = DateTime.Now,
                     Status = OrderStatus.New,
-                    TotalPrice = cart.Sum(x => x.Price * x.Quantity)
+                    TotalAmount = cart.Sum(x => x.Price * x.Quantity)
                 };
 
                 // Create OrderItems

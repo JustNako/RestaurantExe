@@ -45,6 +45,31 @@
         margin: 3px 0;
     }
 
+        .receipt-row small {
+            flex-basis: 100%;
+            margin-top: 4px;
+        }
+
+    .receipt-row-column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 3px 0;
+    }
+
+        .receipt-row-column > div {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .receipt-row-column > small {
+            margin-top: 4px;
+            margin-left: auto;
+        }
+
+
+
     .receipt-item {
         margin: 4px 0;
     }
@@ -181,10 +206,17 @@
             var finalAmount = subtotal - Model.Discount;
         }
 
-        <div class="receipt-row">
-            <span>Подытог:</span>
-            <span>@subtotal.ToString("N2") ₸</span>
+        <div class="receipt-row receipt-row-column">
+            <div>
+                <span>Подытог:</span>
+                <span>@subtotal.ToString("N2") ₸</span>
+            </div>
+            <small>+ @Model.ServicePercent% обслуживание</small>
         </div>
+
+        
+
+
 
         @if (Model.Discount > 0)
         {
@@ -196,7 +228,8 @@
 
         <div class="receipt-row" style="font-weight: bold; font-size: 11pt; margin-top: 4px;">
             <span>ИТОГО:</span>
-            <span>@finalAmount.ToString("N2") ₸</span>
+            <span>@Model.TotalAmount.ToString("N2")₸</span>
+
         </div>
 
         <div class="receipt-line"></div>
@@ -208,15 +241,15 @@
                 @{
                     if (Model.PaymentType == Restaurant.Entities.PaymentType.Cash)
                     {
-                        @($"Наличные: {finalAmount:N2} ₸")
+                        @($"Наличные: {Model.TotalAmount:N2} ₸")
                     }
                     else if (Model.PaymentType == Restaurant.Entities.PaymentType.Card)
                     {
-                        @($"Карта: {finalAmount:N2} ₸")
+                        @($"Карта: {Model.TotalAmount:N2} ₸")
                     }
                     else if (Model.PaymentType == Restaurant.Entities.PaymentType.Online)
                     {
-                        @($"Онлайн: {finalAmount:N2} ₸")
+                        @($"Онлайн: {Model.TotalAmount:N2} ₸")
                     }
                     else if (Model.PaymentType == Restaurant.Entities.PaymentType.Mixed)
                     {
