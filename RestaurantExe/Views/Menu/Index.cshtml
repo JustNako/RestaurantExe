@@ -1,4 +1,6 @@
-@model List<Restaurant.Entities.Category>
+@model RestaurantExe.ViewModels.MenuViewModel
+
+
 @{
     ViewData["Title"] = "Меню";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -517,7 +519,7 @@
     <div class="header-wrapper">
         <div class="header">
             <button class="menu-toggle"><i class="bi bi-list"></i></button>
-            <h1 class="header-title">Меню</h1>
+            <h1 class="header-title">@Model.RestaurantName</h1>
             <button class="search-toggle"><i class="bi bi-search"></i></button>
         </div>
         <div class="search-container d-none">
@@ -525,7 +527,7 @@
         </div>
         <div class="categories" role="tablist">
             <button class="category-tab active" data-category="all">Все</button>
-            @foreach (var category in Model)
+            @foreach (var category in Model.Categories)
             {
                 <button class="category-tab" data-category="@category.Id">@category.Name</button>
             }
@@ -533,9 +535,9 @@
     </div>
 
     <div class="product-grid" role="list">
-        @if (Model.Any(c => c.Products.Any()))
+        @if (Model.Categories.Any(c => c.Products.Any()))
         {
-            @foreach (var category in Model)
+            @foreach (var category in Model.Categories)
             {
                 @foreach (var product in category.Products)
                 {

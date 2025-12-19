@@ -40,9 +40,20 @@ namespace Restaurant.Areas.Admin.Controllers
                 order.Items ??= new List<OrderItem>();
 
                 var itemsTotal = order.Items.Sum(i => i.Price * i.Quantity);
-                order.ServicePercent = servicePercent;
-                order.ServiceAmount = Math.Round(itemsTotal * servicePercent / 100m, 2);
-                order.TotalAmount = Math.Max(0m, itemsTotal + order.ServiceAmount - order.Discount);
+                if (order.Place == Place.DineIn)
+                {
+                    order.ServicePercent = servicePercent;
+                    order.ServiceAmount = Math.Round(order.ItemsTotal * servicePercent / 100m, 2);
+                }
+                else
+                {
+                    order.ServicePercent = 0m;
+                    order.ServiceAmount = 0m;
+                }
+
+                order.TotalAmount = Math.Max(0,
+                    order.ItemsTotal + order.ServiceAmount - order.Discount
+                );
             }
 
 
@@ -67,11 +78,22 @@ namespace Restaurant.Areas.Admin.Controllers
                 var servicePercent = settings?.ServiceChargePercentage ?? 0m;
 
                 order.ItemsTotal = order.Items.Sum(i => i.Price * i.Quantity);
-                order.ServicePercent = servicePercent;
-                order.ServiceAmount = Math.Round(order.ItemsTotal * servicePercent / 100m, 2);
+
+                if (order.Place == Place.DineIn)
+                {
+                    order.ServicePercent = servicePercent;
+                    order.ServiceAmount = Math.Round(order.ItemsTotal * servicePercent / 100m, 2);
+                }
+                else
+                {
+                    order.ServicePercent = 0m;
+                    order.ServiceAmount = 0m;
+                }
+
                 order.TotalAmount = Math.Max(0,
                     order.ItemsTotal + order.ServiceAmount - order.Discount
                 );
+
 
                 await _context.SaveChangesAsync();
             }

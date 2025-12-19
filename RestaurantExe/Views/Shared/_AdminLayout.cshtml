@@ -469,7 +469,7 @@
             <!-- Параметры (развертываемое меню) -->
             <li class="nav-item mt-3">
                 <a href="#" id="settingsToggle" class="nav-link">
-                    <i class="bi bi-gear me-2"></i>Параметры
+                    <i class="bi bi-list"></i>Параметры
                     <i class="bi bi-caret-down-fill ms-auto"></i>
                 </a>
             </li>
@@ -527,7 +527,7 @@
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")"
                        asp-area="Admin" asp-controller="Settings" asp-action="Index">
-                        <i class="bi bi-settings-check me-2"></i>Настройки
+                        <i class="bi bi-gear me-2"></i>Настройки
                     </a>
                 </li>
             }

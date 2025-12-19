@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Restaurant.Data;
 using Restaurant.Entities;
 using RestaurantExe.Helpers;
+using RestaurantExe.ViewModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Generic;
+using static Restaurant.Authorization.Permissions;
 
 namespace RestaurantExe.Controllers
 {
@@ -36,6 +38,9 @@ namespace RestaurantExe.Controllers
         {
             HttpContext.Session.SetObjectAsJson(CartSessionKey, cart);
         }
+
+
+        
 
         // --- Cart API Endpoints ---
         [HttpGet]
@@ -188,12 +193,27 @@ namespace RestaurantExe.Controllers
             ViewData["TableNumber"] = table?.Number ?? "N/A";
             ViewData["QrCode"] = qrCode;
 
+
+
             var categories = await _context.Categories
                 .Include(c => c.Products.Where(p => p.IsAvailable))
                 .Where(c => c.Products.Any(p => p.IsAvailable))
                 .ToListAsync();
 
-            return View(categories);
+            // Settings
+            var settings = await _context.Settings.FirstOrDefaultAsync();
+
+            // ViewModel
+            var vm = new MenuViewModel
+            {
+                RestaurantName = settings?.RestaurantName ?? "Меню",
+                Categories = categories
+            };
+
+            ViewData["TableNumber"] = table?.Number ?? "N/A";
+            ViewData["QrCode"] = qrCode;
+
+            return View(vm);
         }
     }
 }
