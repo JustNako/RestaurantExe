@@ -179,4 +179,8 @@
     <PackageReference Include="QRCoder" Version="1.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Api\" />
+  </ItemGroup>
+
 </Project>
